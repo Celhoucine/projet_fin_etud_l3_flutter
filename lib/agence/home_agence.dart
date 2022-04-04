@@ -28,7 +28,7 @@ class _homeState extends State<home_agence> {
     return SafeArea(
         child: Scaffold(
       body: PageView(
-        scrollDirection: Axis.horizontal,
+
         controller: _pageController,
         onPageChanged: (index) {
           setState(() {
