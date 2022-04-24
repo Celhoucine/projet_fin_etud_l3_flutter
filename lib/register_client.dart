@@ -29,6 +29,7 @@ class _ClientState extends State<Client> {
       'email': emailController.text,
       'password': passwordController.text,
       'password_confirmation': passwordController.text,
+      'phone': _phoneController.text,
       'mode': 'client'
     };
     var response = await auth().register(data, 'Clientregister');
@@ -54,7 +55,7 @@ class _ClientState extends State<Client> {
   TextEditingController fnameController = new TextEditingController();
   TextEditingController lnameController = new TextEditingController();
   TextEditingController CpasswordController = new TextEditingController();
-
+  TextEditingController _phoneController = new TextEditingController();
   Widget build(BuildContext context) {
     final Screenwidth = MediaQuery.of(context).size.width;
     final Screenheight = MediaQuery.of(context).size.height;
@@ -75,6 +76,13 @@ class _ClientState extends State<Client> {
                 width: Screenwidth * 0.8,
                 height: Screenheight * 0.09,
                 child: TextFormField(
+                  validator: (val) {
+                    if (val!.length <= 10) {
+                      return null;
+                    } else {
+                      return 'first name must be less then  8 characters ';
+                    }
+                  },
                   controller: fnameController,
                   decoration: InputDecoration(
                       hintText: 'Enter your first name',
@@ -91,6 +99,13 @@ class _ClientState extends State<Client> {
                 width: Screenwidth * 0.8,
                 height: Screenheight * 0.09,
                 child: TextFormField(
+                  validator: (val) {
+                    if (val!.length <= 10) {
+                      return null;
+                    } else {
+                      return 'last name must be less then  8 characters ';
+                    }
+                  },
                   controller: lnameController,
                   decoration: InputDecoration(
                       hintText: 'Enter your last name',
@@ -119,6 +134,33 @@ class _ClientState extends State<Client> {
                       return null;
                     } else {
                       return 'this is wrong email';
+                    }
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 9.0),
+                child: Text('phone'),
+              ),
+              Container(
+                width: Screenwidth * 0.8,
+                height: Screenheight * 0.09,
+                child: TextFormField(
+                  controller: _phoneController,
+                  keyboardType: TextInputType.number,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  decoration: InputDecoration(
+                      hintText: 'Enter your phone number',
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)))),
+                  validator: (phone) {
+                    if (GetUtils.isPhoneNumber(phone!) &&
+                        phone.length == 10 &&
+                        !phone.contains('-') &&
+                        !phone.contains('.')) {
+                      return null;
+                    } else {
+                      return 'this is wrong phone';
                     }
                   },
                 ),

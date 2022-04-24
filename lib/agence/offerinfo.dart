@@ -1,17 +1,26 @@
+import 'dart:convert';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+
 class OfferInfo {
-  String email;
-  int phone;
-  String? address;
-  String agenceName;
-  OfferInfo(
-      {required this.email,
-      required this.phone,
-      required this.address,
-      required this.agenceName});
+  String description;
+  int prix;
+  double surface;
+  String categorie;
+
+  // String image;
+  OfferInfo({
+    // required this.image
+    required this.surface,
+    required this.description,
+    required this.prix,
+    required this.categorie,
+  });
   factory OfferInfo.toObject(json) => OfferInfo(
-    email: json['email'],
-        phone: json['phone'],
-        address: json['address'],
-        agenceName: json['agenceName']
-  );
+        // image: json['path']
+        surface: json['surface'].toDouble(),
+        description: json['description'],
+        prix: json['prix'],
+        categorie: json['name'],
+      );
 }

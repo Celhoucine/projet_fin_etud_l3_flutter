@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart';
+import 'package:projet_fin_etud_l3_flutter/agence/editprofile.dart';
+import 'package:projet_fin_etud_l3_flutter/agence/failed.dart';
+import 'package:projet_fin_etud_l3_flutter/agence/postadd.dart';
+import 'package:projet_fin_etud_l3_flutter/agence/profileagence.dart';
+import 'package:projet_fin_etud_l3_flutter/agence/success.dart';
 import 'package:projet_fin_etud_l3_flutter/api/login-register.dart';
 import 'package:projet_fin_etud_l3_flutter/agence/home_agence.dart';
+import 'package:projet_fin_etud_l3_flutter/client/client_edit_profile_success.dart';
+import 'package:projet_fin_etud_l3_flutter/client/editclientprofile.dart';
 import 'package:projet_fin_etud_l3_flutter/client/home_client.dart';
+import 'package:projet_fin_etud_l3_flutter/client/profileclient.dart';
 import 'package:projet_fin_etud_l3_flutter/login.dart';
 import 'package:projet_fin_etud_l3_flutter/register_home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'agence/changepassword.dart';
 
 late SharedPreferences preferences;
 
@@ -30,6 +41,10 @@ Future<void> main() async {
       _view = login();
     }
   }
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   runApp(MyApp(_view));
 }
 
@@ -41,8 +56,10 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState(this._view);
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with AutomaticKeepAliveClientMixin {
   @override
+  bool get wantKeepAlive => true;
+
   late Widget _view;
   _MyAppState(_view) {
     this._view = _view;
@@ -57,6 +74,15 @@ class _MyAppState extends State<MyApp> {
         "login": (context) => login(),
         'home_client': (context) => home_client(),
         'home_agence': (context) => home_agence(),
+        'postadd': (context) => postadd(),
+        'editprofileagency': (context) => editprofile(),
+        'ChangePassword': (context) => changepassword(),
+        'success': (context) => success(),
+        'profileagence': (context) => profileagence(),
+        'editprofileclient': (context) => editclientprofile(),
+        'profileclient': (context) => profileclient(),
+        'profileclientsuccess': (context) => editeclientsuccess(),
+        'failed': (context) => failedpage(),
       },
     );
   }

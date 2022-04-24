@@ -1,25 +1,20 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:projet_fin_etud_l3_flutter/agence/offerinfo.dart';
-import 'package:projet_fin_etud_l3_flutter/agence/changepassword.dart';
 import 'package:projet_fin_etud_l3_flutter/api/login-register.dart';
+import 'package:projet_fin_etud_l3_flutter/api/offer_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../api/offer_api.dart';
-import 'editprofile.dart';
 
-class profileagence extends StatefulWidget {
-  const profileagence({Key? key}) : super(key: key);
+class profileclient extends StatefulWidget {
+  const profileclient({Key? key}) : super(key: key);
 
   @override
-  State<profileagence> createState() => _profileagenceState();
+  State<profileclient> createState() => _profileclientState();
 }
 
-class _profileagenceState extends State<profileagence> {
+class _profileclientState extends State<profileclient> {
   @override
   void initState() {
     getprofiledata();
-
     super.initState();
   }
 
@@ -28,12 +23,9 @@ class _profileagenceState extends State<profileagence> {
     'lname': '',
     'fname': '',
     'email': '',
-    'agenceName': '',
-    'address': '',
     'phone': ''
   };
-  var agenceinfo = [];
-
+  var info = [];
   @override
   Widget build(BuildContext context) {
     final ScrrenWidth = MediaQuery.of(context).size.width;
@@ -63,23 +55,23 @@ class _profileagenceState extends State<profileagence> {
                           SizedBox(
                             height: ScreenHeight * 0.08,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: Column(
-                              children: [
-                                Text(userprofile['fname'] +
-                                    ' ' +
-                                    userprofile['lname']),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 3, 0, 0),
-                                  child: Text(
-                                      'ID : ' + userprofile['id'].toString()),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
+                           // Add here the name of user
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Column(
+                        children: [
+                          Text(
+                              userprofile['fname'] + ' ' + userprofile['lname']),
+                               Padding(
+                                 padding: const EdgeInsets.fromLTRB(0, 3, 0,0),
+                                 child: Text('ID : ' + userprofile['id'].toString()),
+                               ),
+                        ],
+                      ),
+                    ),
+                   
+                   
+                     SizedBox(
                             height: ScreenHeight * 0.035,
                           ),
                           Padding(
@@ -90,7 +82,7 @@ class _profileagenceState extends State<profileagence> {
                                     borderRadius: BorderRadius.circular(15)),
                                 onPressed: () {
                                   Navigator.of(context)
-                                      .pushNamed('editprofileagency');
+                                      .pushNamed('editprofileclient');
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(10.0),
@@ -202,6 +194,7 @@ class _profileagenceState extends State<profileagence> {
                         backgroundImage: AssetImage('assets/OIP.jfif'),
                       ),
                     ),
+                   
                   ],
                 ),
               ),
@@ -210,25 +203,24 @@ class _profileagenceState extends State<profileagence> {
     );
   }
 
-  getprofiledata() async {
+   getprofiledata() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var token = await preferences.getString('token');
-    var response = await offerApi().getprofile(token, 'agenceinfo');
+    var response = await offerApi().getprofile(token,'clientinfo');
     setState(() {
-      agenceinfo = jsonDecode(response.body);
-      agenceinfo = agenceinfo
+      info = jsonDecode(response.body);
+      info = info
           .map((e) => userprofile = {
                 'id': e['id'],
                 'lname': e['lname'],
                 'fname': e['fname'],
                 'email': e['email'],
-                'agenceName': e['agenceName'],
-                'address': e['address'],
                 'phone': e['phone']
               })
           .toList();
     });
-    print(agenceinfo);
+
+    print(info);
   }
 
   logout() async {

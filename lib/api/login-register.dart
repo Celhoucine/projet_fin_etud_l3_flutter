@@ -21,11 +21,37 @@ class auth {
     return response;
   }
 
+  logout(token, url) async {
+    String fullurl = baseUrl + url;
+    var response = await http.delete(Uri.parse(fullurl), headers: {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    });
+    return response;
+  }
+
   loginwithtoken(token, url) async {
     String fullurl = baseUrl + url;
     var response = await http
         .get(Uri.parse(fullurl), headers: {'Authorization': 'Bearer $token'});
-        
+
     return response;
+  }
+
+  addpost(data, url) async {
+    String fullurl = baseUrl + url;
+    var response = await http.post(Uri.parse(fullurl), body: data, headers: {
+      'Accept': 'application/json',
+    });
+    return response;
+  }
+
+  _setheaders(token) {
+    var headers = {};
+    return headers = {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    };
   }
 }

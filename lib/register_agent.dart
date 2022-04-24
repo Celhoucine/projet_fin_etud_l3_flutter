@@ -26,6 +26,7 @@ class _AgencyState extends State<Agency> {
   TextEditingController _CpasswordController = new TextEditingController();
   TextEditingController _phoneController = new TextEditingController();
   TextEditingController _AgenceNameController = new TextEditingController();
+  TextEditingController _AddressController = new TextEditingController();
   void showSnackBar(BuildContext context) {
     final snackBar = SnackBar(
       content: Text('email already exsist'),
@@ -43,7 +44,8 @@ class _AgencyState extends State<Agency> {
       'password_confirmation': _passwordController.text,
       'phone': _phoneController.text,
       'agenceName': _AgenceNameController.text,
-      'mode': 'agence'
+      'address': _AddressController.text,
+      'mode': 'agence',
     };
     var response = await auth().register(data, 'Agenceregister');
     var info = jsonDecode(response.body);
@@ -78,6 +80,13 @@ class _AgencyState extends State<Agency> {
                 width: Screenwidth * 0.8,
                 height: Screenheight * 0.09,
                 child: TextFormField(
+                  validator: (val) {
+                    if (val!.length <= 10) {
+                      return null;
+                    } else {
+                      return 'first name must be less then  10 characters ';
+                    }
+                  },
                   controller: _fnameController,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: InputDecoration(
@@ -95,6 +104,13 @@ class _AgencyState extends State<Agency> {
                 width: Screenwidth * 0.8,
                 height: Screenheight * 0.09,
                 child: TextFormField(
+                  validator: (val) {
+                    if (val!.length <= 10) {
+                      return null;
+                    } else {
+                      return 'last name must be less then  8 characters ';
+                    }
+                  },
                   controller: _lnameController,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: InputDecoration(
@@ -111,6 +127,36 @@ class _AgencyState extends State<Agency> {
                 width: Screenwidth * 0.8,
                 height: Screenheight * 0.09,
                 child: TextFormField(
+                  // validator: (val) {
+                  //   if (val!.length <= 15) {
+                  //     return null;
+                  //   } else {
+                  //     return ' name must be less then  15 characters ';
+                  //   }
+                  // },
+                  controller: _AddressController,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  decoration: InputDecoration(
+                      hintText: 'Enter your address',
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)))),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 9.0),
+                child: Text('Address'),
+              ),
+              Container(
+                width: Screenwidth * 0.8,
+                height: Screenheight * 0.09,
+                child: TextFormField(
+                  validator: (val) {
+                    if (val!.length <= 15) {
+                      return null;
+                    } else {
+                      return ' name must be less then  15 characters ';
+                    }
+                  },
                   controller: _AgenceNameController,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: InputDecoration(

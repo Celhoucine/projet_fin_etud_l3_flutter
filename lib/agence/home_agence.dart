@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:projet_fin_etud_l3_flutter/agence/Accueil.dart';
-import 'package:projet_fin_etud_l3_flutter/agence/addpost.dart';
 import 'package:projet_fin_etud_l3_flutter/agence/chat.dart';
 import 'package:projet_fin_etud_l3_flutter/agence/offerinfo.dart';
+import 'package:projet_fin_etud_l3_flutter/agence/postadd.dart';
 import 'package:projet_fin_etud_l3_flutter/agence/profileagence.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class home_agence extends StatefulWidget {
@@ -13,22 +14,21 @@ class home_agence extends StatefulWidget {
   State<home_agence> createState() => _homeState();
 }
 
-class _homeState extends State<home_agence> {
+class _homeState extends State<home_agence> with AutomaticKeepAliveClientMixin {
   @override
-  // void initState() {
-  //   accueilState().getOffer();
-  //   super.initState();
-  // }
+  bool get wantKeepAlive => true;
 
   @override
   var currentIndex = 0;
 
   PageController _pageController = PageController(initialPage: 0);
   Widget build(BuildContext context) {
+    final ScreenWidth = MediaQuery.of(context).size.width;
+    final ScreenHeight = MediaQuery.of(context).size.height;
     return SafeArea(
         child: Scaffold(
+      backgroundColor: Colors.white,
       body: PageView(
-
         controller: _pageController,
         onPageChanged: (index) {
           setState(() {
@@ -37,44 +37,37 @@ class _homeState extends State<home_agence> {
         },
         children: [
           accueil(),
-          addpost(),
+          postadd(),
           chat(),
           profileagence(),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-          currentIndex: currentIndex,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          elevation: 0,
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: Color.fromRGBO(6, 64, 64, 1),
-          unselectedItemColor: Color.fromRGBO(84, 140, 129, 1),
-          backgroundColor: Colors.white,
+      bottomNavigationBar: CurvedNavigationBar(
+          index: currentIndex,
+          color: Color.fromRGBO(84, 140, 129, 1),
+          height: ScreenHeight * 0.065,
+          buttonBackgroundColor: Color.fromRGBO(6, 64, 64, 1),
+          backgroundColor: Colors.transparent,
           onTap: (index) {
             _pageController.animateToPage(index,
-                duration: Duration(microseconds: 500), curve: Curves.ease);
+                duration: Duration(microseconds: 400), curve: Curves.ease);
           },
           items: [
-            BottomNavigationBarItem(
-              label: '',
-              icon: Icon(
-                Icons.home,
-              ),
+            Icon(
+              Icons.home,
+              color: Colors.white,
             ),
-            BottomNavigationBarItem(
-              label: '',
-              icon: Icon(Icons.add_circle_outline_sharp),
+            Icon(
+              Icons.add_circle_outline_sharp,
+              color: Colors.white,
             ),
-            BottomNavigationBarItem(
-              label: '',
-              icon: Icon(
-                Icons.message,
-              ),
+            Icon(
+              Icons.message,
+              color: Colors.white,
             ),
-            BottomNavigationBarItem(
-              label: '',
-              icon: Icon(Icons.person),
+            Icon(
+              Icons.person,
+              color: Colors.white,
             ),
           ]),
     ));
