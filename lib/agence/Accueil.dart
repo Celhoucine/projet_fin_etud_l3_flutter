@@ -18,7 +18,7 @@ class _accueilState extends State<accueil>
   Future<List<OfferInfo>> getOffer() async {
     final prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token');
-    var response = await offerApi().getofferdata('getagenceoffer',token);
+    var response = await offerApi().getofferdata('getagenceoffer', token);
     Iterable list = await json.decode(response.body);
 
     return list.map<OfferInfo>(OfferInfo.toObject).toList();
@@ -102,7 +102,6 @@ class _accueilState extends State<accueil>
           height: ScreenHeight * 0.45,
           decoration: BoxDecoration(
               color: Colors.white,
-              // border: Border.all(width: 2, color: Colors.grey),
               borderRadius: BorderRadius.all(Radius.circular(15)),
               boxShadow: [
                 BoxShadow(
@@ -137,7 +136,9 @@ class _accueilState extends State<accueil>
                         children: [
                           Text(
                             offer.categorie,
-                            style: TextStyle(fontSize: 28,),
+                            style: TextStyle(
+                              fontSize: 28,
+                            ),
                           ),
                           SizedBox(
                             height: ScreenHeight * 0.008,
@@ -156,7 +157,7 @@ class _accueilState extends State<accueil>
                           height: ScreenHeight * 0.04,
                         ),
                         Text(
-                          offer.prix.toString()+' DA',
+                          offer.prix.toString() + ' DA',
                           style: TextStyle(
                               fontSize: 28, fontWeight: FontWeight.bold),
                         )

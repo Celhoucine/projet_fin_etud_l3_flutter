@@ -64,7 +64,7 @@ class _MyAppState extends State<MyApp> with AutomaticKeepAliveClientMixin {
   _MyAppState(_view) {
     this._view = _view;
   }
-
+   late int id;
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -83,6 +83,7 @@ class _MyAppState extends State<MyApp> with AutomaticKeepAliveClientMixin {
         'profileclient': (context) => profileclient(),
         'profileclientsuccess': (context) => editeclientsuccess(),
         'failed': (context) => failedpage(),
+        
       },
     );
   }
