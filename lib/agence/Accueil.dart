@@ -15,6 +15,7 @@ class accueil extends StatefulWidget {
 
 class _accueilState extends State<accueil>
     with AutomaticKeepAliveClientMixin<accueil> {
+  var path;
   Future<List<OfferInfo>> getOffer() async {
     final prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token');
@@ -22,6 +23,17 @@ class _accueilState extends State<accueil>
     Iterable list = await json.decode(response.body);
 
     return list.map<OfferInfo>(OfferInfo.toObject).toList();
+  }
+
+  getimage(id) async {
+    final prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString('token');
+
+    var response = await offerApi().getimage('getimages/${id}', token);
+    path = jsonDecode(response);
+    print('dddddddddddddddddddddd');
+    
+    return path;
   }
 
   @override
@@ -79,7 +91,9 @@ class _accueilState extends State<accueil>
               itemCount: offers!.length,
               itemBuilder: (context, index) {
                 final offer = offers[index];
-                return Offer(offer);
+                getimage(offer.id);
+
+                return Offer(offer, path);
               },
             );
           } else if (snapshot.hasError) {
@@ -89,7 +103,7 @@ class _accueilState extends State<accueil>
         }));
   }
 
-  Widget Offer(OfferInfo offer) {
+  Widget Offer(OfferInfo offer, Path) {
     final ScrrenWidth = MediaQuery.of(context).size.width;
     final ScreenHeight = MediaQuery.of(context).size.height;
     return Padding(
@@ -116,12 +130,13 @@ class _accueilState extends State<accueil>
               Container(
                 height: ScreenHeight * 0.26,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      topRight: Radius.circular(10)),
-                  image: DecorationImage(
-                      image: AssetImage('assets/oip2.jfif'), fit: BoxFit.cover),
-                ),
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10)),
+                    image: DecorationImage(
+                        image: NetworkImage(
+                            ''),
+                        fit: BoxFit.cover)),
               ),
               Expanded(
                   child: Padding(

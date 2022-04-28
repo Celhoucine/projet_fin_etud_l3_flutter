@@ -32,7 +32,7 @@ class _detailofferState extends State<detailoffer> {
     'created_at': '',
     'agenceName': ''
   };
-  var numberformatter = NumberFormat("#''###", "en_US");
+  var numberformatter = NumberFormat("#.###");
   var info = [];
   @override
   Widget build(BuildContext context) {
@@ -73,7 +73,7 @@ class _detailofferState extends State<detailoffer> {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 0, 0, 3),
                         child: Text(
-                         numberformatter.format( 11111111),
+                         numberformatter.format(11111111),
                           style: TextStyle(fontSize: 24),
                         ),
                       ),

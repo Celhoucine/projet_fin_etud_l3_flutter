@@ -36,6 +36,7 @@ class _postaddState extends State<postadd> {
     'prix': '',
     'categorie': '1',
   };
+  List images_path = [];
 
   bool hide = true;
   bool hide1 = false;
@@ -181,7 +182,7 @@ class _postaddState extends State<postadd> {
                       data['description'] = value;
                     });
                   },
-                   keyboardType: TextInputType.text,
+                  keyboardType: TextInputType.text,
                   decoration: InputDecoration(
                       hintText: 'write description',
                       border: OutlineInputBorder()),
@@ -226,146 +227,149 @@ class _postaddState extends State<postadd> {
     final ScreenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: ScreenHeight * 0.08,
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        title: Text('Upload Images', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(15),
-                  bottomLeft: Radius.circular(15)),
-              gradient: LinearGradient(colors: [
-                Color.fromRGBO(6, 64, 64, 1),
-                Color.fromRGBO(84, 140, 129, 1),
-              ], begin: Alignment.topLeft, end: Alignment.bottomRight)),
-        ),
-      ),
-      backgroundColor: Colors.white,
-      body:ListView(
-        children: [
-           Column(
-        children: [
-          SizedBox(
-            height: ScreenHeight * 0.05,
+        appBar: AppBar(
+          toolbarHeight: ScreenHeight * 0.08,
+          automaticallyImplyLeading: false,
+          centerTitle: true,
+          title: Text('Upload Images', style: TextStyle(color: Colors.white)),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(15),
+                    bottomLeft: Radius.circular(15)),
+                gradient: LinearGradient(colors: [
+                  Color.fromRGBO(6, 64, 64, 1),
+                  Color.fromRGBO(84, 140, 129, 1),
+                ], begin: Alignment.topLeft, end: Alignment.bottomRight)),
           ),
-          if (hide == true)
-            Container(
-              width: ScreenWidth,
-              height: ScreenHeight * 0.55,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  InkWell(
-                    onTap: () {
-                      pickeImageFromCamera();
-                    },
-                    child: Icon(
-                      Icons.camera_alt_rounded,
-                      color: Color.fromRGBO(6, 64, 64, 1),
-                      size: ScreenHeight * 0.1,
+        ),
+        backgroundColor: Colors.white,
+        body: ListView(
+          children: [
+            Column(
+              children: [
+                SizedBox(
+                  height: ScreenHeight * 0.05,
+                ),
+                if (hide == true)
+                  Container(
+                    width: ScreenWidth,
+                    height: ScreenHeight * 0.55,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            pickeImageFromCamera();
+                          },
+                          child: Icon(
+                            Icons.camera_alt_rounded,
+                            color: Color.fromRGBO(6, 64, 64, 1),
+                            size: ScreenHeight * 0.1,
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            pickeImageFromGallery();
+                          },
+                          child: Icon(
+                            Icons.image_rounded,
+                            size: ScreenHeight * 0.1,
+                            color: Color.fromRGBO(6, 64, 64, 1),
+                          ),
+                        )
+                      ],
                     ),
                   ),
-                  InkWell(
-                    onTap: () {
-                      pickeImageFromGallery();
-                    },
-                    child: Icon(
-                      Icons.image_rounded,
-                      size: ScreenHeight * 0.1,
-                      color: Color.fromRGBO(6, 64, 64, 1),
+                if (hide1 == true)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          pickeImageFromCamera();
+                        },
+                        child: Icon(
+                          Icons.camera_alt_rounded,
+                          color: Color.fromRGBO(6, 64, 64, 1),
+                          size: ScreenHeight * 0.07,
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          pickeImageFromGallery();
+                        },
+                        child: Icon(
+                          Icons.image_rounded,
+                          size: ScreenHeight * 0.07,
+                          color: Color.fromRGBO(6, 64, 64, 1),
+                        ),
+                      )
+                    ],
+                  ),
+                if (hide1 == true)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                    child: Container(
+                        height: ScreenHeight * 0.45,
+                        child: ShowSlectedImages()),
+                  ),
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Container(
+                    width: ScreenWidth * 0.85,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        InkWell(
+                            onTap: () {
+                              pageController.previousPage(
+                                  duration: Duration(milliseconds: 1000),
+                                  curve: Curves.ease);
+                            },
+                            child: RichText(
+                                text: TextSpan(children: [
+                              TextSpan(
+                                  text: '< ',
+                                  style: TextStyle(
+                                      fontSize: 15, color: Colors.black)),
+                              TextSpan(
+                                  text: 'Back',
+                                  style: TextStyle(
+                                      fontSize: 15, color: Colors.black))
+                            ]))),
+                        NeumorphicButton(
+                          onPressed: () {
+                            addannonce();
+                            // pageController.nextPage(
+                            //     duration: Duration(milliseconds: 1000),
+                            //     curve: Curves.ease);
+                            // Navigator.of(context).pushNamed('home_agence');
+                          },
+                          child: Text(
+                            'Post',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          style: NeumorphicStyle(
+                              color: Color.fromRGBO(84, 140, 129, 1),
+                              shape: NeumorphicShape.convex,
+                              depth: 10),
+                        ),
+                      ],
                     ),
-                  )
-                ],
-              ),
-            ),
-          if (hide1 == true)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                InkWell(
-                  onTap: () {
-                    pickeImageFromCamera();
-                  },
-                  child: Icon(
-                    Icons.camera_alt_rounded,
-                    color: Color.fromRGBO(6, 64, 64, 1),
-                    size: ScreenHeight * 0.07,
                   ),
                 ),
-                InkWell(
-                  onTap: () {
-                    pickeImageFromGallery();
-                  },
-                  child: Icon(
-                    Icons.image_rounded,
-                    size: ScreenHeight * 0.07,
-                    color: Color.fromRGBO(6, 64, 64, 1),
-                  ),
-                )
               ],
             ),
-          if (hide1 == true) ShowSlectedImages(),
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Container(
-              width: ScreenWidth * 0.85,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  InkWell(
-                      onTap: () {
-                        pageController.previousPage(
-                            duration: Duration(milliseconds: 1000),
-                            curve: Curves.ease);
-                      },
-                      child: RichText(
-                          text: TextSpan(children: [
-                        TextSpan(
-                            text: '< ',
-                            style:
-                                TextStyle(fontSize: 15, color: Colors.black)),
-                        TextSpan(
-                            text: 'Back',
-                            style: TextStyle(fontSize: 15, color: Colors.black))
-                      ]))),
-                  NeumorphicButton(
-                    onPressed: () {
-                      addannonce();
-                      // pageController.nextPage(
-                      //     duration: Duration(milliseconds: 1000),
-                      //     curve: Curves.ease);
-                      // Navigator.of(context).pushNamed('home_agence');
-                      for (var i = 0; i < images!.length; i++) {
-                        offerApi().uploadImage(images![i].path);
-                        print(images![i].path.split("/").last);
-                      }
-                    },
-                    child: Text(
-                      'Post',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    style: NeumorphicStyle(
-                        color: Color.fromRGBO(84, 140, 129, 1),
-                        shape: NeumorphicShape.convex,
-                        depth: 10),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-        ],)
-    );
+          ],
+        ));
   }
 
   Future pickeImageFromCamera() async {
     final selectimages =
-        await cameraimage.pickImage(source: ImageSource.camera);
+        await cameraimage.pickImage(source: ImageSource.camera,imageQuality: 50, maxHeight: 500.0, maxWidth: 500.0);
     if (selectimages != null) {
       imagecam = File(selectimages.path);
       setState(() {
@@ -390,51 +394,47 @@ class _postaddState extends State<postadd> {
   }
 
   Widget ShowSlectedImages() {
-    return Expanded(
-        child: Padding(
-      padding: const EdgeInsets.all(10),
-      child: GridView.builder(
-          itemCount: images!.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3, crossAxisSpacing: 5, mainAxisSpacing: 5),
-          itemBuilder: (context, index) => Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Colors.grey.withOpacity(0.5)),
-                ),
-                child: images!.isEmpty
-                    ? Container()
-                    : Stack(
-                        children: [
-                          LayoutBuilder(builder: ((context, constraints) {
-                            return Stack(
-                              clipBehavior: Clip.none,
-                              fit: StackFit.expand,
-                              children: [
-                                Image.file(
-                                  File(images![index].path),
-                                  fit: BoxFit.fill,
-                                ),
-                                Align(
-                                  alignment: Alignment.topRight,
-                                  child: IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          images!.removeAt(index);
-                                        });
-                                      },
-                                      icon: Icon(
-                                        CupertinoIcons.multiply_circle_fill,
-                                        color: Colors.grey,
-                                      )),
-                                ),
-                              ],
-                            );
-                          })),
-                        ],
-                      ),
-              )),
-    ));
+    return GridView.builder(
+        itemCount: images!.length,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3, crossAxisSpacing: 5, mainAxisSpacing: 5),
+        itemBuilder: (context, index) => Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.grey.withOpacity(0.5)),
+              ),
+              child: images!.isEmpty
+                  ? Container()
+                  : Stack(
+                      children: [
+                        LayoutBuilder(builder: ((context, constraints) {
+                          return Stack(
+                            clipBehavior: Clip.none,
+                            fit: StackFit.expand,
+                            children: [
+                              Image.file(
+                                File(images![index].path),
+                                fit: BoxFit.fill,
+                              ),
+                              Align(
+                                alignment: Alignment.topRight,
+                                child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        images!.removeAt(index);
+                                      });
+                                    },
+                                    icon: Icon(
+                                      CupertinoIcons.multiply_circle_fill,
+                                      color: Colors.grey,
+                                    )),
+                              ),
+                            ],
+                          );
+                        })),
+                      ],
+                    ),
+            ));
   }
 
   _loadCategories() async {
@@ -451,12 +451,21 @@ class _postaddState extends State<postadd> {
   addannonce() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var token = await preferences.getString('token');
-    var response = await offerApi().adddata(token, 'addoffer', data);
-    if (response.statusCode == 200) {
-      Navigator.of(context).pushNamed('success');
-    }
-    else{
-      Navigator.of(context).pushNamed('failed');
-    }
+    // setState(() {
+    //   for (var i = 0; i < images!.length; i++) {
+    //     print(images![i].path.split('/').last);
+    //     // images_path[i] = images![i].path.split('/').last;
+    //     // print(images_path[i]);
+    //   }
+    // });
+    // print(images_path.length);
+
+      var response =
+          await offerApi().adddata(token, 'addoffer', data, images!);
+      if (response.statusCode == 200) {
+        Navigator.of(context).pushNamed('success');
+      } else {
+        Navigator.of(context).pushNamed('failed');
+      }
   }
 }

@@ -9,24 +9,27 @@ class OfferInfo {
   double surface;
   String categorie;
   String created_at;
-  
+  // String path;
 
-  // String image;
+ 
   OfferInfo({
-    // required this.image
+   
     required this.id,
     required this.surface,
     required this.description,
     required this.prix,
     required this.categorie,
     required this.created_at,
+    // required this.path
   });
   factory OfferInfo.toObject(json) => OfferInfo(
-      // image: json['path']
-      id:  json['id'],
+      id: json['id'],
       surface: json['surface'].toDouble(),
       description: json['description'],
       prix: json['prix'],
       categorie: json['name'],
-      created_at: json['created_at']);
+      created_at: json['created_at'],
+      // path: json['path']
+      );
+    
 }
