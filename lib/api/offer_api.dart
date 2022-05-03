@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'dart:io';
+
 import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
+import 'package:projet_fin_etud_l3_flutter/agence/changepassword.dart';
 
 class offerApi {
   String baseUrl = 'http://192.168.1.62:8000/api/';
@@ -13,19 +13,7 @@ class offerApi {
     });
     return response;
   }
-
-  getimage(url, token) async {
-    String fullurl = baseUrl + url;
-    var response = await http.get(Uri.parse(fullurl), headers: {
-      'Authorization': 'Bearer $token',
-      'Accept': 'application/json',
-    });
-    var rep = jsonDecode(response.body);
-    // print(rep[1]);
-    // print('///////////////////////');
-   
-    return response.body;
-  }
+  
 
   getcategory(url, token) async {
     String fullurl = baseUrl + url;
@@ -83,4 +71,74 @@ class offerApi {
     print(response.statusCode);
     return response;
   }
+
+  addfavorite(token, url) async {
+    String fullurl = baseUrl + url;
+    var response = await http.post(Uri.parse(fullurl), headers: {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    });
+    return response;
+  }
+
+  exsistfavorite(token, url) async {
+    String fullurl = baseUrl + url;
+    var response = await http.get(Uri.parse(fullurl), headers: {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    });
+
+    return jsonDecode(response.body);
+  }
+
+  changepassword(token, data, url) async {
+    String fullurl = baseUrl + url;
+    var response = await http.post(Uri.parse(fullurl), body: data, headers: {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    });
+    return response;
+  }
+
+  addcomment(token, data, url) async {
+    String fullurl = baseUrl + url;
+    var response = await http.post(Uri.parse(fullurl), body: data, headers: {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    });
+    return response;
+  }
+  getoffercomment(url, token) async {
+    String fullurl = baseUrl + url;
+    var response = await http.get(Uri.parse(fullurl), headers: {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    });
+    return response;
+  }
+  getoffervues(url, token) async {
+    String fullurl = baseUrl + url;
+    var response = await http.get(Uri.parse(fullurl), headers: {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    });
+    return jsonDecode(response.body);
+  }
+   addvue(url, token) async {
+    String fullurl = baseUrl + url;
+    var response = await http.post(Uri.parse(fullurl), headers: {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    });
+    
+  }
+   deleteoffer( token,url) async {
+    String fullurl = baseUrl + url;
+    var response = await http.delete(Uri.parse(fullurl), headers: {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    });
+    
+  }
+  
 }

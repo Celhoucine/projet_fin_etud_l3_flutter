@@ -477,7 +477,7 @@ class _editclientprofileState extends State<editclientprofile> {
     if (response.statusCode == 200) {
       Navigator.of(context).pushNamed('profileclientsuccess');
     } else {
-      Navigator.of(context).pushNamed('failed');
+      Navigator.of(context).pushNamed('failedClient');
     }
   }
 }

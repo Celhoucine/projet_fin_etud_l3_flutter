@@ -10,15 +10,10 @@ class chat extends StatefulWidget {
 class _chatState extends State<chat> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        width: 100,
-        height: 200,
-        child: Text(
-          'Chat',
-          style: TextStyle(fontSize: 40),
-        ),
-      ),
+    return ListView(
+      children: [
+
+      ]
     );
   }
 }

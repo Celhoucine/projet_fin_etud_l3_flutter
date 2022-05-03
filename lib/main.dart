@@ -9,7 +9,9 @@ import 'package:projet_fin_etud_l3_flutter/agence/success.dart';
 import 'package:projet_fin_etud_l3_flutter/api/login-register.dart';
 import 'package:projet_fin_etud_l3_flutter/agence/home_agence.dart';
 import 'package:projet_fin_etud_l3_flutter/client/client_edit_profile_success.dart';
+import 'package:projet_fin_etud_l3_flutter/client/clientchangepassword.dart';
 import 'package:projet_fin_etud_l3_flutter/client/editclientprofile.dart';
+import 'package:projet_fin_etud_l3_flutter/client/failedclient.dart';
 import 'package:projet_fin_etud_l3_flutter/client/home_client.dart';
 import 'package:projet_fin_etud_l3_flutter/client/profileclient.dart';
 import 'package:projet_fin_etud_l3_flutter/login.dart';
@@ -77,12 +79,14 @@ class _MyAppState extends State<MyApp> with AutomaticKeepAliveClientMixin {
         'postadd': (context) => postadd(),
         'editprofileagency': (context) => editprofile(),
         'ChangePassword': (context) => changepassword(),
+        'changeClientpassword': (context) => changeClientpassword(),
         'success': (context) => success(),
         'profileagence': (context) => profileagence(),
         'editprofileclient': (context) => editclientprofile(),
         'profileclient': (context) => profileclient(),
         'profileclientsuccess': (context) => editeclientsuccess(),
         'failed': (context) => failedpage(),
+        'failedClient': (context) => failedpageClient(),
         
       },
     );

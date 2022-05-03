@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     
+    
    <application
    
         android:label="projet_fin_etud_l3_flutter"
@@ -41,7 +42,8 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-            
+        <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="AIzaSyBHsjVUiWSzWOrmx7jbxfcbh-skhssNJdk"/>    
            
     </application>
 </manifest>

@@ -368,8 +368,11 @@ class _postaddState extends State<postadd> {
   }
 
   Future pickeImageFromCamera() async {
-    final selectimages =
-        await cameraimage.pickImage(source: ImageSource.camera,imageQuality: 50, maxHeight: 500.0, maxWidth: 500.0);
+    final selectimages = await cameraimage.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 80,
+        maxHeight: 4000,
+        maxWidth: 3000);
     if (selectimages != null) {
       imagecam = File(selectimages.path);
       setState(() {
@@ -381,7 +384,8 @@ class _postaddState extends State<postadd> {
   }
 
   Future pickeImageFromGallery() async {
-    final List<XFile>? selectimages = await multimage.pickMultiImage();
+    final List<XFile>? selectimages = await multimage.pickMultiImage(
+        imageQuality: 80, maxHeight: 4000, maxWidth: 3000);
     setState(() {
       hide1 = true;
       hide = false;
@@ -451,21 +455,12 @@ class _postaddState extends State<postadd> {
   addannonce() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var token = await preferences.getString('token');
-    // setState(() {
-    //   for (var i = 0; i < images!.length; i++) {
-    //     print(images![i].path.split('/').last);
-    //     // images_path[i] = images![i].path.split('/').last;
-    //     // print(images_path[i]);
-    //   }
-    // });
-    // print(images_path.length);
 
-      var response =
-          await offerApi().adddata(token, 'addoffer', data, images!);
-      if (response.statusCode == 200) {
-        Navigator.of(context).pushNamed('success');
-      } else {
-        Navigator.of(context).pushNamed('failed');
-      }
+    var response = await offerApi().adddata(token, 'addoffer', data, images!);
+    if (response.statusCode == 200) {
+      Navigator.of(context).pushNamed('success');
+    } else {
+      Navigator.of(context).pushNamed('failed');
+    }
   }
 }

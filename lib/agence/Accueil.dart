@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:intl/intl.dart';
+import 'package:projet_fin_etud_l3_flutter/agence/detail_offer_agency.dart';
 import 'package:projet_fin_etud_l3_flutter/agence/offerinfo.dart';
 import 'package:projet_fin_etud_l3_flutter/api/offer_api.dart';
+import 'package:projet_fin_etud_l3_flutter/client/detail_offer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class accueil extends StatefulWidget {
@@ -15,7 +17,6 @@ class accueil extends StatefulWidget {
 
 class _accueilState extends State<accueil>
     with AutomaticKeepAliveClientMixin<accueil> {
-  var path;
   Future<List<OfferInfo>> getOffer() async {
     final prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token');
@@ -25,17 +26,7 @@ class _accueilState extends State<accueil>
     return list.map<OfferInfo>(OfferInfo.toObject).toList();
   }
 
-  getimage(id) async {
-    final prefs = await SharedPreferences.getInstance();
-    var token = prefs.getString('token');
-
-    var response = await offerApi().getimage('getimages/${id}', token);
-    path = jsonDecode(response);
-    print('dddddddddddddddddddddd');
-    
-    return path;
-  }
-
+  final DateFormat formatter = DateFormat('dd/MM/yyyy HH:mm');
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -91,9 +82,8 @@ class _accueilState extends State<accueil>
               itemCount: offers!.length,
               itemBuilder: (context, index) {
                 final offer = offers[index];
-                getimage(offer.id);
 
-                return Offer(offer, path);
+                return Offer(offer);
               },
             );
           } else if (snapshot.hasError) {
@@ -103,17 +93,28 @@ class _accueilState extends State<accueil>
         }));
   }
 
-  Widget Offer(OfferInfo offer, Path) {
+  Widget Offer(OfferInfo offer) {
     final ScrrenWidth = MediaQuery.of(context).size.width;
     final ScreenHeight = MediaQuery.of(context).size.height;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
         onTap: () {
-          Navigator.of(context).pushNamed('login');
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => offer_detail_agency(
+                      id: offer.id,
+                      description: offer.description,
+                      prix: offer.prix,
+                      surface: offer.surface,
+                      categorie: offer.categorie,
+                      created_at: offer.created_at,
+                      num_image: offer.num_image,
+                      agenceName: offer.agenceName)));
         },
         child: Container(
-          height: ScreenHeight * 0.45,
+          height: ScreenHeight * 0.42,
           decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.all(Radius.circular(15)),
@@ -130,52 +131,137 @@ class _accueilState extends State<accueil>
               Container(
                 height: ScreenHeight * 0.26,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        topRight: Radius.circular(10)),
-                    image: DecorationImage(
-                        image: NetworkImage(
-                            ''),
-                        fit: BoxFit.cover)),
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10)),
+                ),
+                child: LayoutBuilder(builder: (context, constraints) {
+                  return CarouselSlider.builder(
+                      options: CarouselOptions(
+                          autoPlay: true,
+                          autoPlayInterval: Duration(seconds: 5),
+                          viewportFraction: 1),
+                      itemCount: offer.num_image,
+                      itemBuilder: (context, index, realindex) {
+                        final urlimage =
+                            'http://192.168.1.62:8000/storage/images/' +
+                                offer.id.toString() +
+                                '_' +
+                                index.toString() +
+                                '.png';
+
+                        return Container(
+                          width: constraints.maxWidth,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  topRight: Radius.circular(10)),
+                              image: DecorationImage(
+                                image: NetworkImage(
+                                  urlimage,
+                                ),
+                                fit: BoxFit.cover,
+                              )),
+                        );
+                      });
+                }),
               ),
               Expanded(
                   child: Padding(
-                padding: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(5.0),
+                      padding: const EdgeInsets.fromLTRB(5, 1, 0, 0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            offer.categorie,
-                            style: TextStyle(
-                              fontSize: 28,
+                          Row(
+                            children: [
+                              Text(
+                                formatter
+                                    .format(DateTime.tryParse(offer.created_at)
+                                        as DateTime)
+                                    .toString(),
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 11,
+                                ),
+                              ),
+                               SizedBox(width: ScrrenWidth*0.02,),
+                                              FutureBuilder(
+                                          future: getvues(offer.id),
+                                          builder: (context, snapshot) {
+                                            var vues = snapshot.data;
+
+                                            if (snapshot.hasData) {
+                                              return Row(
+
+                                                
+                                                children: [
+                                                  Icon(Icons.remove_red_eye,size: 12,color: Colors.black54,),
+                                                  Text(vues.toString(),style: TextStyle(
+                                                  color: Colors.black54,
+                                                  fontSize: 11,
+                                                ),),
+                                                ],
+                                              );
+                                            } else
+                                              return Text('');
+                                          },
+                                        )
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(2, 4, 0, 0),
+                            child: Text(
+                              offer.categorie,
+                              style: TextStyle(
+                                  fontSize: 26, fontWeight: FontWeight.w400),
                             ),
                           ),
                           SizedBox(
-                            height: ScreenHeight * 0.008,
+                            height: ScreenHeight * 0.007,
                           ),
-                          Text('Rue 1 Novenber Khenchela'),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.place_outlined,
+                                size: ScrrenWidth * 0.035,
+                                color: Color.fromRGBO(84, 140, 129, 0.5),
+                              ),
+                              Text(
+                                ' Khenchela',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ],
+                          ),
                           SizedBox(
                             height: ScreenHeight * 0.008,
                           ),
-                          Text(offer.surface.toString())
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(3, 0, 0, 0),
+                            child: Text(offer.surface.toString() + ' m²'),
+                          ),
                         ],
                       ),
                     ),
                     Column(
                       children: [
                         SizedBox(
-                          height: ScreenHeight * 0.04,
+                          height: ScreenHeight * 0.055,
                         ),
                         Text(
                           offer.prix.toString() + ' DA',
                           style: TextStyle(
-                              fontSize: 28, fontWeight: FontWeight.bold),
-                        )
+                              letterSpacing: 1,
+                              fontSize: 22,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400),
+                        ),
                       ],
                     )
                   ],
@@ -186,6 +272,13 @@ class _accueilState extends State<accueil>
         ),
       ),
     );
+  }
+  Future getvues(id) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var token = await preferences.getString('token');
+    var response = await offerApi().getoffervues('getvues/${id}', token);
+    print(response);
+    return response;
   }
 
   @override

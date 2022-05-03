@@ -55,7 +55,7 @@ PageController _pageClientController = PageController(initialPage: 0);
               color: Colors.white,
             ),
             Icon(
-              Icons.add_circle_outline_sharp,
+              Icons.favorite,
               color: Colors.white,
             ),
             Icon(

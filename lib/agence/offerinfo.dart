@@ -9,19 +9,20 @@ class OfferInfo {
   double surface;
   String categorie;
   String created_at;
-  // String path;
-
- 
-  OfferInfo({
-   
-    required this.id,
-    required this.surface,
-    required this.description,
-    required this.prix,
-    required this.categorie,
-    required this.created_at,
-    // required this.path
-  });
+  int num_image;
+  String agenceName;
+  OfferInfo(
+      {required this.id,
+      required this.surface,
+      required this.description,
+      required this.prix,
+      required this.categorie,
+      required this.created_at,
+      required this.num_image,
+      required this.agenceName,
+      
+      
+      });
   factory OfferInfo.toObject(json) => OfferInfo(
       id: json['id'],
       surface: json['surface'].toDouble(),
@@ -29,7 +30,9 @@ class OfferInfo {
       prix: json['prix'],
       categorie: json['name'],
       created_at: json['created_at'],
-      // path: json['path']
-      );
-    
+      num_image: json['images'],
+      agenceName: json['agenceName'],
+      
+      
+      ) ;
 }

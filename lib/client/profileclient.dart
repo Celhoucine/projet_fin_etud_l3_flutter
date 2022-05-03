@@ -109,7 +109,7 @@ class _profileclientState extends State<profileclient> {
                                     borderRadius: BorderRadius.circular(15)),
                                 onPressed: () {
                                   Navigator.of(context)
-                                      .pushNamed('ChangePassword');
+                                      .pushNamed('changeClientpassword');
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(10.0),

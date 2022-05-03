@@ -3,14 +3,14 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:projet_fin_etud_l3_flutter/api/offer_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class changepassword extends StatefulWidget {
-  const changepassword({Key? key}) : super(key: key);
+class changeClientpassword extends StatefulWidget {
+  const changeClientpassword({Key? key}) : super(key: key);
 
   @override
-  State<changepassword> createState() => _changepasswordState();
+  State<changeClientpassword> createState() => _changeClientpasswordState();
 }
 
-class _changepasswordState extends State<changepassword> {
+class _changeClientpasswordState extends State<changeClientpassword> {
   @override
   TextEditingController _CurrentPasswordController =
       new TextEditingController();
@@ -170,10 +170,10 @@ class _changepasswordState extends State<changepassword> {
     var token = await preferences.getString('token');
     var response =
         await offerApi().changepassword(token, data, 'updatepassword');
-    if (response.statusCode == 200) {
-      Navigator.of(context).pushNamed('success');
+   if (response.statusCode == 200) {
+      Navigator.of(context).pushNamed('profileclientsuccess');
     } else {
-      Navigator.of(context).pushNamed('failed');
+      Navigator.of(context).pushNamed('failedClient');
     }
   }
 }
