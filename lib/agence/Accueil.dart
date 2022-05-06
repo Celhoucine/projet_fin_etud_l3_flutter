@@ -111,7 +111,8 @@ class _accueilState extends State<accueil>
                       categorie: offer.categorie,
                       created_at: offer.created_at,
                       num_image: offer.num_image,
-                      agenceName: offer.agenceName)));
+                      agenceName: offer.agenceName,
+                      )));
         },
         child: Container(
           height: ScreenHeight * 0.42,

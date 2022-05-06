@@ -1,12 +1,18 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:projet_fin_etud_l3_flutter/api/login-register.dart';
 import 'package:projet_fin_etud_l3_flutter/api/offer_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart' as http;
+import 'package:google_maps_webservice/src/places.dart';
+import 'package:projet_fin_etud_l3_flutter/api/login-register.dart';
+import 'package:projet_fin_etud_l3_flutter/api/offer_api.dart';
 
 class postadd extends StatefulWidget {
   const postadd({Key? key}) : super(key: key);
@@ -24,6 +30,9 @@ class _postaddState extends State<postadd> {
   }
 
   @override
+      Placemark _pickPlaceMark = Placemark();
+  Placemark get pickPlaceMark=>_pickPlaceMark;
+  List<Prediction> _predictionList = [];
   var categories = [];
   String category_id = "1";
   File? imagecam;
@@ -41,6 +50,22 @@ class _postaddState extends State<postadd> {
   bool hide = true;
   bool hide1 = false;
   PageController pageController = PageController(initialPage: 0);
+  
+  Future<List<Prediction>> searchLocation(BuildContext context, String text) async {
+    if(text != null && text.isNotEmpty) {
+      http.Response response = await offerApi().getLocationData(text);
+      var data = jsonDecode(response.body.toString());
+      print("my status is "+data["status"]);
+      if ( data['status']== 'OK') {
+        _predictionList = [];
+        data['predictions'].forEach((prediction)
+        => _predictionList.add(Prediction.fromJson(prediction)));
+      } else {
+        // ApiChecker.checkApi(response);
+      }
+    }
+    return _predictionList;
+  }
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
@@ -189,6 +214,7 @@ class _postaddState extends State<postadd> {
                   maxLines: 10,
                 ),
               ),
+     
               Padding(
                 padding: const EdgeInsets.all(30),
                 child: Container(
@@ -343,10 +369,6 @@ class _postaddState extends State<postadd> {
                         NeumorphicButton(
                           onPressed: () {
                             addannonce();
-                            // pageController.nextPage(
-                            //     duration: Duration(milliseconds: 1000),
-                            //     curve: Curves.ease);
-                            // Navigator.of(context).pushNamed('home_agence');
                           },
                           child: Text(
                             'Post',

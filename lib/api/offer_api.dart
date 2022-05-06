@@ -140,5 +140,15 @@ class offerApi {
     });
     
   }
+     Future<http.Response> getLocationData(String text) async {
+    http.Response response;
+
+      response = await http.get(
+        Uri.parse("http://192.168.1.62:8000/api/v1/config/place-api-autocomplete?search_text=$text"),
+          headers: {"Content-Type": "application/json"},);
+
+    print(jsonDecode(response.body));
+    return response;
+  }
   
 }

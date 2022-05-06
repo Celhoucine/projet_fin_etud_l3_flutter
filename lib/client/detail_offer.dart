@@ -6,6 +6,7 @@ import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:projet_fin_etud_l3_flutter/api/offer_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class detailoffer extends StatefulWidget {
   int id;
@@ -16,18 +17,22 @@ class detailoffer extends StatefulWidget {
   String created_at;
   int num_image;
   String agenceName;
+  int phone;
+  String email;
 
-  detailoffer({
-    Key? key,
-    required this.id,
-    required this.surface,
-    required this.description,
-    required this.prix,
-    required this.categorie,
-    required this.created_at,
-    required this.num_image,
-    required this.agenceName,
-  }) : super(key: key);
+  detailoffer(
+      {Key? key,
+      required this.id,
+      required this.surface,
+      required this.description,
+      required this.prix,
+      required this.categorie,
+      required this.created_at,
+      required this.num_image,
+      required this.agenceName,
+      required this.email,
+      required this.phone})
+      : super(key: key);
 
   @override
   State<detailoffer> createState() => _detailofferState();
@@ -68,6 +73,81 @@ class _detailofferState extends State<detailoffer> {
       },
       child: SafeArea(
           child: Scaffold(
+              bottomNavigationBar: Container(
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          calling(widget.phone);
+                        },
+                        child: Container(
+                            height: ScreenHeight * 0.045,
+                            width: ScrrenWidth * 0.3,
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(25)),
+                                gradient: LinearGradient(
+                                    colors: [
+                                      Color.fromRGBO(6, 64, 64, 1),
+                                      Color.fromRGBO(84, 140, 129, 1),
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.call,
+                                  color: Colors.white60,
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                  child: Text('Call'),
+                                ),
+                              ],
+                            )),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          email(widget.email);
+                        },
+                        child: Container(
+                            height: ScreenHeight * 0.045,
+                            width: ScrrenWidth * 0.3,
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(25)),
+                                gradient: LinearGradient(
+                                    colors: [
+                                      Color.fromRGBO(6, 64, 64, 1),
+                                      Color.fromRGBO(84, 140, 129, 1),
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.mail,
+                                  color: Colors.white60,
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                  child: Text('Message'),
+                                ),
+                              ],
+                            )),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               backgroundColor: Color.fromARGB(255, 240, 240, 240),
               body: FutureBuilder(
                   future: exsistfavorite(widget.id),
@@ -412,7 +492,8 @@ class _detailofferState extends State<detailoffer> {
                                         },
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 8),
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 10, 0, 8),
                                         child: Text(
                                           'Comments',
                                           style: TextStyle(fontSize: 18),
@@ -447,7 +528,6 @@ class _detailofferState extends State<detailoffer> {
                                                 };
                                                 addcomment(data);
                                                 _addcomment.text = '';
-                                                setState(() {});
                                               },
                                               icon: Icon(
                                                 Icons.send,
@@ -463,7 +543,7 @@ class _detailofferState extends State<detailoffer> {
                               Container(
                                   height: ScreenHeight * 0.5,
                                   width: ScrrenWidth * 0.88,
-                                  child: getcomments()),
+                                  child: Listcomments()),
                             ],
                           )
                         ],
@@ -486,7 +566,7 @@ class _detailofferState extends State<detailoffer> {
     );
   }
 
-  Widget getcomments() {
+  Widget Listcomments() {
     final ScrrenWidth = MediaQuery.of(context).size.width;
     final ScreenHeight = MediaQuery.of(context).size.height;
     return FutureBuilder(
@@ -600,5 +680,27 @@ class _detailofferState extends State<detailoffer> {
     var response = await offerApi().getoffercomment('getcomments/${id}', token);
     print(jsonDecode(response.body));
     return jsonDecode(response.body);
+  }
+
+  email(email) async {
+    final toemail = email;
+    final subj = '';
+    final messa = '';
+    var _emailurl =
+        'mailto:$toemail?subject=${Uri.encodeFull(subj)}&body=${Uri.encodeFull(messa)}';
+    if (await canLaunch(_emailurl.toString())) {
+      await launch(_emailurl.toString());
+    } else {
+      throw 'Could not launch $_emailurl';
+    }
+  }
+
+  calling(phone) async {
+    var url = 'tel:+213' + phone.toString();
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

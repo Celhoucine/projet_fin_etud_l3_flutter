@@ -102,7 +102,7 @@ class _favoriteState extends State<favorite> {
                             categorie: offer.categorie,
                             created_at: offer.created_at,
                             num_image: offer.num_image,
-                            agenceName: offer.agenceName)));
+                            agenceName: offer.agenceName,email: offer.email,phone:offer.phone ,)));
               },
               child: Container(
                   height: ScreenHeight * 0.42,
@@ -182,16 +182,42 @@ class _favoriteState extends State<favorite> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            formatter
-                                                .format(DateTime.tryParse(
-                                                        offer.created_at)
-                                                    as DateTime)
-                                                .toString(),
-                                            style: TextStyle(
-                                              color: Colors.black54,
-                                              fontSize: 11,
-                                            ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                formatter
+                                                    .format(DateTime.tryParse(
+                                                            offer.created_at)
+                                                        as DateTime)
+                                                    .toString(),
+                                                style: TextStyle(
+                                                  color: Colors.black54,
+                                                  fontSize: 11,
+                                                ),
+                                              ),
+                                              SizedBox(width: ScrrenWidth*0.02,),
+                                              FutureBuilder(
+                                          future: getvues(offer.id),
+                                          builder: (context, snapshot) {
+                                            var vues = snapshot.data;
+
+                                            if (snapshot.hasData) {
+                                              return Row(
+
+                                                
+                                                children: [
+                                                  Icon(Icons.remove_red_eye,size: 12,color: Colors.black54,),
+                                                  Text(vues.toString(),style: TextStyle(
+                                                  color: Colors.black54,
+                                                  fontSize: 11,
+                                                ),),
+                                                ],
+                                              );
+                                            } else
+                                              return Text('');
+                                          },
+                                        )
+                                            ],
                                           ),
                                           Padding(
                                             padding: const EdgeInsets.fromLTRB(
@@ -337,6 +363,13 @@ class _favoriteState extends State<favorite> {
     var response =
         await offerApi().exsistfavorite(token, 'existefavorite/${id}');
 
+    return response;
+  }
+  Future getvues(id) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var token = await preferences.getString('token');
+    var response = await offerApi().getoffervues('getvues/${id}', token);
+    print(response);
     return response;
   }
 }

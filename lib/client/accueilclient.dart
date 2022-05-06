@@ -1,13 +1,17 @@
 import 'dart:convert';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:projet_fin_etud_l3_flutter/agence/offerinfo.dart';
 import 'package:projet_fin_etud_l3_flutter/api/offer_api.dart';
 import 'package:projet_fin_etud_l3_flutter/client/detail_offer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'location.dart';
+import 'location_search_dialoge.dart';
 
 class accueilclient extends StatefulWidget {
   const accueilclient({Key? key}) : super(key: key);
@@ -18,6 +22,17 @@ class accueilclient extends StatefulWidget {
 
 class _accueilclientState extends State<accueilclient> {
   @override
+  void initState() {
+    _loadCategories();
+    _cameraPosition =
+        CameraPosition(target: LatLng(45.521563, -122.677433), zoom: 17);
+    super.initState();
+  }
+
+  late CameraPosition _cameraPosition;
+  @override
+  late GoogleMapController _mapController;
+
   @override
   ScrollController listcontroller = ScrollController();
   var is_favR = 236;
@@ -29,6 +44,14 @@ class _accueilclientState extends State<accueilclient> {
   bool offerList = true;
   bool offerCart = false;
   var sort = 'getoffer';
+  var categories = [];
+  String category_id = "1";
+  var data = {
+    'description': '',
+    'surface': '',
+    'prix': '',
+    'categorie': '1',
+  };
   final ListviewController = ScrollController();
 
   final DateFormat formatter = DateFormat('dd/MM/yyyy HH:mm');
@@ -50,12 +73,38 @@ class _accueilclientState extends State<accueilclient> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Container(
-                        color: Colors.grey[300],
-                        width: ScrrenWidth * 0.7,
-                        height: ScreenHeight * 0.05,
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).pushNamed('filtteroffer');
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.grey[100],
+                              border: Border.all(
+                                  width: 0.5,
+                                  color: Color.fromRGBO(84, 140, 129, 1)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(25))),
+                          width: ScrrenWidth * 0.7,
+                          height: ScreenHeight * 0.05,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.search,
+                                  color: Color.fromRGBO(84, 140, 129, 1),
+                                ),
+                                SizedBox(
+                                  width: ScrrenWidth * 0.01,
+                                ),
+                                Text('Search....')
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
@@ -194,14 +243,17 @@ class _accueilclientState extends State<accueilclient> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => detailoffer(
-                            id: offer.id,
-                            description: offer.description,
-                            prix: offer.prix,
-                            surface: offer.surface,
-                            categorie: offer.categorie,
-                            created_at: offer.created_at,
-                            num_image: offer.num_image,
-                            agenceName: offer.agenceName)));
+                              id: offer.id,
+                              description: offer.description,
+                              prix: offer.prix,
+                              surface: offer.surface,
+                              categorie: offer.categorie,
+                              created_at: offer.created_at,
+                              num_image: offer.num_image,
+                              agenceName: offer.agenceName,
+                              email: offer.email,
+                              phone: offer.phone,
+                            )));
               },
               child: Container(
                   height: ScreenHeight * 0.42,
@@ -294,28 +346,36 @@ class _accueilclientState extends State<accueilclient> {
                                                   fontSize: 11,
                                                 ),
                                               ),
-                                              SizedBox(width: ScrrenWidth*0.02,),
+                                              SizedBox(
+                                                width: ScrrenWidth * 0.02,
+                                              ),
                                               FutureBuilder(
-                                          future: getvues(offer.id),
-                                          builder: (context, snapshot) {
-                                            var vues = snapshot.data;
+                                                future: getvues(offer.id),
+                                                builder: (context, snapshot) {
+                                                  var vues = snapshot.data;
 
-                                            if (snapshot.hasData) {
-                                              return Row(
-
-                                                
-                                                children: [
-                                                  Icon(Icons.remove_red_eye,size: 12,color: Colors.black54,),
-                                                  Text(vues.toString(),style: TextStyle(
-                                                  color: Colors.black54,
-                                                  fontSize: 11,
-                                                ),),
-                                                ],
-                                              );
-                                            } else
-                                              return Text('');
-                                          },
-                                        )
+                                                  if (snapshot.hasData) {
+                                                    return Row(
+                                                      children: [
+                                                        Icon(
+                                                          Icons.remove_red_eye,
+                                                          size: 12,
+                                                          color: Colors.black54,
+                                                        ),
+                                                        Text(
+                                                          vues.toString(),
+                                                          style: TextStyle(
+                                                            color:
+                                                                Colors.black54,
+                                                            fontSize: 11,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  } else
+                                                    return Text('');
+                                                },
+                                              )
                                             ],
                                           ),
                                           Padding(
@@ -390,9 +450,8 @@ class _accueilclientState extends State<accueilclient> {
                                               fontWeight: FontWeight.w400),
                                         ),
                                         SizedBox(
-                                          height: ScreenHeight*0.04,
+                                          height: ScreenHeight * 0.04,
                                         ),
-                                        
                                       ],
                                     )
                                   ],
@@ -647,15 +706,62 @@ class _accueilclientState extends State<accueilclient> {
     var response = await offerApi().addvue('addvue/${id}', token);
   }
 
-  Widget maps() {
-    return Container(
-      width: 300,
-      height: 300,
-      child: GoogleMap(
-          mapType: MapType.normal,
-          myLocationButtonEnabled: true,
-          initialCameraPosition:
-              CameraPosition(zoom: 4, target: LatLng(35.430995, 7.146707))),
-    );
+  _loadCategories() async {
+    final prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString('token');
+    var response = await offerApi().getcategory('getCategories', token);
+    if (response.statusCode == 200) {
+      setState(() {
+        categories = json.decode(response.body);
+      });
+    }
   }
+
+  // Widget maps() {
+  //   return GetBuilder<LocationController>(builder: (locationController) {
+  //     return Container(
+  //       width: 300,
+  //       height:600,
+  //       child: Stack(
+  //         children: [
+  //           GoogleMap(
+  //                   onMapCreated: (GoogleMapController mapController) {
+  //                     _mapController = mapController;
+                      
+  //                   },
+  //                   initialCameraPosition: _cameraPosition
+  //               ),
+  //               Positioned(
+  //                 top: 100,
+  //                 left: 10, right: 20,
+  //                 child: GestureDetector(
+  //                   onTap: () => Get.dialog(LocationSearchDialog(mapController: _mapController)),
+  //                   child: Container(
+  //                     height: 50,
+  //                     padding: EdgeInsets.symmetric(horizontal: 5),
+  //                     decoration: BoxDecoration(color: Theme.of(context).cardColor,
+  //                         borderRadius: BorderRadius.circular(10)),
+  //                     child: Row(children: [
+  //                       Icon(Icons.location_on, size: 25, color: Theme.of(context).primaryColor),
+  //                       SizedBox(width: 5),
+  //                       //here we show the address on the top
+  //                       Expanded(
+  //                         child: Text(
+  //                           '${locationController.pickPlaceMark.name ?? ''} ${locationController.pickPlaceMark.locality ?? ''} '
+  //                               '${locationController.pickPlaceMark.postalCode ?? ''} ${locationController.pickPlaceMark.country ?? ''}',
+  //                           style: TextStyle(fontSize: 20),
+  //                           maxLines: 1, overflow: TextOverflow.ellipsis,
+  //                         ),
+  //                       ),
+  //                       SizedBox(width: 10),
+  //                       Icon(Icons.search, size: 25, color: Theme.of(context).textTheme.bodyText1!.color),
+  //                     ]),
+  //                   ),
+  //                 ),
+  //               ),
+  //         ],
+  //       ),
+  //     );
+  //   });
+  // }
 }

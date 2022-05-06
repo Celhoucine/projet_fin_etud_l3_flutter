@@ -2,8 +2,6 @@ import 'dart:convert';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:get/get_navigation/get_navigation.dart';
 import 'package:intl/intl.dart';
 import 'package:projet_fin_etud_l3_flutter/api/offer_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -430,7 +428,7 @@ class _offer_detail_agencyState extends State<offer_detail_agency> {
         future: getcomment(widget.id),
         builder: ((context, AsyncSnapshot snapshot) {
           final comments = snapshot.data;
-
+     
           if (snapshot.hasData) {
             return ListView.builder(
                 itemCount: comments!.length,
@@ -464,6 +462,7 @@ class _offer_detail_agencyState extends State<offer_detail_agency> {
                                   children: [
                                     Row(
                                       children: [
+                                        
                                         Text(comments[index]['lname'] +
                                             ' ' +
                                             comments[index]['fname']),
@@ -509,8 +508,11 @@ class _offer_detail_agencyState extends State<offer_detail_agency> {
           } else if (snapshot.hasError) {
             return Text('${snapshot.error}');
           }
+        
           return Center(child: const CircularProgressIndicator());
-        }));
+        }
+        )
+        );
   }
 
   addcomment(data) async {

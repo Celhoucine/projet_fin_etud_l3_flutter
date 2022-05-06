@@ -24,6 +24,7 @@ PageController _pageClientController = PageController(initialPage: 0);
         child: Scaffold(
       backgroundColor: Colors.white,
       body: PageView(
+        physics: NeverScrollableScrollPhysics(),
         controller: _pageClientController,
         onPageChanged: (index) {
           setState(() {

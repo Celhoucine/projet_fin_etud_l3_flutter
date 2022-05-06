@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart';
+import 'package:get/get.dart';
 import 'package:projet_fin_etud_l3_flutter/agence/editprofile.dart';
 import 'package:projet_fin_etud_l3_flutter/agence/failed.dart';
 import 'package:projet_fin_etud_l3_flutter/agence/postadd.dart';
 import 'package:projet_fin_etud_l3_flutter/agence/profileagence.dart';
 import 'package:projet_fin_etud_l3_flutter/agence/success.dart';
+import 'package:projet_fin_etud_l3_flutter/agence/updateoffer.dart';
 import 'package:projet_fin_etud_l3_flutter/api/login-register.dart';
 import 'package:projet_fin_etud_l3_flutter/agence/home_agence.dart';
 import 'package:projet_fin_etud_l3_flutter/client/client_edit_profile_success.dart';
 import 'package:projet_fin_etud_l3_flutter/client/clientchangepassword.dart';
 import 'package:projet_fin_etud_l3_flutter/client/editclientprofile.dart';
 import 'package:projet_fin_etud_l3_flutter/client/failedclient.dart';
+import 'package:projet_fin_etud_l3_flutter/client/filtteroffer.dart';
 import 'package:projet_fin_etud_l3_flutter/client/home_client.dart';
 import 'package:projet_fin_etud_l3_flutter/client/profileclient.dart';
 import 'package:projet_fin_etud_l3_flutter/login.dart';
@@ -19,6 +21,7 @@ import 'package:projet_fin_etud_l3_flutter/register_home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'agence/changepassword.dart';
+import 'client/location.dart';
 
 late SharedPreferences preferences;
 
@@ -68,6 +71,7 @@ class _MyAppState extends State<MyApp> with AutomaticKeepAliveClientMixin {
   }
    late int id;
   Widget build(BuildContext context) {
+    Get.put(LocationController());
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: this._view,
@@ -87,7 +91,8 @@ class _MyAppState extends State<MyApp> with AutomaticKeepAliveClientMixin {
         'profileclientsuccess': (context) => editeclientsuccess(),
         'failed': (context) => failedpage(),
         'failedClient': (context) => failedpageClient(),
-        
+        'updateoffer':(context) => UpdateOffer(),
+        'filtteroffer':(context) => FiltterOffer()
       },
     );
   }
