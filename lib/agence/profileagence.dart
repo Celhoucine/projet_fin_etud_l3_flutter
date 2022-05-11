@@ -228,15 +228,15 @@ class _profileagenceState extends State<profileagence> {
               })
           .toList();
     });
-    print(agenceinfo);
+    
   }
 
   logout() async {
     final prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token');
-    print(token);
+    
     var response = await auth().logout(token, 'logout');
-    print(response.statusCode);
+    
     if (response.statusCode == 200) {
       Navigator.of(context).pushNamed('login');
     }

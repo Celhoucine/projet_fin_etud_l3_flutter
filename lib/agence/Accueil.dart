@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:intl/date_symbols.dart';
 import 'package:intl/intl.dart';
 import 'package:projet_fin_etud_l3_flutter/agence/detail_offer_agency.dart';
 import 'package:projet_fin_etud_l3_flutter/agence/offerinfo.dart';
@@ -15,22 +17,19 @@ class accueil extends StatefulWidget {
   State<accueil> createState() => _accueilState();
 }
 
-class _accueilState extends State<accueil>
-    with AutomaticKeepAliveClientMixin<accueil> {
+class _accueilState extends State<accueil> {
   Future<List<OfferInfo>> getOffer() async {
     final prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token');
     var response = await offerApi().getofferdata('getagenceoffer', token);
     Iterable list = await json.decode(response.body);
-
     return list.map<OfferInfo>(OfferInfo.toObject).toList();
   }
 
   final DateFormat formatter = DateFormat('dd/MM/yyyy HH:mm');
+
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-
     final ScrrenWidth = MediaQuery.of(context).size.width;
     final ScreenHeight = MediaQuery.of(context).size.height;
     return SafeArea(
@@ -41,7 +40,7 @@ class _accueilState extends State<accueil>
           toolbarHeight: ScreenHeight * 0.08,
           automaticallyImplyLeading: false,
           centerTitle: true,
-          title: Text('Your Offer', style: TextStyle(color: Colors.white)),
+          title: Text('My Offer', style: TextStyle(color: Colors.white)),
           backgroundColor: Colors.transparent,
           elevation: 0,
           flexibleSpace: Container(
@@ -96,6 +95,7 @@ class _accueilState extends State<accueil>
   Widget Offer(OfferInfo offer) {
     final ScrrenWidth = MediaQuery.of(context).size.width;
     final ScreenHeight = MediaQuery.of(context).size.height;
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
@@ -104,14 +104,16 @@ class _accueilState extends State<accueil>
               context,
               MaterialPageRoute(
                   builder: (context) => offer_detail_agency(
-                      id: offer.id,
-                      description: offer.description,
-                      prix: offer.prix,
-                      surface: offer.surface,
-                      categorie: offer.categorie,
-                      created_at: offer.created_at,
-                      num_image: offer.num_image,
-                      agenceName: offer.agenceName,
+                        id: offer.id,
+                        description: offer.description,
+                        prix: offer.prix,
+                        surface: offer.surface,
+                        categorie: offer.categorie,
+                        created_at: offer.created_at,
+                        num_image: offer.num_image,
+                        agenceName: offer.agenceName,
+                        longitude: offer.baladiya,
+                        latitude: offer.willaya,
                       )));
         },
         child: Container(
@@ -145,7 +147,7 @@ class _accueilState extends State<accueil>
                       itemCount: offer.num_image,
                       itemBuilder: (context, index, realindex) {
                         final urlimage =
-                            'http://192.168.1.62:8000/storage/images/' +
+                            'http://192.168.126.32:8000/storage/images/' +
                                 offer.id.toString() +
                                 '_' +
                                 index.toString() +
@@ -190,28 +192,10 @@ class _accueilState extends State<accueil>
                                   fontSize: 11,
                                 ),
                               ),
-                               SizedBox(width: ScrrenWidth*0.02,),
-                                              FutureBuilder(
-                                          future: getvues(offer.id),
-                                          builder: (context, snapshot) {
-                                            var vues = snapshot.data;
-
-                                            if (snapshot.hasData) {
-                                              return Row(
-
-                                                
-                                                children: [
-                                                  Icon(Icons.remove_red_eye,size: 12,color: Colors.black54,),
-                                                  Text(vues.toString(),style: TextStyle(
-                                                  color: Colors.black54,
-                                                  fontSize: 11,
-                                                ),),
-                                                ],
-                                              );
-                                            } else
-                                              return Text('');
-                                          },
-                                        )
+                              SizedBox(
+                                width: ScrrenWidth * 0.02,
+                              ),
+                              vues(offer.id),
                             ],
                           ),
                           Padding(
@@ -232,12 +216,7 @@ class _accueilState extends State<accueil>
                                 size: ScrrenWidth * 0.035,
                                 color: Color.fromRGBO(84, 140, 129, 0.5),
                               ),
-                              Text(
-                                ' Khenchela',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                ),
-                              ),
+                              Text(' '+offer.willaya+','+offer.baladiya)
                             ],
                           ),
                           SizedBox(
@@ -274,14 +253,57 @@ class _accueilState extends State<accueil>
       ),
     );
   }
+
   Future getvues(id) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var token = await preferences.getString('token');
     var response = await offerApi().getoffervues('getvues/${id}', token);
-    print(response);
-    return response;
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      return '';
+    }
   }
 
-  @override
-  bool get wantKeepAlive => true;
+  Widget vues(id) {
+    return FutureBuilder(
+      future: getvues(id),
+      builder: (context, snapshot) {
+        var vues = snapshot.data;
+
+        if (snapshot.hasData) {
+          return Row(
+            children: [
+              Icon(
+                Icons.remove_red_eye,
+                size: 12,
+                color: Colors.black54,
+              ),
+              Text(
+                vues.toString(),
+                style: TextStyle(
+                  color: Colors.black54,
+                  fontSize: 11,
+                ),
+              ),
+            ],
+          );
+        } else if (snapshot.hasError) {
+          return Container();
+        }
+        return Container();
+      },
+    );
+  }
+
+  places(lat, long) async {
+    var location = {};
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(lat, long,localeIdentifier: 'en');
+    print(placemarks[0]);
+    location['Locality'] = placemarks[0].locality;
+    location['wilaya'] = placemarks[0].administrativeArea;
+    print(location['Locality']);
+    return location;
+  }
 }

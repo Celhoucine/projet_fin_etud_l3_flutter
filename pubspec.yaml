@@ -49,9 +49,10 @@ dependencies:
   search_map_location: ^0.0.5
   url_launcher: ^6.1.0
   permission_handler: ^9.2.0
-  geocoding: ^2.0.0
   flutter_google_places: ^0.3.0
   flutter_typeahead: ^3.2.5
+  geocoding: ^2.0.4
+  
   
 
 dev_dependencies:

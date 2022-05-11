@@ -14,9 +14,8 @@ class home_agence extends StatefulWidget {
   State<home_agence> createState() => _homeState();
 }
 
-class _homeState extends State<home_agence> with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
+class _homeState extends State<home_agence>  {
+  
 
   @override
   var currentIndex = 0;
@@ -29,6 +28,7 @@ class _homeState extends State<home_agence> with AutomaticKeepAliveClientMixin {
         child: Scaffold(
       backgroundColor: Colors.white,
       body: PageView(
+        physics: NeverScrollableScrollPhysics(),
         controller: _pageController,
         onPageChanged: (index) {
           setState(() {

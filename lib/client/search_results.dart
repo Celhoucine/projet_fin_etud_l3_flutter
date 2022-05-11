@@ -1,33 +1,29 @@
 import 'dart:convert';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:projet_fin_etud_l3_flutter/agence/offerinfo.dart';
-import 'package:projet_fin_etud_l3_flutter/api/offer_api.dart';
 import 'package:projet_fin_etud_l3_flutter/client/detail_offer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class accueilclient extends StatefulWidget {
-  const accueilclient({Key? key}) : super(key: key);
+import '../api/offer_api.dart';
+
+class searchresults extends StatefulWidget {
+  var data = {
+    'surface_min': '',
+    'surface_max': '',
+    'prix_min': '',
+    'prix_max': '',
+    'categore': '1',
+  };
+  searchresults({Key? key, required this.data}) : super(key: key);
 
   @override
-  State<accueilclient> createState() => _accueilclientState();
+  State<searchresults> createState() => _searchresultsState();
 }
 
-class _accueilclientState extends State<accueilclient> {
-  @override
-  void initState() {
-    _loadCategories();
-
-    super.initState();
-  }
-
+class _searchresultsState extends State<searchresults> {
   @override
   @override
   ScrollController listcontroller = ScrollController();
@@ -51,173 +47,72 @@ class _accueilclientState extends State<accueilclient> {
   final ListviewController = ScrollController();
 
   final DateFormat formatter = DateFormat('dd/MM/yyyy HH:mm');
-
   Widget build(BuildContext context) {
     final ScrrenWidth = MediaQuery.of(context).size.width;
     final ScreenHeight = MediaQuery.of(context).size.height;
 
     return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-            automaticallyImplyLeading: false,
-            backgroundColor: Colors.white,
-            toolbarHeight: ScreenHeight * 0.13,
-            flexibleSpace: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          Navigator.of(context).pushNamed('filtteroffer');
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: Colors.grey[100],
-                              border: Border.all(
-                                  width: 0.5,
-                                  color: Color.fromRGBO(84, 140, 129, 1)),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(25))),
-                          width: ScrrenWidth * 0.7,
-                          height: ScreenHeight * 0.05,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.search,
-                                  color: Color.fromRGBO(84, 140, 129, 1),
-                                ),
-                                SizedBox(
-                                  width: ScrrenWidth * 0.01,
-                                ),
-                                Text('Search....')
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                        child: InkWell(
-                          onTap: () => showModalBottomSheet(
-                              context: context,
-                              builder: (context) => BuildSheet()),
-                          child: Row(
-                            children: [
-                              Text('Sort',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold)),
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                                child: Icon(Icons.sort),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Row(
-                    children: [
-                      InkWell(
-                          onTap: () {
-                            setState(() {
-                              offerList = true;
-                              offerCart = false;
-                            });
-                          },
-                          child: Text(
-                            'List',
-                            style: TextStyle(
-                                color: offerList
-                                    ? Color.fromRGBO(84, 140, 129, 1)
-                                    : Colors.black45,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold),
-                          )),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                        child: Container(
-                          height: ScreenHeight * 0.035,
-                          width: 2,
-                          color: Colors.grey[300],
-                        ),
-                      ),
-                      InkWell(
-                          onTap: () {
-                            setState(() {
-                              offerList = false;
-                              offerCart = true;
-                            });
-                          },
-                          child: Text('Map',
-                              style: TextStyle(
-                                  color: offerCart
-                                      ? Color.fromRGBO(84, 140, 129, 1)
-                                      : Colors.black45,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold)))
-                    ],
-                  ),
-                )
-              ],
-            )),
-        body: ListView(
-          controller: ListviewController,
-          children: [
-            Center(
-                child: offerList
-                    ? Container(width: ScrrenWidth * 0.95, child: OffersList())
-                    : Container(
-                        width: ScrrenWidth,
-                        height: ScreenHeight * 0.5,
-                        child: GoogleMap(
-                            initialCameraPosition: CameraPosition(
-                          target: LatLng(37.42796133580664, -122.085749655962),
-                          zoom: 14.4746,
-                        )),
-                      )),
-          ],
-        ),
+        child: Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color.fromRGBO(84, 140, 129, 1),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        title: Text('Search Result'),
       ),
-    );
+      body: ListView(
+        controller: ListviewController,
+        children: [
+          Center(
+            child: offerList
+                ? Container(width: ScrrenWidth * 0.95, child: OffersList())
+                : Container(),
+          ),
+        ],
+      ),
+    ));
   }
 
   Widget OffersList() {
+    final ScrrenWidth = MediaQuery.of(context).size.width;
+    final ScreenHeight = MediaQuery.of(context).size.height;
     return FutureBuilder<List<OfferInfo>>(
-        future: getOffer(sort),
+        future: searchData(widget.data),
         builder: ((context, snapshot) {
           final offers = snapshot.data;
 
           if (snapshot.hasData) {
-            return ListView.builder(
-              controller: listcontroller,
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: offers!.length,
-              itemBuilder: (context, index) {
-                final offer = offers[index];
+            if (snapshot.data!.length == 0) {
+              return Center(
+                  child: Column(
+                children: [
+                  SizedBox(
+                    height: ScreenHeight * 0.20,
+                  ),
+                  Text(
+                    'There are no results for this search ',
+                    style: TextStyle(fontSize: 24),
+                  )
+                ],
+              ));
+            } else {
+              return ListView.builder(
+                controller: listcontroller,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: offers!.length,
+                itemBuilder: (context, index) {
+                  final offer = offers[index];
 
-                return Offer(
-                  offer,
-                );
-              },
-            );
+                  return Offer(
+                    offer,
+                  );
+                },
+              );
+            }
           } else if (snapshot.hasError) {
-            return Text('error on server please come back later',
-                style: TextStyle(fontSize: 24));
+            return Text('data');
           }
+
           return Center(child: const CircularProgressIndicator());
         }));
   }
@@ -245,17 +140,17 @@ class _accueilclientState extends State<accueilclient> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => detailoffer(
-                            id: offer.id,
-                            description: offer.description,
-                            prix: offer.prix,
-                            surface: offer.surface,
-                            categorie: offer.categorie,
-                            created_at: offer.created_at,
-                            num_image: offer.num_image,
-                            agenceName: offer.agenceName,
-                            email: offer.email,
-                            phone: offer.phone,
-                            willaya: offer.willaya,
+                              id: offer.id,
+                              description: offer.description,
+                              prix: offer.prix,
+                              surface: offer.surface,
+                              categorie: offer.categorie,
+                              created_at: offer.created_at,
+                              num_image: offer.num_image,
+                              agenceName: offer.agenceName,
+                              email: offer.email,
+                              phone: offer.phone,
+                              willaya: offer.willaya,
                             baladiya: offer.baladiya
                             )));
               },
@@ -377,7 +272,12 @@ class _accueilclientState extends State<accueilclient> {
                                                 color: Color.fromRGBO(
                                                     84, 140, 129, 0.5),
                                               ),
-                                          Text(' '+offer.willaya+','+offer.baladiya)
+                                              Text(
+                                                ' Khenchela',
+                                                style: TextStyle(
+                                                  fontSize: 13,
+                                                ),
+                                              ),
                                             ],
                                           ),
                                           SizedBox(
@@ -493,160 +393,13 @@ class _accueilclientState extends State<accueilclient> {
     );
   }
 
-  Widget BuildSheet() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              InkWell(
-                onTap: () {
-                  setState(() {
-                    ListviewController.jumpTo(0);
-                    sort = 'getoffer';
-                  });
-                  Navigator.of(context).pop();
-                },
-                child: Text(
-                  'None',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-            child: Row(
-              children: [
-                InkWell(
-                  onTap: () {
-                    ListviewController.jumpTo(0);
-                    setState(() {
-                      sort = 'Highprice';
-                    });
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(
-                    'High price',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-            child: Row(
-              children: [
-                InkWell(
-                  onTap: () {
-                    ListviewController.jumpTo(0);
-                    setState(() {
-                      sort = 'Lowprice';
-                    });
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(
-                    'Low price',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-            child: Row(
-              children: [
-                InkWell(
-                  onTap: () {
-                    ListviewController.jumpTo(0);
-                    setState(() {
-                      sort = 'Highsurface';
-                    });
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(
-                    'High surface',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-            child: Row(
-              children: [
-                InkWell(
-                  onTap: () {
-                    ListviewController.jumpTo(0);
-                    setState(() {
-                      sort = 'Lowsurface';
-                    });
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(
-                    'Low surface',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-            child: Row(
-              children: [
-                InkWell(
-                  onTap: () {
-                    ListviewController.jumpTo(0);
-                    setState(() {
-                      sort = 'Newoffer';
-                    });
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(
-                    'New offer',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-            child: Row(
-              children: [
-                InkWell(
-                  onTap: () {
-                    ListviewController.jumpTo(0);
-                    setState(() {
-                      sort = 'Oldoffer';
-                    });
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(
-                    'Old offer',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<List<OfferInfo>> getOffer(sort) async {
+  Future<List<OfferInfo>> searchData(data) async {
     final prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token');
-    var response = await offerApi().getofferdata(sort, token);
+    var url =
+        'search?surface_min=${data['surface_min']}&surface_max=${data['surface_max']}&prix_max=${data['prix_max']}&prix_min=${data['prix_min']}&categore=${data['categore']}';
+    var response = await offerApi().searchdata(url, token);
     Iterable list = await json.decode(response.body);
-
     return list.map<OfferInfo>(OfferInfo.toObject).toList();
   }
 
@@ -669,17 +422,6 @@ class _accueilclientState extends State<accueilclient> {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var token = await preferences.getString('token');
     var response = await offerApi().addvue('addvue/${id}', token);
-  }
-
-  _loadCategories() async {
-    final prefs = await SharedPreferences.getInstance();
-    var token = prefs.getString('token');
-    var response = await offerApi().getcategory('getCategories', token);
-    if (response.statusCode == 200) {
-      setState(() {
-        categories = json.decode(response.body);
-      });
-    }
   }
 
   Future getvues(id) async {

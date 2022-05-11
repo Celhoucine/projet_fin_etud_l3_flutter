@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -25,14 +26,24 @@ class _postaddState extends State<postadd> {
   @override
   void initState() {
     _loadCategories();
+    getcurrentPosition();
+    var _value = 1;
 
     super.initState();
   }
 
   @override
-      Placemark _pickPlaceMark = Placemark();
-  Placemark get pickPlaceMark=>_pickPlaceMark;
-  List<Prediction> _predictionList = [];
+  String? dropdownValue;
+  Set<Marker> mymarker = {
+    Marker(
+        markerId: MarkerId('1'),
+        visible: true,
+        position: LatLng(28.033886, 1.659626))
+  };
+  double _value = 1;
+  late Position cl;
+  var lat;
+  var long;
   var categories = [];
   String category_id = "1";
   File? imagecam;
@@ -44,35 +55,31 @@ class _postaddState extends State<postadd> {
     'surface': '',
     'prix': '',
     'categorie': '1',
+    'longitude': '',
+    'latitude': '',
+    'bathroom': 0,
+    'garage': 0,
+    'bedroom': 0,
+    'livingroom': 0,
+    'kitchen': 0,
   };
   List images_path = [];
-
+  int garage = 0;
+  int bathroom = 0;
+  int bedroom = 0;
+  int livingroom = 0;
+  int kitchen = 0;
   bool hide = true;
   bool hide1 = false;
   PageController pageController = PageController(initialPage: 0);
-  
-  Future<List<Prediction>> searchLocation(BuildContext context, String text) async {
-    if(text != null && text.isNotEmpty) {
-      http.Response response = await offerApi().getLocationData(text);
-      var data = jsonDecode(response.body.toString());
-      print("my status is "+data["status"]);
-      if ( data['status']== 'OK') {
-        _predictionList = [];
-        data['predictions'].forEach((prediction)
-        => _predictionList.add(Prediction.fromJson(prediction)));
-      } else {
-        // ApiChecker.checkApi(response);
-      }
-    }
-    return _predictionList;
-  }
+
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         body: PageView(
           physics: NeverScrollableScrollPhysics(),
           controller: pageController,
-          children: [FormOfAddPost(), UplodeImage()],
+          children: [FormOfAddPost(), OfferPosition(), UplodeImage()],
         ),
       ),
     );
@@ -123,6 +130,11 @@ class _postaddState extends State<postadd> {
                     Container(
                       width: ScreenWidth * 0.3,
                       child: DropdownButton(
+                        elevation: 16,
+                        underline: Container(
+                          height: 1,
+                          color: Colors.black26,
+                        ),
                         hint: Text('Select'),
                         items: categories.map((item) {
                           return new DropdownMenuItem(
@@ -142,22 +154,30 @@ class _postaddState extends State<postadd> {
                     SizedBox(
                       width: ScreenWidth * 0.05,
                     ),
-                    Text('Surface :'),
-                    Container(
-                      width: ScreenWidth * 0.28,
-                      child: TextFormField(
-                        onChanged: (value) {
-                          setState(() {
-                            data['surface'] = value;
-                          });
-                        },
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          isDense: true,
-                          suffix: Text('m²'),
-                        ),
+                    Text('F : '),
+                    DropdownButton<String>(
+                      elevation: 16,
+                      underline: Container(
+                        width: ScreenWidth * 0.28,
+                        height: 1,
+                        color: Colors.black26,
                       ),
-                    ),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          dropdownValue = newValue!;
+                          print(newValue);
+                        });
+                      },
+                      hint: Text('Choose'),
+                      value: dropdownValue,
+                      items: <String>['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7']
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    )
                   ],
                 ),
               ),
@@ -184,8 +204,201 @@ class _postaddState extends State<postadd> {
                         ),
                       ),
                     ),
+                    SizedBox(
+                      width: ScreenWidth * 0.05,
+                    ),
+                    Text('Surface :'),
+                    Container(
+                      width: ScreenWidth * 0.28,
+                      child: TextFormField(
+                        onChanged: (value) {
+                          setState(() {
+                            data['surface'] = value;
+                          });
+                        },
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          isDense: true,
+                          suffix: Text('m²'),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
+              ),
+              Row(
+                children: [
+                  SizedBox(
+                    width: ScreenWidth * 0.080,
+                  ),
+                  Icon(Icons.kitchen),
+                  Container(
+                      width: ScreenWidth * 0.3, child: Text('Kitchen : ')),
+                  IconButton(
+                      onPressed: () {
+                        if (kitchen > 0) {
+                          setState(() {
+                            kitchen = kitchen - 1;
+                            data['kitchen'] = kitchen;
+                          });
+                        }
+                      },
+                      icon: Icon(
+                        Icons.remove_circle_outline,
+                        size: 20,
+                      )),
+                  Text(kitchen.toString()),
+                  IconButton(
+                      onPressed: () {
+                        setState(() {
+                          kitchen = kitchen + 1;
+                          data['kitchen'] = kitchen;
+                        });
+                      },
+                      icon: Icon(
+                        Icons.add_circle_outline,
+                        size: 20,
+                      )),
+                ],
+              ),
+              Row(
+                children: [
+                  SizedBox(
+                    width: ScreenWidth * 0.080,
+                  ),
+                  Icon(Icons.bathroom),
+                  Container(
+                      width: ScreenWidth * 0.3, child: Text('bathroom : ')),
+                  IconButton(
+                      onPressed: () {
+                        if (bathroom > 0) {
+                          setState(() {
+                            bathroom = bathroom - 1;
+                            data['bathroom'] = bathroom;
+                          });
+                        }
+                      },
+                      icon: Icon(
+                        Icons.remove_circle_outline,
+                        size: 20,
+                      )),
+                  Text(bathroom.toString()),
+                  IconButton(
+                      onPressed: () {
+                        setState(() {
+                          bathroom = bathroom + 1;
+                          data['bathroom'] = bathroom;
+                        });
+                      },
+                      icon: Icon(
+                        Icons.add_circle_outline,
+                        size: 20,
+                      )),
+                ],
+              ),
+              Row(
+                children: [
+                  SizedBox(
+                    width: ScreenWidth * 0.080,
+                  ),
+                  Icon(Icons.room),
+                  Container(
+                      width: ScreenWidth * 0.3, child: Text('livingroom : ')),
+                  IconButton(
+                      onPressed: () {
+                        if (livingroom > 0) {
+                          setState(() {
+                            livingroom = livingroom - 1;
+                            data['livingroom'] = livingroom;
+                          });
+                        }
+                      },
+                      icon: Icon(
+                        Icons.remove_circle_outline,
+                        size: 20,
+                      )),
+                  Text(livingroom.toString()),
+                  IconButton(
+                      onPressed: () {
+                        setState(() {
+                          livingroom = livingroom + 1;
+                          data['livingroom'] = livingroom;
+                        });
+                      },
+                      icon: Icon(
+                        Icons.add_circle_outline,
+                        size: 20,
+                      )),
+                ],
+              ),
+              Row(
+                children: [
+                  SizedBox(
+                    width: ScreenWidth * 0.080,
+                  ),
+                  Icon(Icons.bedroom_parent_sharp),
+                  Container(
+                      width: ScreenWidth * 0.3, child: Text('bedroom : ')),
+                  IconButton(
+                      onPressed: () {
+                        if (bedroom > 0) {
+                          setState(() {
+                            bedroom = bedroom - 1;
+                            data['bedroom'] = bedroom;
+                          });
+                        }
+                      },
+                      icon: Icon(
+                        Icons.remove_circle_outline,
+                        size: 20,
+                      )),
+                  Text(bedroom.toString()),
+                  IconButton(
+                      onPressed: () {
+                        setState(() {
+                          bedroom = bedroom + 1;
+                          data['bedroom'] = bedroom;
+                        });
+                      },
+                      icon: Icon(
+                        Icons.add_circle_outline,
+                        size: 20,
+                      )),
+                ],
+              ),
+              Row(
+                children: [
+                  SizedBox(
+                    width: ScreenWidth * 0.080,
+                  ),
+                  Icon(Icons.garage),
+                  Container(width: ScreenWidth * 0.3, child: Text('garage : ')),
+                  IconButton(
+                      onPressed: () {
+                        if (garage > 0) {
+                          setState(() {
+                            garage = garage - 1;
+                            data['garage'] = garage;
+                          });
+                        }
+                      },
+                      icon: Icon(
+                        Icons.remove_circle_outline,
+                        size: 20,
+                      )),
+                  Text(garage.toString()),
+                  IconButton(
+                      onPressed: () {
+                        setState(() {
+                          garage = garage + 1;
+                          data['garage'] = garage;
+                        });
+                      },
+                      icon: Icon(
+                        Icons.add_circle_outline,
+                        size: 20,
+                      )),
+                ],
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 15),
@@ -214,7 +427,6 @@ class _postaddState extends State<postadd> {
                   maxLines: 10,
                 ),
               ),
-     
               Padding(
                 padding: const EdgeInsets.all(30),
                 child: Container(
@@ -224,6 +436,14 @@ class _postaddState extends State<postadd> {
                     children: [
                       NeumorphicButton(
                         onPressed: () {
+                          setState(() {
+                            mymarker = {
+                              Marker(
+                                  markerId: MarkerId('1'),
+                                  visible: true,
+                                  position: LatLng(28.033886, 1.659626))
+                            };
+                          });
                           pageController.nextPage(
                               duration: Duration(milliseconds: 1000),
                               curve: Curves.ease);
@@ -354,6 +574,14 @@ class _postaddState extends State<postadd> {
                               pageController.previousPage(
                                   duration: Duration(milliseconds: 1000),
                                   curve: Curves.ease);
+                              setState(() {
+                                mymarker = {
+                                  Marker(
+                                      markerId: MarkerId('1'),
+                                      visible: true,
+                                      position: LatLng(28.033886, 1.659626))
+                                };
+                              });
                             },
                             child: RichText(
                                 text: TextSpan(children: [
@@ -389,6 +617,116 @@ class _postaddState extends State<postadd> {
         ));
   }
 
+  Widget OfferPosition() {
+    final ScreenWidth = MediaQuery.of(context).size.width;
+    final ScreenHeight = MediaQuery.of(context).size.height;
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: ScreenHeight * 0.08,
+          automaticallyImplyLeading: false,
+          centerTitle: true,
+          title: Text('Select location on map',
+              style: TextStyle(color: Colors.white)),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(15),
+                    bottomLeft: Radius.circular(15)),
+                gradient: LinearGradient(colors: [
+                  Color.fromRGBO(84, 140, 129, 1),
+                  Color.fromRGBO(6, 64, 64, 1),
+                ], begin: Alignment.topLeft, end: Alignment.bottomRight)),
+          ),
+        ),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Container(
+                width: ScreenWidth,
+                height: ScreenHeight * 0.55,
+                child: GoogleMap(
+                  markers: mymarker,
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(28.033886, 1.659626),
+                    zoom: 5,
+                  ),
+                  rotateGesturesEnabled: false,
+                  zoomControlsEnabled: false,
+                  myLocationEnabled: true,
+                  myLocationButtonEnabled: true,
+                  onTap: (latlng) async {
+                    mymarker.remove(Marker(markerId: MarkerId('1')));
+                    mymarker
+                        .add(Marker(markerId: MarkerId('1'), position: latlng));
+                    List<Placemark> placemarks = await placemarkFromCoordinates(
+                        latlng.latitude, latlng.longitude,
+                        localeIdentifier: 'en');
+                    setState(() {
+                      data['latitude'] = latlng.latitude.toString();
+                      data['longitude'] = latlng.longitude.toString();
+                      data['willaya'] =
+                          placemarks[0].administrativeArea.toString();
+                      data['baladiya'] = placemarks[0].locality.toString();
+                      print(data);
+                    });
+                  },
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(30),
+              child: Container(
+                width: ScreenWidth * 0.85,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    InkWell(
+                        onTap: () {
+                          pageController.previousPage(
+                              duration: Duration(milliseconds: 1000),
+                              curve: Curves.ease);
+                          setState(() {});
+                        },
+                        child: RichText(
+                            text: TextSpan(children: [
+                          TextSpan(
+                              text: '< ',
+                              style:
+                                  TextStyle(fontSize: 15, color: Colors.black)),
+                          TextSpan(
+                              text: 'Back',
+                              style:
+                                  TextStyle(fontSize: 15, color: Colors.black))
+                        ]))),
+                    NeumorphicButton(
+                      onPressed: () {
+                        pageController.nextPage(
+                            duration: Duration(milliseconds: 1000),
+                            curve: Curves.ease);
+                      },
+                      child: Text(
+                        'Next',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      style: NeumorphicStyle(
+                          color: Color.fromRGBO(84, 140, 129, 1),
+                          shape: NeumorphicShape.convex,
+                          depth: 10),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Future pickeImageFromCamera() async {
     final selectimages = await cameraimage.pickImage(
         source: ImageSource.camera,
@@ -413,9 +751,7 @@ class _postaddState extends State<postadd> {
       hide = false;
       if (selectimages!.isNotEmpty) {
         images!.addAll(selectimages);
-      } else {
-        print('no image selected');
-      }
+      } else {}
     });
   }
 
@@ -479,10 +815,22 @@ class _postaddState extends State<postadd> {
     var token = await preferences.getString('token');
 
     var response = await offerApi().adddata(token, 'addoffer', data, images!);
+
     if (response.statusCode == 200) {
       Navigator.of(context).pushNamed('success');
     } else {
       Navigator.of(context).pushNamed('failed');
     }
+  }
+
+  Future<void> getcurrentPosition() async {
+    cl = await Geolocator.getCurrentPosition().then((value) => value);
+
+    setState(() {
+      lat = cl.latitude;
+      long = cl.longitude;
+      print('lat' + lat.toString());
+      print('long' + long.toString());
+    });
   }
 }

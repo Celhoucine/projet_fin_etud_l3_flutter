@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:projet_fin_etud_l3_flutter/api/login-register.dart';
 import 'package:projet_fin_etud_l3_flutter/api/offer_api.dart';
+import 'package:projet_fin_etud_l3_flutter/client/search_results.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FiltterOffer extends StatefulWidget {
@@ -19,13 +21,18 @@ class _FiltterOfferState extends State<FiltterOffer> {
   }
 
   var data = {
-    'description': '',
-    'min_surface': '',
-    'max_surface': '',
-    'min_price': '',
-    'max_price': '',
-    'categorie': '1',
+    'surface_min': '',
+    'surface_max': '',
+    'prix_min': '',
+    'prix_max': '',
+    'categore': '1',
   };
+  TextEditingController _surface_minController = new TextEditingController();
+  TextEditingController _surface_maxController = new TextEditingController();
+  TextEditingController _prix_minController = new TextEditingController();
+  TextEditingController _prix_maxController = new TextEditingController();
+  TextEditingController _categoreController = new TextEditingController();
+
   var categories = [];
   String category_id = "1";
   Widget build(BuildContext context) {
@@ -34,6 +41,8 @@ class _FiltterOfferState extends State<FiltterOffer> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          elevation: 0,
+          centerTitle: true,
           backgroundColor: Colors.white,
           title: Text(
             'Search for offer',
@@ -68,7 +77,7 @@ class _FiltterOfferState extends State<FiltterOffer> {
                         onChanged: (value) {
                           setState(() {
                             category_id = value.toString();
-                            data['categorie'] = category_id;
+                            data['categore'] = category_id;
                           });
                         },
                         value: category_id,
@@ -89,9 +98,10 @@ class _FiltterOfferState extends State<FiltterOffer> {
                     Container(
                       width: ScreenWidth * 0.23,
                       child: TextFormField(
+                        controller: _prix_minController,
                         onChanged: (value) {
                           setState(() {
-                            data['min_price'] = value;
+                            data['prix_min'] = _prix_minController.text;
                           });
                         },
                         keyboardType: TextInputType.number,
@@ -108,9 +118,10 @@ class _FiltterOfferState extends State<FiltterOffer> {
                     Container(
                       width: ScreenWidth * 0.23,
                       child: TextFormField(
+                        controller: _prix_maxController,
                         onChanged: (value) {
                           setState(() {
-                            data['Max_price'] = value;
+                            data['prix_max'] = _prix_maxController.text;
                           });
                         },
                         keyboardType: TextInputType.number,
@@ -135,9 +146,10 @@ class _FiltterOfferState extends State<FiltterOffer> {
                     Container(
                       width: ScreenWidth * 0.23,
                       child: TextFormField(
+                        controller: _surface_minController,
                         onChanged: (value) {
                           setState(() {
-                            data['min_surface'] = value;
+                            data['surface_min'] = _surface_minController.text;
                           });
                         },
                         keyboardType: TextInputType.number,
@@ -154,9 +166,10 @@ class _FiltterOfferState extends State<FiltterOffer> {
                     Container(
                       width: ScreenWidth * 0.23,
                       child: TextFormField(
+                        controller: _surface_maxController,
                         onChanged: (value) {
                           setState(() {
-                            data['max_surface'] = value;
+                            data['surface_max'] = _surface_maxController.text;
                           });
                         },
                         keyboardType: TextInputType.number,
@@ -167,7 +180,42 @@ class _FiltterOfferState extends State<FiltterOffer> {
                       ),
                     ),
                   ],
-                )
+                ),
+                SizedBox(
+                  height: ScreenHeight * 0.1,
+                ),
+                Center(
+                  child: InkWell(
+                    onTap: () {
+                      print(data);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => searchresults(
+                                    data: data,
+                                  )));
+                    },
+                    child: Container(
+                        height: ScreenHeight * 0.045,
+                        width: ScreenWidth * 0.3,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(25)),
+                            color: Color.fromRGBO(84, 140, 129, 1)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.search,
+                              color: Colors.white60,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                              child: Text('Search'),
+                            ),
+                          ],
+                        )),
+                  ),
+                ),
               ],
             ),
           ),

@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:projet_fin_etud_l3_flutter/agence/editprofile.dart';
 import 'package:projet_fin_etud_l3_flutter/agence/failed.dart';
@@ -21,7 +24,6 @@ import 'package:projet_fin_etud_l3_flutter/register_home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'agence/changepassword.dart';
-import 'client/location.dart';
 
 late SharedPreferences preferences;
 
@@ -63,15 +65,20 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> with AutomaticKeepAliveClientMixin {
   @override
+  void initState() {
+    getper();
+    super.initState();
+  }
+
+  @override
   bool get wantKeepAlive => true;
 
   late Widget _view;
   _MyAppState(_view) {
     this._view = _view;
   }
-   late int id;
+  late int id;
   Widget build(BuildContext context) {
-    Get.put(LocationController());
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: this._view,
@@ -91,9 +98,23 @@ class _MyAppState extends State<MyApp> with AutomaticKeepAliveClientMixin {
         'profileclientsuccess': (context) => editeclientsuccess(),
         'failed': (context) => failedpage(),
         'failedClient': (context) => failedpageClient(),
-        'updateoffer':(context) => UpdateOffer(),
-        'filtteroffer':(context) => FiltterOffer()
+        'updateoffer': (context) => UpdateOffer(),
+        'filtteroffer': (context) => FiltterOffer()
       },
     );
+  }
+
+  Future getper() async {
+    bool services;
+    LocationPermission per;
+    per = await Geolocator.checkPermission();
+    if (per == LocationPermission.denied ||
+        per == LocationPermission.deniedForever) {
+      per = await Geolocator.requestPermission();
+      if (per == LocationPermission.denied ||
+          per == LocationPermission.deniedForever) {
+        exit(0);
+      }
+    }
   }
 }

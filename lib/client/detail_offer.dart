@@ -19,6 +19,8 @@ class detailoffer extends StatefulWidget {
   String agenceName;
   int phone;
   String email;
+  String willaya;
+  String baladiya;
 
   detailoffer(
       {Key? key,
@@ -31,7 +33,9 @@ class detailoffer extends StatefulWidget {
       required this.num_image,
       required this.agenceName,
       required this.email,
-      required this.phone})
+      required this.phone,
+      required this.baladiya,
+      required this.willaya})
       : super(key: key);
 
   @override
@@ -64,7 +68,6 @@ class _detailofferState extends State<detailoffer> {
   Widget build(BuildContext context) {
     final ScrrenWidth = MediaQuery.of(context).size.width;
     final ScreenHeight = MediaQuery.of(context).size.height;
-    print(fav);
 
     return WillPopScope(
       onWillPop: () async {
@@ -183,7 +186,7 @@ class _detailofferState extends State<detailoffer> {
                                               itemBuilder:
                                                   (context, index, realindex) {
                                                 final urlimage =
-                                                    'http://192.168.1.62:8000/storage/images/' +
+                                                    'http://192.168.126.32:8000/storage/images/' +
                                                         widget.id.toString() +
                                                         '_' +
                                                         index.toString() +
@@ -310,12 +313,10 @@ class _detailofferState extends State<detailoffer> {
                                                       color: Color.fromARGB(
                                                           197, 84, 140, 129),
                                                     ),
-                                                    Text(
-                                                      ' Khenchela',
-                                                      style: TextStyle(
-                                                        fontSize: 13.5,
-                                                      ),
-                                                    ),
+                                                    Text(' ' +
+                                                        widget.willaya +
+                                                        ',' +
+                                                        widget.baladiya)
                                                   ],
                                                 ),
                                                 SizedBox(
@@ -678,7 +679,7 @@ class _detailofferState extends State<detailoffer> {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var token = await preferences.getString('token');
     var response = await offerApi().getoffercomment('getcomments/${id}', token);
-    print(jsonDecode(response.body));
+
     return jsonDecode(response.body);
   }
 

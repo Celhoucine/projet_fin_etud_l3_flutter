@@ -13,6 +13,8 @@ class OfferInfo {
   int phone;
   String agenceName;
   String email;
+  String willaya;
+  String baladiya;
 
   OfferInfo({
     required this.id,
@@ -25,6 +27,8 @@ class OfferInfo {
     required this.agenceName,
     required this.phone,
     required this.email,
+    required this.baladiya,
+    required this.willaya
   });
   factory OfferInfo.toObject(json) => OfferInfo(
         id: json['id'],
@@ -37,5 +41,7 @@ class OfferInfo {
         agenceName: json['agenceName'],
         phone: json['phone'],
         email: json['email'],
+        baladiya:json['baladiya'],
+        willaya: json['willaya'],
       );
 }

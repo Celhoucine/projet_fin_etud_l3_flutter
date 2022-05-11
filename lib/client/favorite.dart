@@ -95,14 +95,20 @@ class _favoriteState extends State<favorite> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => detailoffer(
-                            id: offer.id,
-                            description: offer.description,
-                            prix: offer.prix,
-                            surface: offer.surface,
-                            categorie: offer.categorie,
-                            created_at: offer.created_at,
-                            num_image: offer.num_image,
-                            agenceName: offer.agenceName,email: offer.email,phone:offer.phone ,)));
+                              id: offer.id,
+                              description: offer.description,
+                              prix: offer.prix,
+                              surface: offer.surface,
+                              categorie: offer.categorie,
+                              created_at: offer.created_at,
+                              num_image: offer.num_image,
+                              agenceName: offer.agenceName,
+                              email: offer.email,
+                              phone: offer.phone,
+                               willaya: offer.willaya,
+                            baladiya: offer.baladiya
+                              
+                            )));
               },
               child: Container(
                   height: ScreenHeight * 0.42,
@@ -144,7 +150,7 @@ class _favoriteState extends State<favorite> {
                                       itemCount: offer.num_image,
                                       itemBuilder: (context, index, realindex) {
                                         final urlimage =
-                                            'http://192.168.1.62:8000/storage/images/' +
+                                            'http://192.168.126.32:8000/storage/images/' +
                                                 offer.id.toString() +
                                                 '_' +
                                                 index.toString() +
@@ -195,28 +201,11 @@ class _favoriteState extends State<favorite> {
                                                   fontSize: 11,
                                                 ),
                                               ),
-                                              SizedBox(width: ScrrenWidth*0.02,),
-                                              FutureBuilder(
-                                          future: getvues(offer.id),
-                                          builder: (context, snapshot) {
-                                            var vues = snapshot.data;
-
-                                            if (snapshot.hasData) {
-                                              return Row(
-
-                                                
-                                                children: [
-                                                  Icon(Icons.remove_red_eye,size: 12,color: Colors.black54,),
-                                                  Text(vues.toString(),style: TextStyle(
-                                                  color: Colors.black54,
-                                                  fontSize: 11,
-                                                ),),
-                                                ],
-                                              );
-                                            } else
-                                              return Text('');
-                                          },
-                                        )
+                                              SizedBox(
+                                                width: ScrrenWidth * 0.02,
+                                              ),
+                                              vues(offer.id),
+                                              
                                             ],
                                           ),
                                           Padding(
@@ -365,11 +354,46 @@ class _favoriteState extends State<favorite> {
 
     return response;
   }
+
   Future getvues(id) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var token = await preferences.getString('token');
     var response = await offerApi().getoffervues('getvues/${id}', token);
-    print(response);
-    return response;
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      return '';
+    }
+  }
+  Widget vues(id) {
+    return FutureBuilder(
+      future: getvues(id),
+      builder: (context, snapshot) {
+        var vues = snapshot.data;
+        print(vues);
+
+        if (snapshot.hasData) {
+          return Row(
+            children: [
+              Icon(
+                Icons.remove_red_eye,
+                size: 12,
+                color: Colors.black54,
+              ),
+              Text(
+                vues.toString(),
+                style: TextStyle(
+                  color: Colors.black54,
+                  fontSize: 11,
+                ),
+              ),
+            ],
+          );
+        } else if (snapshot.hasError) {
+          return Container();
+        }
+        return Container();
+      },
+    );
   }
 }

@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:projet_fin_etud_l3_flutter/agence/changepassword.dart';
 
 class offerApi {
-  String baseUrl = 'http://192.168.1.62:8000/api/';
+  String baseUrl = 'http://192.168.126.32:8000/api/';
   getofferdata(url, token) async {
     String fullurl = baseUrl + url;
     var response = await http.get(Uri.parse(fullurl), headers: {
@@ -13,7 +13,6 @@ class offerApi {
     });
     return response;
   }
-  
 
   getcategory(url, token) async {
     String fullurl = baseUrl + url;
@@ -26,7 +25,7 @@ class offerApi {
 
   Future<String> uploadImage(filepath) async {
     var request = http.MultipartRequest(
-        'POST', Uri.parse('http://192.168.1.62:8000/api/upload'));
+        'POST', Uri.parse('http://192.168.126.32:8000/api/upload'));
     request.files.add(await http.MultipartFile.fromPath('imageFile', filepath));
     var res = await request.send();
     return 'ok';
@@ -67,8 +66,17 @@ class offerApi {
     request.fields['prix'] = data['prix'];
     request.fields['surface'] = data['surface'];
     request.fields['categorie'] = data['categorie'];
+    request.fields['latitude'] = data['latitude'];
+    request.fields['longitude'] = data['longitude'];
+    request.fields['willaya'] = data['willaya'];
+    request.fields['baladiya'] = data['baladiya'];
+    request.fields['bathroom'] = data['bathroom'].toString();
+    request.fields['garage'] = data['garage'].toString();
+    request.fields['bedroom'] = data['bedroom'].toString();
+    request.fields['livingroom'] = data['livingroom'].toString();
+    request.fields['kitchen'] = data['kitchen'].toString();
     var response = await request.send();
-    print(response.statusCode);
+
     return response;
   }
 
@@ -108,6 +116,7 @@ class offerApi {
     });
     return response;
   }
+
   getoffercomment(url, token) async {
     String fullurl = baseUrl + url;
     var response = await http.get(Uri.parse(fullurl), headers: {
@@ -116,39 +125,46 @@ class offerApi {
     });
     return response;
   }
+
   getoffervues(url, token) async {
     String fullurl = baseUrl + url;
     var response = await http.get(Uri.parse(fullurl), headers: {
       'Authorization': 'Bearer $token',
       'Accept': 'application/json',
     });
-    return jsonDecode(response.body);
+    return response;
   }
-   addvue(url, token) async {
+
+  addvue(url, token) async {
     String fullurl = baseUrl + url;
     var response = await http.post(Uri.parse(fullurl), headers: {
       'Authorization': 'Bearer $token',
       'Accept': 'application/json',
     });
-    
   }
-   deleteoffer( token,url) async {
+
+  deleteoffer(token, url) async {
     String fullurl = baseUrl + url;
     var response = await http.delete(Uri.parse(fullurl), headers: {
       'Authorization': 'Bearer $token',
       'Accept': 'application/json',
     });
-    
   }
-     Future<http.Response> getLocationData(String text) async {
-    http.Response response;
+  //    Future<http.Response> getLocationData(String text) async {
+  //   http.Response response;
 
-      response = await http.get(
-        Uri.parse("http://192.168.1.62:8000/api/v1/config/place-api-autocomplete?search_text=$text"),
-          headers: {"Content-Type": "application/json"},);
+  //     response = await http.get(
+  //       Uri.parse("http://192.168.126.32:8000/api/v1/config/place-api-autocomplete?search_text=$text"),
+  //         headers: {"Content-Type": "application/json"},);
 
-    print(jsonDecode(response.body));
+  //   return response;
+  // }
+  searchdata(url, token) async {
+    String fullurl = baseUrl + url;
+    var response = await http.get(Uri.parse(fullurl), headers: {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    });
     return response;
   }
-  
 }

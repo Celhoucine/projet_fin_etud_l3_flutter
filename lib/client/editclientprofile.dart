@@ -278,7 +278,7 @@ class _editclientprofileState extends State<editclientprofile> {
                         formstate!.save();
                         editeprofile();
                       } else {
-                        print('ok');
+                        
                       }
                     },
                     child: Center(
@@ -466,7 +466,7 @@ class _editclientprofileState extends State<editclientprofile> {
           .toList();
     });
 
-    print(info);
+ 
   }
 
   editeprofile() async {

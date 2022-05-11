@@ -72,7 +72,7 @@ class _changepasswordState extends State<changepassword> {
                     onSaved: (v) {
                       setState(() {
                         data['old_password'] = _CurrentPasswordController.text;
-                        print(data);
+                    
                       });
                     },
                   ),
@@ -139,7 +139,7 @@ class _changepasswordState extends State<changepassword> {
                   width: ScrrenWidth * 0.35,
                   child: NeumorphicButton(
                     onPressed: () {
-                      print(data);
+                      
                       if (FormData!.validate()) {
                         FormData!.save();
                         changepassword();

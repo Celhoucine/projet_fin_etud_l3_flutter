@@ -15,6 +15,8 @@ class offer_detail_agency extends StatefulWidget {
   String created_at;
   int num_image;
   String agenceName;
+     String longitude;
+  String latitude;
   offer_detail_agency({
     Key? key,
     required this.id,
@@ -25,6 +27,9 @@ class offer_detail_agency extends StatefulWidget {
     required this.created_at,
     required this.num_image,
     required this.agenceName,
+      required this.latitude,
+    required this.longitude
+   
   }) : super(key: key);
 
   @override
@@ -78,7 +83,7 @@ class _offer_detail_agencyState extends State<offer_detail_agency> {
                                           itemBuilder:
                                               (context, index, realindex) {
                                             final urlimage =
-                                                'http://192.168.1.62:8000/storage/images/' +
+                                                'http://192.168.126.32:8000/storage/images/' +
                                                     widget.id.toString() +
                                                     '_' +
                                                     index.toString() +
@@ -531,7 +536,7 @@ class _offer_detail_agencyState extends State<offer_detail_agency> {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var token = await preferences.getString('token');
     var response = await offerApi().getoffercomment('getcomments/${id}', token);
-    print(jsonDecode(response.body));
+    
     return jsonDecode(response.body);
   }
 }
