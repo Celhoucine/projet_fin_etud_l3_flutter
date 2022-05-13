@@ -194,7 +194,7 @@ class _searchresultsState extends State<searchresults> {
                                       itemCount: offer.num_image,
                                       itemBuilder: (context, index, realindex) {
                                         final urlimage =
-                                            'http://192.168.126.32:8000/storage/images/' +
+                                            'http://192.168.1.62:8000/storage/images/' +
                                                 offer.id.toString() +
                                                 '_' +
                                                 index.toString() +

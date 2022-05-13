@@ -147,7 +147,7 @@ class _accueilState extends State<accueil> {
                       itemCount: offer.num_image,
                       itemBuilder: (context, index, realindex) {
                         final urlimage =
-                            'http://192.168.126.32:8000/storage/images/' +
+                            'http://192.168.1.62:8000/storage/images/' +
                                 offer.id.toString() +
                                 '_' +
                                 index.toString() +
@@ -209,15 +209,25 @@ class _accueilState extends State<accueil> {
                           SizedBox(
                             height: ScreenHeight * 0.007,
                           ),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.place_outlined,
-                                size: ScrrenWidth * 0.035,
-                                color: Color.fromRGBO(84, 140, 129, 0.5),
-                              ),
-                              Text(' '+offer.willaya+','+offer.baladiya)
-                            ],
+                          Container(
+                            width: ScrrenWidth*0.55,
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.place_outlined,
+                                  size: ScrrenWidth * 0.035,
+                                  color: Color.fromRGBO(84, 140, 129, 0.5),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    ' ' + offer.willaya + ',' + offer.baladiya,
+                                      maxLines: 1,                         
+                                    softWrap: false,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                           SizedBox(
                             height: ScreenHeight * 0.008,
@@ -299,7 +309,7 @@ class _accueilState extends State<accueil> {
   places(lat, long) async {
     var location = {};
     List<Placemark> placemarks =
-        await placemarkFromCoordinates(lat, long,localeIdentifier: 'en');
+        await placemarkFromCoordinates(lat, long, localeIdentifier: 'en');
     print(placemarks[0]);
     location['Locality'] = placemarks[0].locality;
     location['wilaya'] = placemarks[0].administrativeArea;

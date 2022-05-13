@@ -26,21 +26,20 @@ class _postaddState extends State<postadd> {
   @override
   void initState() {
     _loadCategories();
-    getcurrentPosition();
-    var _value = 1;
 
     super.initState();
   }
 
   @override
-  String? dropdownValue;
+  // String? dropdownValue;
   Set<Marker> mymarker = {
     Marker(
-        markerId: MarkerId('1'),
-        visible: true,
-        position: LatLng(28.033886, 1.659626))
+      markerId: MarkerId('1'),
+      visible: true,
+      position: LatLng(28.033886, 1.659626),
+    )
   };
-  double _value = 1;
+  GoogleMapController? mapController;
   late Position cl;
   var lat;
   var long;
@@ -55,14 +54,17 @@ class _postaddState extends State<postadd> {
     'surface': '',
     'prix': '',
     'categorie': '1',
-    'longitude': '',
-    'latitude': '',
+    'longitude': '1.659626',
+    'latitude': '28.033886',
+    'willaya': '',
+    'baladiya': '',
     'bathroom': 0,
     'garage': 0,
     'bedroom': 0,
     'livingroom': 0,
     'kitchen': 0,
   };
+
   List images_path = [];
   int garage = 0;
   int bathroom = 0;
@@ -151,33 +153,33 @@ class _postaddState extends State<postadd> {
                         value: category_id,
                       ),
                     ),
-                    SizedBox(
-                      width: ScreenWidth * 0.05,
-                    ),
-                    Text('F : '),
-                    DropdownButton<String>(
-                      elevation: 16,
-                      underline: Container(
-                        width: ScreenWidth * 0.28,
-                        height: 1,
-                        color: Colors.black26,
-                      ),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          dropdownValue = newValue!;
-                          print(newValue);
-                        });
-                      },
-                      hint: Text('Choose'),
-                      value: dropdownValue,
-                      items: <String>['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7']
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    )
+                    // SizedBox(
+                    //   width: ScreenWidth * 0.05,
+                    // ),
+                    // Text('F : '),
+                    // DropdownButton<String>(
+                    //   elevation: 16,
+                    //   underline: Container(
+                    //     width: ScreenWidth * 0.28,
+                    //     height: 1,
+                    //     color: Colors.black26,
+                    //   ),
+                    //   onChanged: (String? newValue) {
+                    //     setState(() {
+                    //       dropdownValue = newValue!;
+                    //       print(newValue);
+                    //     });
+                    //   },
+                    //   hint: Text('Choose'),
+                    //   value: dropdownValue,
+                    //   items: <String>['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7']
+                    //       .map<DropdownMenuItem<String>>((String value) {
+                    //     return DropdownMenuItem<String>(
+                    //       value: value,
+                    //       child: Text(value),
+                    //     );
+                    //   }).toList(),
+                    // )
                   ],
                 ),
               ),
@@ -441,7 +443,10 @@ class _postaddState extends State<postadd> {
                               Marker(
                                   markerId: MarkerId('1'),
                                   visible: true,
-                                  position: LatLng(28.033886, 1.659626))
+                                  position: LatLng(
+                                      double.parse(data['latitude'].toString()),
+                                      double.parse(
+                                          data['longitude'].toString())))
                             };
                           });
                           pageController.nextPage(
@@ -579,7 +584,11 @@ class _postaddState extends State<postadd> {
                                   Marker(
                                       markerId: MarkerId('1'),
                                       visible: true,
-                                      position: LatLng(28.033886, 1.659626))
+                                      position: LatLng(
+                                          double.parse(
+                                              data['latitude'].toString()),
+                                          double.parse(
+                                              data['longitude'].toString())))
                                 };
                               });
                             },
@@ -648,37 +657,93 @@ class _postaddState extends State<postadd> {
               child: Container(
                 width: ScreenWidth,
                 height: ScreenHeight * 0.55,
-                child: GoogleMap(
-                  markers: mymarker,
-                  initialCameraPosition: CameraPosition(
-                    target: LatLng(28.033886, 1.659626),
-                    zoom: 5,
-                  ),
-                  rotateGesturesEnabled: false,
-                  zoomControlsEnabled: false,
-                  myLocationEnabled: true,
-                  myLocationButtonEnabled: true,
-                  onLongPress: (latlng) async {
-                    mymarker.remove(Marker(markerId: MarkerId('1')));
-                    mymarker
-                        .add(Marker(markerId: MarkerId('1'), position: latlng));
-                    List<Placemark> placemarks = await placemarkFromCoordinates(
-                        latlng.latitude, latlng.longitude,
-                        localeIdentifier: 'en');
-                    setState(() {
-                      data['latitude'] = latlng.latitude.toString();
-                      data['longitude'] = latlng.longitude.toString();
-                      data['willaya'] =
-                          placemarks[0].administrativeArea.toString();
-                      data['baladiya'] = placemarks[0].locality.toString();
-                      print(data);
-                    });
-                  },
+                child: Stack(
+                  children: [
+                    GoogleMap(
+                      markers: mymarker,
+                      initialCameraPosition: CameraPosition(
+                        target: LatLng(28.033886, 1.659626),
+                        zoom: 5,
+                      ),
+                      onMapCreated: (GoogleMapController controller) {
+                        mapController = controller;
+                      },
+                      rotateGesturesEnabled: false,
+                      zoomControlsEnabled: false,
+                      onLongPress: (latlng) async {
+                        mymarker.remove(Marker(markerId: MarkerId('1')));
+                        mymarker.add(Marker(
+                          markerId: MarkerId('1'),
+                          position: latlng,
+                        ));
+                        List<Placemark> placemarks =
+                            await placemarkFromCoordinates(
+                                latlng.latitude, latlng.longitude,
+                                localeIdentifier: 'en');
+                        setState(() {
+                          data['latitude'] = latlng.latitude.toString();
+                          data['longitude'] = latlng.longitude.toString();
+                          data['willaya'] =
+                              placemarks[0].administrativeArea.toString();
+                          data['baladiya'] = placemarks[0].locality.toString();
+                        });
+                      },
+                    ),
+                    Positioned(
+                        left: ScreenWidth * 0.7,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.white60,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(25))),
+                              child: IconButton(
+                                  onPressed: () {
+                                    getcurrentPosition();
+                                  },
+                                  icon: Icon(Icons.gps_fixed))),
+                        ))
+                  ],
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(30),
+              padding: const EdgeInsets.all(20),
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    border: Border.all(
+                        width: 0.5, color: Color.fromRGBO(84, 140, 129, 1)),
+                    borderRadius: BorderRadius.all(Radius.circular(25))),
+                width: ScreenWidth * 0.85,
+                height: ScreenHeight * 0.05,
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 0, 5, 0),
+                      child: Icon(
+                        Icons.place_outlined,
+                        color: Color.fromRGBO(84, 140, 129, 1),
+                      ),
+                    ),
+                    Text('Location :'),
+                    Expanded(
+                      child: Text(
+                        data['willaya'].toString() +
+                            ',' +
+                            data['baladiya'].toString(),
+                        maxLines: 1,
+                        softWrap: false,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20),
               child: Container(
                 width: ScreenWidth * 0.85,
                 child: Row(
@@ -716,7 +781,7 @@ class _postaddState extends State<postadd> {
                           color: Color.fromRGBO(84, 140, 129, 1),
                           shape: NeumorphicShape.convex,
                           depth: 10),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -826,11 +891,25 @@ class _postaddState extends State<postadd> {
   Future<void> getcurrentPosition() async {
     cl = await Geolocator.getCurrentPosition().then((value) => value);
 
-    setState(() {
+    setState(() async {
       lat = cl.latitude;
       long = cl.longitude;
-      print('lat' + lat.toString());
-      print('long' + long.toString());
+
+      mymarker.remove(Marker(markerId: MarkerId('1')));
+      mymarker.add(Marker(
+        markerId: MarkerId('1'),
+        position: LatLng(lat, long),
+      ));
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(lat, long, localeIdentifier: 'en');
+      mapController!.animateCamera(CameraUpdate.newCameraPosition(
+          CameraPosition(target: LatLng(lat, long), zoom: 20)));
+      setState(() {
+        data['latitude'] = lat.toString();
+        data['longitude'] = long.toString();
+        data['willaya'] = placemarks[0].administrativeArea.toString();
+        data['baladiya'] = placemarks[0].locality.toString();
+      });
     });
   }
 }

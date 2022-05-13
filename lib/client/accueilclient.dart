@@ -24,7 +24,8 @@ class _accueilclientState extends State<accueilclient> {
   @override
   void initState() {
     _loadCategories();
-
+    getOffer(sort);
+    setIconMarke();
     super.initState();
   }
 
@@ -48,6 +49,10 @@ class _accueilclientState extends State<accueilclient> {
     'prix': '',
     'categorie': '1',
   };
+  GoogleMapController? mapController;
+  Set<Marker> offersmarker = {};
+  late BitmapDescriptor iconMarke;
+
   final ListviewController = ScrollController();
 
   final DateFormat formatter = DateFormat('dd/MM/yyyy HH:mm');
@@ -181,13 +186,8 @@ class _accueilclientState extends State<accueilclient> {
                     ? Container(width: ScrrenWidth * 0.95, child: OffersList())
                     : Container(
                         width: ScrrenWidth,
-                        height: ScreenHeight * 0.5,
-                        child: GoogleMap(
-                            initialCameraPosition: CameraPosition(
-                          target: LatLng(37.42796133580664, -122.085749655962),
-                          zoom: 14.4746,
-                        )),
-                      )),
+                        height: ScreenHeight * 0.76,
+                        child: maps())),
           ],
         ),
       ),
@@ -209,9 +209,7 @@ class _accueilclientState extends State<accueilclient> {
               itemBuilder: (context, index) {
                 final offer = offers[index];
 
-                return Offer(
-                  offer,
-                );
+                return Offer(offer);
               },
             );
           } else if (snapshot.hasError) {
@@ -256,8 +254,7 @@ class _accueilclientState extends State<accueilclient> {
                             email: offer.email,
                             phone: offer.phone,
                             willaya: offer.willaya,
-                            baladiya: offer.baladiya
-                            )));
+                            baladiya: offer.baladiya)));
               },
               child: Container(
                   height: ScreenHeight * 0.42,
@@ -299,7 +296,7 @@ class _accueilclientState extends State<accueilclient> {
                                       itemCount: offer.num_image,
                                       itemBuilder: (context, index, realindex) {
                                         final urlimage =
-                                            'http://192.168.126.32:8000/storage/images/' +
+                                            'http://192.168.1.62:8000/storage/images/' +
                                                 offer.id.toString() +
                                                 '_' +
                                                 index.toString() +
@@ -369,16 +366,30 @@ class _accueilclientState extends State<accueilclient> {
                                           SizedBox(
                                             height: ScreenHeight * 0.007,
                                           ),
-                                          Row(
-                                            children: [
-                                              Icon(
-                                                Icons.place_outlined,
-                                                size: ScrrenWidth * 0.035,
-                                                color: Color.fromRGBO(
-                                                    84, 140, 129, 0.5),
-                                              ),
-                                          Text(' '+offer.willaya+','+offer.baladiya)
-                                            ],
+                                          Container(
+                                            width: ScrrenWidth * 0.55,
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.place_outlined,
+                                                  size: ScrrenWidth * 0.035,
+                                                  color: Color.fromRGBO(
+                                                      84, 140, 129, 0.5),
+                                                ),
+                                                Expanded(
+                                                  child: Text(
+                                                    ' ' +
+                                                        offer.willaya +
+                                                        ',' +
+                                                        offer.baladiya,
+                                                    maxLines: 1,
+                                                    softWrap: false,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                )
+                                              ],
+                                            ),
                                           ),
                                           SizedBox(
                                             height: ScreenHeight * 0.007,
@@ -723,5 +734,208 @@ class _accueilclientState extends State<accueilclient> {
         return Container();
       },
     );
+  }
+
+  Widget maps() {
+    return FutureBuilder<List<OfferInfo>>(
+        future: getOffer(sort),
+        builder: ((context, snapshot) {
+          if (snapshot.hasData) {
+            final offers = snapshot.data;
+            for (var i = 0; i < offers!.length; i++) {
+              OfferInfo offer = offers[i];
+              offersmarker.add(Marker(
+                icon: iconMarke,
+                markerId: MarkerId(offer.id.toString()),
+                position:
+                    LatLng(double.parse(offer.lat), double.parse(offer.long)),
+                onTap: () => showModalBottomSheet(
+                    context: context,
+                    builder: (context) {
+                              mapController!.animateCamera(CameraUpdate.newCameraPosition(
+          CameraPosition(target: LatLng(double.parse(offer.lat),double.parse(offer.long) ), zoom: 10)));
+                      return
+                      BuildSheetMap(offer);
+                    }),
+              ));
+            }
+            return GoogleMap(
+              onMapCreated: (GoogleMapController controller) {
+                mapController = controller;
+              },
+              markers: offersmarker,
+              initialCameraPosition: CameraPosition(
+                target: LatLng(28.033886, 1.659626),
+                zoom: 5,
+              ),
+            );
+          } else if (snapshot.hasError) {
+            return Text('error on server please come back later',
+                style: TextStyle(fontSize: 24));
+          }
+          return Center(child: const CircularProgressIndicator());
+        }));
+  }
+
+  Widget BuildSheetMap(OfferInfo offer) {
+    final ScrrenWidth = MediaQuery.of(context).size.width;
+    final ScreenHeight = MediaQuery.of(context).size.height;
+    return GestureDetector(
+      onTap: () {
+        addvue(offer.id);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => detailoffer(
+                    id: offer.id,
+                    description: offer.description,
+                    prix: offer.prix,
+                    surface: offer.surface,
+                    categorie: offer.categorie,
+                    created_at: offer.created_at,
+                    num_image: offer.num_image,
+                    agenceName: offer.agenceName,
+                    email: offer.email,
+                    phone: offer.phone,
+                    willaya: offer.willaya,
+                    baladiya: offer.baladiya)));
+      },
+      child: Container(
+        height: ScreenHeight * 0.35,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(15)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: ScreenHeight * 0.20,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(
+                          'http://192.168.1.62:8000/storage/images/' +
+                              offer.id.toString() +
+                              '_' +
+                              0.toString() +
+                              '.png'))),
+            ),
+            Expanded(
+                child: Padding(
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(5, 1, 0, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              formatter
+                                  .format(DateTime.tryParse(offer.created_at)
+                                      as DateTime)
+                                  .toString(),
+                              style: TextStyle(
+                                color: Colors.black54,
+                                fontSize: 11,
+                              ),
+                            ),
+                            SizedBox(
+                              width: ScrrenWidth * 0.02,
+                            ),
+                            vues(offer.id),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(2, 4, 0, 0),
+                          child: Text(
+                            offer.categorie,
+                            style: TextStyle(
+                                fontSize: 26, fontWeight: FontWeight.w400),
+                          ),
+                        ),
+                        SizedBox(
+                          height: ScreenHeight * 0.007,
+                        ),
+                        Container(
+                          width: ScrrenWidth * 0.55,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.place_outlined,
+                                size: ScrrenWidth * 0.035,
+                                color: Color.fromRGBO(84, 140, 129, 0.5),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  ' ' + offer.willaya + ',' + offer.baladiya,
+                                  maxLines: 1,
+                                  softWrap: false,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: ScreenHeight * 0.007,
+                        ),
+                        Row(
+                          children: [
+                            Icon(Icons.person_outline,
+                                size: ScrrenWidth * 0.035,
+                                color: Colors.orangeAccent),
+                            Text(
+                              offer.agenceName,
+                              style: TextStyle(
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: ScreenHeight * 0.008,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(3, 0, 0, 0),
+                          child: Text(offer.surface.toString() + ' m²'),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      SizedBox(
+                        height: ScreenHeight * 0.055,
+                      ),
+                      Text(
+                        offer.prix.toString() + ' DA',
+                        style: TextStyle(
+                            letterSpacing: 1,
+                            fontSize: 22,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w400),
+                      ),
+                      SizedBox(
+                        height: ScreenHeight * 0.04,
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void setIconMarke() async {
+    iconMarke = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(), 'assets/location.png');
   }
 }

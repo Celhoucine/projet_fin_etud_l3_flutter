@@ -15,7 +15,10 @@ class OfferInfo {
   String email;
   String willaya;
   String baladiya;
+  String lat;
+  String long;
 
+  
   OfferInfo({
     required this.id,
     required this.surface,
@@ -28,7 +31,9 @@ class OfferInfo {
     required this.phone,
     required this.email,
     required this.baladiya,
-    required this.willaya
+    required this.willaya,
+    required this.lat,
+    required this.long
   });
   factory OfferInfo.toObject(json) => OfferInfo(
         id: json['id'],
@@ -43,5 +48,7 @@ class OfferInfo {
         email: json['email'],
         baladiya:json['baladiya'],
         willaya: json['willaya'],
+        lat:json['latitude'],
+        long: json['longitude'],
       );
 }

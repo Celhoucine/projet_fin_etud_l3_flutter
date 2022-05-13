@@ -95,20 +95,18 @@ class _favoriteState extends State<favorite> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => detailoffer(
-                              id: offer.id,
-                              description: offer.description,
-                              prix: offer.prix,
-                              surface: offer.surface,
-                              categorie: offer.categorie,
-                              created_at: offer.created_at,
-                              num_image: offer.num_image,
-                              agenceName: offer.agenceName,
-                              email: offer.email,
-                              phone: offer.phone,
-                               willaya: offer.willaya,
-                            baladiya: offer.baladiya
-                              
-                            )));
+                            id: offer.id,
+                            description: offer.description,
+                            prix: offer.prix,
+                            surface: offer.surface,
+                            categorie: offer.categorie,
+                            created_at: offer.created_at,
+                            num_image: offer.num_image,
+                            agenceName: offer.agenceName,
+                            email: offer.email,
+                            phone: offer.phone,
+                            willaya: offer.willaya,
+                            baladiya: offer.baladiya)));
               },
               child: Container(
                   height: ScreenHeight * 0.42,
@@ -150,7 +148,7 @@ class _favoriteState extends State<favorite> {
                                       itemCount: offer.num_image,
                                       itemBuilder: (context, index, realindex) {
                                         final urlimage =
-                                            'http://192.168.126.32:8000/storage/images/' +
+                                            'http://192.168.1.62:8000/storage/images/' +
                                                 offer.id.toString() +
                                                 '_' +
                                                 index.toString() +
@@ -205,7 +203,6 @@ class _favoriteState extends State<favorite> {
                                                 width: ScrrenWidth * 0.02,
                                               ),
                                               vues(offer.id),
-                                              
                                             ],
                                           ),
                                           Padding(
@@ -221,21 +218,30 @@ class _favoriteState extends State<favorite> {
                                           SizedBox(
                                             height: ScreenHeight * 0.007,
                                           ),
-                                          Row(
-                                            children: [
-                                              Icon(
-                                                Icons.place_outlined,
-                                                size: ScrrenWidth * 0.035,
-                                                color: Color.fromRGBO(
-                                                    84, 140, 129, 0.5),
-                                              ),
-                                              Text(
-                                                ' Khenchela',
-                                                style: TextStyle(
-                                                  fontSize: 13,
+                                          Container(
+                                            width: ScrrenWidth * 0.55,
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.place_outlined,
+                                                  size: ScrrenWidth * 0.035,
+                                                  color: Color.fromRGBO(
+                                                      84, 140, 129, 0.5),
                                                 ),
-                                              ),
-                                            ],
+                                                Expanded(
+                                                  child: Text(
+                                                    ' ' +
+                                                        offer.willaya +
+                                                        ',' +
+                                                        offer.baladiya,
+                                                    maxLines: 1,
+                                                    softWrap: false,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                )
+                                              ],
+                                            ),
                                           ),
                                           SizedBox(
                                             height: ScreenHeight * 0.008,
@@ -365,6 +371,7 @@ class _favoriteState extends State<favorite> {
       return '';
     }
   }
+
   Widget vues(id) {
     return FutureBuilder(
       future: getvues(id),

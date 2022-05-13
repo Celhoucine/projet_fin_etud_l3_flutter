@@ -83,7 +83,7 @@ class _offer_detail_agencyState extends State<offer_detail_agency> {
                                           itemBuilder:
                                               (context, index, realindex) {
                                             final urlimage =
-                                                'http://192.168.126.32:8000/storage/images/' +
+                                                'http://192.168.1.62:8000/storage/images/' +
                                                     widget.id.toString() +
                                                     '_' +
                                                     index.toString() +

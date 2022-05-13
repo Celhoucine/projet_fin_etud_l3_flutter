@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:projet_fin_etud_l3_flutter/agence/changepassword.dart';
 
 class offerApi {
-  String baseUrl = 'http://192.168.126.32:8000/api/';
+  String baseUrl = 'http://192.168.1.62:8000/api/';
   getofferdata(url, token) async {
     String fullurl = baseUrl + url;
     var response = await http.get(Uri.parse(fullurl), headers: {
@@ -25,7 +25,7 @@ class offerApi {
 
   Future<String> uploadImage(filepath) async {
     var request = http.MultipartRequest(
-        'POST', Uri.parse('http://192.168.126.32:8000/api/upload'));
+        'POST', Uri.parse('http://192.168.1.62:8000/api/upload'));
     request.files.add(await http.MultipartFile.fromPath('imageFile', filepath));
     var res = await request.send();
     return 'ok';
