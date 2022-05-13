@@ -52,6 +52,9 @@ class _accueilclientState extends State<accueilclient> {
   GoogleMapController? mapController;
   Set<Marker> offersmarker = {};
   late BitmapDescriptor iconMarke;
+  late Position cl;
+  var lat;
+  var long;
 
   final ListviewController = ScrollController();
 
@@ -737,6 +740,8 @@ class _accueilclientState extends State<accueilclient> {
   }
 
   Widget maps() {
+    final ScreenWidth = MediaQuery.of(context).size.width;
+    final ScreenHeight = MediaQuery.of(context).size.height;
     return FutureBuilder<List<OfferInfo>>(
         future: getOffer(sort),
         builder: ((context, snapshot) {
@@ -752,22 +757,46 @@ class _accueilclientState extends State<accueilclient> {
                 onTap: () => showModalBottomSheet(
                     context: context,
                     builder: (context) {
-                              mapController!.animateCamera(CameraUpdate.newCameraPosition(
-          CameraPosition(target: LatLng(double.parse(offer.lat),double.parse(offer.long) ), zoom: 10)));
-                      return
-                      BuildSheetMap(offer);
+                      mapController!.animateCamera(
+                          CameraUpdate.newCameraPosition(CameraPosition(
+                              target: LatLng(double.parse(offer.lat),
+                                  double.parse(offer.long)),
+                              zoom: 10)));
+                      return BuildSheetMap(offer);
                     }),
               ));
             }
-            return GoogleMap(
-              onMapCreated: (GoogleMapController controller) {
-                mapController = controller;
-              },
-              markers: offersmarker,
-              initialCameraPosition: CameraPosition(
-                target: LatLng(28.033886, 1.659626),
-                zoom: 5,
-              ),
+            return Stack(
+              children: [
+                GoogleMap(
+                  
+                  onMapCreated: (GoogleMapController controller) {
+                    mapController = controller;
+                  },
+                  rotateGesturesEnabled: false,
+                  zoomControlsEnabled: false,
+                  markers: offersmarker,
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(28.033886, 1.659626),
+                    zoom: 5,
+                  ),
+                ),
+                Positioned(
+                    left: ScreenWidth * 0.85,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.white60,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(25))),
+                          child: IconButton(
+                              onPressed: () {
+                                getcurrentPosition();
+                              },
+                              icon: Icon(Icons.gps_fixed))),
+                    ))
+              ],
             );
           } else if (snapshot.hasError) {
             return Text('error on server please come back later',
@@ -937,5 +966,23 @@ class _accueilclientState extends State<accueilclient> {
   void setIconMarke() async {
     iconMarke = await BitmapDescriptor.fromAssetImage(
         ImageConfiguration(), 'assets/location.png');
+  }
+
+  Future<void> getcurrentPosition() async {
+    cl = await Geolocator.getCurrentPosition().then((value) => value);
+      lat = cl.latitude;
+      long = cl.longitude;
+      
+    setState(()  {
+      
+offersmarker.add(Marker(
+        markerId: MarkerId('0'),
+        position: LatLng(lat, long),
+      ));
+      
+      mapController!.animateCamera(CameraUpdate.newCameraPosition(
+          CameraPosition(target: LatLng(lat, long), zoom: 20)));
+      
+    });
   }
 }
