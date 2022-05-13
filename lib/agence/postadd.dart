@@ -658,7 +658,7 @@ class _postaddState extends State<postadd> {
                   zoomControlsEnabled: false,
                   myLocationEnabled: true,
                   myLocationButtonEnabled: true,
-                  onTap: (latlng) async {
+                  onLongPress: (latlng) async {
                     mymarker.remove(Marker(markerId: MarkerId('1')));
                     mymarker
                         .add(Marker(markerId: MarkerId('1'), position: latlng));
