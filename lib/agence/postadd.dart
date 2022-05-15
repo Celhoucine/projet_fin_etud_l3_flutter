@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -180,6 +179,25 @@ class _postaddState extends State<postadd> {
                     //     );
                     //   }).toList(),
                     // )
+                    SizedBox(
+                      width: ScreenWidth * 0.05,
+                    ),
+                    Text('Surface :'),
+                    Container(
+                      width: ScreenWidth * 0.28,
+                      child: TextFormField(
+                        onChanged: (value) {
+                          setState(() {
+                            data['surface'] = value;
+                          });
+                        },
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          isDense: true,
+                          suffix: Text('m²'),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -206,25 +224,6 @@ class _postaddState extends State<postadd> {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: ScreenWidth * 0.05,
-                    ),
-                    Text('Surface :'),
-                    Container(
-                      width: ScreenWidth * 0.28,
-                      child: TextFormField(
-                        onChanged: (value) {
-                          setState(() {
-                            data['surface'] = value;
-                          });
-                        },
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          isDense: true,
-                          suffix: Text('m²'),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -233,9 +232,9 @@ class _postaddState extends State<postadd> {
                   SizedBox(
                     width: ScreenWidth * 0.080,
                   ),
-                  Icon(Icons.kitchen),
+                  Image.asset('assets/kitchen.png'),
                   Container(
-                      width: ScreenWidth * 0.3, child: Text('Kitchen : ')),
+                      width: ScreenWidth * 0.3, child: Text(' Kitchen : ')),
                   IconButton(
                       onPressed: () {
                         if (kitchen > 0) {
@@ -268,9 +267,9 @@ class _postaddState extends State<postadd> {
                   SizedBox(
                     width: ScreenWidth * 0.080,
                   ),
-                  Icon(Icons.bathroom),
+                  Image.asset('assets/toilets.png'),
                   Container(
-                      width: ScreenWidth * 0.3, child: Text('bathroom : ')),
+                      width: ScreenWidth * 0.3, child: Text(' Bathroom : ')),
                   IconButton(
                       onPressed: () {
                         if (bathroom > 0) {
@@ -303,9 +302,9 @@ class _postaddState extends State<postadd> {
                   SizedBox(
                     width: ScreenWidth * 0.080,
                   ),
-                  Icon(Icons.room),
+                  Image.asset('assets/sofa.png'),
                   Container(
-                      width: ScreenWidth * 0.3, child: Text('livingroom : ')),
+                      width: ScreenWidth * 0.3, child: Text(' Livingroom : ')),
                   IconButton(
                       onPressed: () {
                         if (livingroom > 0) {
@@ -338,9 +337,9 @@ class _postaddState extends State<postadd> {
                   SizedBox(
                     width: ScreenWidth * 0.080,
                   ),
-                  Icon(Icons.bedroom_parent_sharp),
+                  Image.asset('assets/sleep.png'),
                   Container(
-                      width: ScreenWidth * 0.3, child: Text('bedroom : ')),
+                      width: ScreenWidth * 0.3, child: Text(' Bedroom : ')),
                   IconButton(
                       onPressed: () {
                         if (bedroom > 0) {
@@ -373,8 +372,9 @@ class _postaddState extends State<postadd> {
                   SizedBox(
                     width: ScreenWidth * 0.080,
                   ),
-                  Icon(Icons.garage),
-                  Container(width: ScreenWidth * 0.3, child: Text('garage : ')),
+                  Image.asset('assets/garage.png'),
+                  Container(
+                      width: ScreenWidth * 0.3, child: Text(' Garage : ')),
                   IconButton(
                       onPressed: () {
                         if (garage > 0) {
@@ -422,9 +422,10 @@ class _postaddState extends State<postadd> {
                       data['description'] = value;
                     });
                   },
+                  maxLength: 300,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
-                      hintText: 'write description',
+                      hintText: 'write at least 4 line',
                       border: OutlineInputBorder()),
                   maxLines: 10,
                 ),
@@ -660,6 +661,7 @@ class _postaddState extends State<postadd> {
                 child: Stack(
                   children: [
                     GoogleMap(
+                      
                       markers: mymarker,
                       initialCameraPosition: CameraPosition(
                         target: LatLng(28.033886, 1.659626),
@@ -900,8 +902,7 @@ class _postaddState extends State<postadd> {
         markerId: MarkerId('1'),
         position: LatLng(lat, long),
       ));
-      List<Placemark> placemarks =
-          await placemarkFromCoordinates(lat, long, localeIdentifier: 'en');
+      List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
       mapController!.animateCamera(CameraUpdate.newCameraPosition(
           CameraPosition(target: LatLng(lat, long), zoom: 20)));
       setState(() {

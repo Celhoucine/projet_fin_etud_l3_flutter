@@ -95,18 +95,26 @@ class _favoriteState extends State<favorite> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => detailoffer(
-                            id: offer.id,
-                            description: offer.description,
-                            prix: offer.prix,
-                            surface: offer.surface,
-                            categorie: offer.categorie,
-                            created_at: offer.created_at,
-                            num_image: offer.num_image,
-                            agenceName: offer.agenceName,
-                            email: offer.email,
-                            phone: offer.phone,
-                            willaya: offer.willaya,
-                            baladiya: offer.baladiya)));
+                              id: offer.id,
+                              description: offer.description,
+                              prix: offer.prix,
+                              surface: offer.surface,
+                              categorie: offer.categorie,
+                              created_at: offer.created_at,
+                              num_image: offer.num_image,
+                              agenceName: offer.agenceName,
+                              email: offer.email,
+                              phone: offer.phone,
+                              willaya: offer.willaya,
+                              baladiya: offer.baladiya,
+                              lat: offer.lat,
+                              long: offer.long,
+                              bathroom: offer.bathroom,
+                              bedroom: offer.bedroom,
+                              livingroom: offer.livingroom,
+                              garage: offer.garage,
+                              kitchen: offer.kitchen,
+                            )));
               },
               child: Container(
                   height: ScreenHeight * 0.42,
@@ -219,15 +227,59 @@ class _favoriteState extends State<favorite> {
                                             height: ScreenHeight * 0.007,
                                           ),
                                           Container(
-                                            width: ScrrenWidth * 0.55,
+                                            width: ScrrenWidth * 0.4,
                                             child: Row(
                                               children: [
-                                                Icon(
-                                                  Icons.place_outlined,
-                                                  size: ScrrenWidth * 0.035,
-                                                  color: Color.fromRGBO(
-                                                      84, 140, 129, 0.5),
-                                                ),
+                                                offer.categorie == 'Villa'
+                                                    ? ImageIcon(
+                                                        AssetImage(
+                                                            'assets/villa.png'),
+                                                        size:
+                                                            ScrrenWidth * 0.035,
+                                                        color: Color.fromRGBO(
+                                                            15, 189, 25, 50),
+                                                      )
+                                                    : offer.categorie == 'Land'
+                                                        ? ImageIcon(
+                                                            AssetImage(
+                                                                'assets/land.png'),
+                                                            size: ScrrenWidth *
+                                                                0.035,
+                                                            color:
+                                                                Color.fromRGBO(
+                                                                    251,
+                                                                    126,
+                                                                    55,
+                                                                    50),
+                                                          )
+                                                        : offer.categorie ==
+                                                                'Single family'
+                                                            ? ImageIcon(
+                                                                AssetImage(
+                                                                    'assets/singleF.png'),
+                                                                size:
+                                                                    ScrrenWidth *
+                                                                        0.035,
+                                                                color: Color
+                                                                    .fromRGBO(
+                                                                        251,
+                                                                        126,
+                                                                        55,
+                                                                        50),
+                                                              )
+                                                            : ImageIcon(
+                                                                AssetImage(
+                                                                    "assets/Apartments.png"),
+                                                                size:
+                                                                    ScrrenWidth *
+                                                                        0.035,
+                                                                color: Color
+                                                                    .fromRGBO(
+                                                                        38,
+                                                                        90,
+                                                                        144,
+                                                                        50),
+                                                              ),
                                                 Expanded(
                                                   child: Text(
                                                     ' ' +
@@ -242,6 +294,22 @@ class _favoriteState extends State<favorite> {
                                                 )
                                               ],
                                             ),
+                                          ),
+                                          SizedBox(
+                                            height: ScreenHeight * 0.007,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Icon(Icons.person_outline,
+                                                  size: ScrrenWidth * 0.035,
+                                                  color: Colors.orangeAccent),
+                                              Text(
+                                                offer.agenceName,
+                                                style: TextStyle(
+                                                  fontSize: 13,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                           SizedBox(
                                             height: ScreenHeight * 0.008,
@@ -268,6 +336,9 @@ class _favoriteState extends State<favorite> {
                                               fontSize: 22,
                                               color: Colors.black,
                                               fontWeight: FontWeight.w400),
+                                        ),
+                                        SizedBox(
+                                          height: ScreenHeight * 0.04,
                                         ),
                                       ],
                                     )

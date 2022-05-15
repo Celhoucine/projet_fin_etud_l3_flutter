@@ -151,7 +151,14 @@ class _searchresultsState extends State<searchresults> {
                               email: offer.email,
                               phone: offer.phone,
                               willaya: offer.willaya,
-                            baladiya: offer.baladiya
+                              baladiya: offer.baladiya,
+                              lat: offer.lat,
+                              long: offer.long,
+                              bathroom: offer.bathroom,
+                              bedroom: offer.bedroom,
+                              livingroom: offer.livingroom,
+                              garage: offer.garage,
+                              kitchen: offer.kitchen,
                             )));
               },
               child: Container(

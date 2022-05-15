@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:projet_fin_etud_l3_flutter/api/offer_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:community_material_icon/community_material_icon.dart';
 
 class detailoffer extends StatefulWidget {
   int id;
@@ -21,7 +21,13 @@ class detailoffer extends StatefulWidget {
   String email;
   String willaya;
   String baladiya;
-
+  String lat;
+  String long;
+  int bathroom;
+  int garage;
+  int bedroom;
+  int livingroom;
+  int kitchen;
   detailoffer(
       {Key? key,
       required this.id,
@@ -35,7 +41,14 @@ class detailoffer extends StatefulWidget {
       required this.email,
       required this.phone,
       required this.baladiya,
-      required this.willaya})
+      required this.willaya,
+      required this.lat,
+      required this.long,
+      required this.bathroom,
+      required this.bedroom,
+      required this.garage,
+      required this.kitchen,
+      required this.livingroom})
       : super(key: key);
 
   @override
@@ -49,6 +62,8 @@ class _detailofferState extends State<detailoffer> {
     super.initState();
   }
 
+  Set<Marker> mymarker = {};
+  late GoogleMapController mapController;
   TextEditingController _addcomment = new TextEditingController();
   final DateFormat formatter = DateFormat('dd/MM/yyyy HH:mm');
   var numberformatter = NumberFormat("#.###");
@@ -68,7 +83,11 @@ class _detailofferState extends State<detailoffer> {
   Widget build(BuildContext context) {
     final ScrrenWidth = MediaQuery.of(context).size.width;
     final ScreenHeight = MediaQuery.of(context).size.height;
-
+    mymarker.add(Marker(
+      markerId: MarkerId('1'),
+      visible: true,
+      position: LatLng(double.parse(widget.lat), double.parse(widget.long)),
+    ));
     return WillPopScope(
       onWillPop: () async {
         Navigator.of(context).pushNamed('home_client');
@@ -305,19 +324,30 @@ class _detailofferState extends State<detailoffer> {
                                                 SizedBox(
                                                   height: ScreenHeight * 0.007,
                                                 ),
-                                                Row(
-                                                  children: [
-                                                    Icon(
-                                                      Icons.place,
-                                                      size: ScrrenWidth * 0.050,
-                                                      color: Color.fromARGB(
-                                                          197, 84, 140, 129),
-                                                    ),
-                                                    Text(' ' +
-                                                        widget.willaya +
-                                                        ',' +
-                                                        widget.baladiya)
-                                                  ],
+                                                Container(
+                                                  width: ScrrenWidth * 0.5,
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons.place,
+                                                        size:
+                                                            ScrrenWidth * 0.050,
+                                                        color: Color.fromARGB(
+                                                            197, 84, 140, 129),
+                                                      ),
+                                                      Expanded(
+                                                        child: Text(
+                                                          widget.willaya +
+                                                              ' ' +
+                                                              widget.baladiya,
+                                                          maxLines: 1,
+                                                          softWrap: false,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                                 SizedBox(
                                                   height: ScreenHeight * 0.007,
@@ -353,7 +383,7 @@ class _detailofferState extends State<detailoffer> {
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.fromLTRB(
-                                            0, 15, 0, 0),
+                                            0, 5, 0, 0),
                                         child: Container(
                                           width: ScrrenWidth * 0.88,
                                           child: Row(
@@ -378,17 +408,6 @@ class _detailofferState extends State<detailoffer> {
                                           width: ScrrenWidth * 0.88,
                                           height: 1,
                                           color: Colors.black12,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            0, 2, 0, 0),
-                                        child: Center(
-                                          child: Container(
-                                            width: ScrrenWidth * 0.88,
-                                            height: 1,
-                                            color: Colors.black12,
-                                          ),
                                         ),
                                       ),
                                     ],
@@ -450,6 +469,160 @@ class _detailofferState extends State<detailoffer> {
                                   )
                                 ],
                               ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                child: Center(
+                                  child: Container(
+                                    width: ScrrenWidth * 0.88,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Property details',
+                                          style: TextStyle(fontSize: 18),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                                child: Center(
+                                  child: Container(
+                                    width: ScrrenWidth * 0.88,
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          CommunityMaterialIcons.sofa_single_outline,
+                                          color:
+                                              Color.fromRGBO(84, 140, 129, 0.7),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10),
+                                          child: Text(
+                                            widget.livingroom.toString() +
+                                                ' ' +
+                                                'Livingrooms',
+                                            style: TextStyle(fontSize: 14.5),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                                child: Center(
+                                  child: Container(
+                                    width: ScrrenWidth * 0.88,
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          CommunityMaterialIcons.bed_outline,
+                                          color:
+                                              Color.fromRGBO(84, 140, 129, 0.7),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10),
+                                          child: Text(
+                                            widget.bedroom.toString() +
+                                                ' ' +
+                                                'bedroom',
+                                            style: TextStyle(fontSize: 14.5),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                                child: Center(
+                                  child: Container(
+                                    width: ScrrenWidth * 0.88,
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          CommunityMaterialIcons.shower,
+                                          color:
+                                              Color.fromRGBO(84, 140, 129, 0.7),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10),
+                                          child: Text(
+                                            widget.bathroom.toString() +
+                                                ' ' +
+                                                'bathroom',
+                                            style: TextStyle(fontSize: 14.5),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                               Padding(
+                                 padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                                 child: Center(
+                                  child: Container(
+                                    width: ScrrenWidth * 0.88,
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          CommunityMaterialIcons.fridge_variant_outline,
+                                          color:
+                                              Color.fromRGBO(84, 140, 129, 0.7),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10),
+                                          child: Text(
+                                            widget.kitchen.toString() +
+                                                ' ' +
+                                                'kitchen',
+                                            style: TextStyle(fontSize: 14.5),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                              ),
+                               ),
+                              Padding(
+                               padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                                child: Center(
+                                  child: Container(
+                                    width: ScrrenWidth * 0.88,
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          CommunityMaterialIcons.garage_variant,
+                                          color:
+                                              Color.fromRGBO(84, 140, 129, 0.7),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10),
+                                          child: Text(
+                                            widget.garage.toString() +
+                                                ' ' +
+                                                'Garages',
+                                            style: TextStyle(fontSize: 14.5),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+
                               Center(
                                 child: Container(
                                   width: ScrrenWidth * 0.88,
@@ -462,7 +635,7 @@ class _detailofferState extends State<detailoffer> {
                                             0, 10, 0, 5),
                                         child: Text(
                                           'Description',
-                                          style: TextStyle(fontSize: 18),
+                                          style: TextStyle(fontSize: 14),
                                         ),
                                       ),
                                       BuildText(widget.description),
@@ -491,6 +664,77 @@ class _detailofferState extends State<detailoffer> {
                                             isreadmore = !isreadmore;
                                           });
                                         },
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 10, 0, 10),
+                                        child: Center(
+                                          child: Container(
+                                            width: ScrrenWidth * 0.88,
+                                            height: 1,
+                                            color: Colors.black12,
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 0, 0, 5),
+                                        child: Text(
+                                          'Property location',
+                                          style: TextStyle(fontSize: 18),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 0, 0, 4),
+                                        child: Container(
+                                          width: ScrrenWidth * 0.88,
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.place,
+                                                size: ScrrenWidth * 0.045,
+                                                color: Color.fromARGB(
+                                                    197, 84, 140, 129),
+                                              ),
+                                              Expanded(
+                                                child: Text(
+                                                  widget.willaya +
+                                                      ' ' +
+                                                      widget.baladiya,
+                                                  style: TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.black54),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 0.1,
+                                              color: Color.fromRGBO(
+                                                  84, 140, 129, 1)),
+                                        ),
+                                        width: ScrrenWidth,
+                                        height: ScreenHeight * 0.20,
+                                        child: GoogleMap(
+                                            onMapCreated: (GoogleMapController
+                                                controller) {
+                                              mapController = controller;
+                                            },
+                                            zoomControlsEnabled: false,
+                                            rotateGesturesEnabled: false,
+                                            initialCameraPosition:
+                                                CameraPosition(
+                                              target: LatLng(
+                                                  double.parse(widget.lat),
+                                                  double.parse(widget.long)),
+                                              zoom: 16,
+                                            ),
+                                            markers: mymarker),
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.fromLTRB(
@@ -564,6 +808,7 @@ class _detailofferState extends State<detailoffer> {
     return Text(
       text,
       maxLines: maxline,
+      style: TextStyle(color: Colors.black54),
     );
   }
 

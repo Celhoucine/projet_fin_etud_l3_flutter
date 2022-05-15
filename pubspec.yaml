@@ -52,7 +52,7 @@ dependencies:
   flutter_google_places: ^0.3.0
   flutter_typeahead: ^3.2.5
   geocoding: ^2.0.4
-  
+  community_material_icon: ^5.9.55
   
 
 dev_dependencies:

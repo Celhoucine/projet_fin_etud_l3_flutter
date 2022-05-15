@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:projet_fin_etud_l3_flutter/api/offer_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,22 +17,39 @@ class offer_detail_agency extends StatefulWidget {
   String created_at;
   int num_image;
   String agenceName;
-     String longitude;
+  String longitude;
   String latitude;
-  offer_detail_agency({
-    Key? key,
-    required this.id,
-    required this.surface,
-    required this.description,
-    required this.prix,
-    required this.categorie,
-    required this.created_at,
-    required this.num_image,
-    required this.agenceName,
+  String willaya;
+  String baladiya;
+  String lat;
+  String long;
+  int bathroom;
+  int garage;
+  int bedroom;
+  int livingroom;
+  int kitchen;
+  offer_detail_agency(
+      {Key? key,
+      required this.id,
+      required this.surface,
+      required this.description,
+      required this.prix,
+      required this.categorie,
+      required this.created_at,
+      required this.num_image,
+      required this.agenceName,
       required this.latitude,
-    required this.longitude
-   
-  }) : super(key: key);
+      required this.longitude,
+      required this.baladiya,
+      required this.willaya,
+      required this.lat,
+      required this.long,
+      required this.bathroom,
+      required this.bedroom,
+      required this.garage,
+      required this.kitchen,
+      required this.livingroom})
+      : super(key: key);
 
   @override
   State<offer_detail_agency> createState() => _offer_detail_agencyState();
@@ -43,11 +62,18 @@ class _offer_detail_agencyState extends State<offer_detail_agency> {
   }
 
   @override
+  Set<Marker> mymarker = {};
+  late GoogleMapController mapController;
   TextEditingController _addcomment = new TextEditingController();
   final DateFormat formatter = DateFormat('dd/MM/yyyy HH:mm');
   var numberformatter = NumberFormat("#.###");
   bool isreadmore = false;
   Widget build(BuildContext context) {
+    mymarker.add(Marker(
+      markerId: MarkerId('1'),
+      visible: true,
+      position: LatLng(double.parse(widget.lat), double.parse(widget.long)),
+    ));
     final ScrrenWidth = MediaQuery.of(context).size.width;
     final ScreenHeight = MediaQuery.of(context).size.height;
     return WillPopScope(
@@ -241,16 +267,28 @@ class _offer_detail_agencyState extends State<offer_detail_agency> {
                                         ),
                                         Row(
                                           children: [
-                                            Icon(
-                                              Icons.place,
-                                              size: ScrrenWidth * 0.050,
-                                              color: Color.fromARGB(
-                                                  197, 84, 140, 129),
-                                            ),
-                                            Text(
-                                              ' Khenchela',
-                                              style: TextStyle(
-                                                fontSize: 13.5,
+                                            Container(
+                                              width: ScrrenWidth * 0.4,
+                                              child: Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.place,
+                                                    size: ScrrenWidth * 0.050,
+                                                    color: Color.fromARGB(
+                                                        197, 84, 140, 129),
+                                                  ),
+                                                  Expanded(
+                                                    child: Text(
+                                                      widget.willaya +
+                                                          ' ' +
+                                                          widget.baladiya,
+                                                      maxLines: 1,
+                                                      softWrap: false,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                           ],
@@ -305,13 +343,6 @@ class _offer_detail_agencyState extends State<offer_detail_agency> {
                                   ),
                                 ),
                               ),
-                              Center(
-                                child: Container(
-                                  width: ScrrenWidth * 0.88,
-                                  height: 1,
-                                  color: Colors.black12,
-                                ),
-                              ),
                               Padding(
                                 padding: const EdgeInsets.fromLTRB(0, 2, 0, 0),
                                 child: Center(
@@ -326,6 +357,147 @@ class _offer_detail_agencyState extends State<offer_detail_agency> {
                           ),
                         ],
                       ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                        child: Center(
+                          child: Container(
+                            width: ScrrenWidth * 0.88,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Property details',
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                        child: Center(
+                          child: Container(
+                            width: ScrrenWidth * 0.88,
+                            child: Row(
+                              children: [
+                                Icon(
+                                  CommunityMaterialIcons.sofa_single_outline,
+                                  color: Color.fromRGBO(84, 140, 129, 0.7),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  child: Text(
+                                    widget.livingroom.toString() +
+                                        ' ' +
+                                        'Livingrooms',
+                                    style: TextStyle(fontSize: 14.5),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                        child: Center(
+                          child: Container(
+                            width: ScrrenWidth * 0.88,
+                            child: Row(
+                              children: [
+                                Icon(
+                                  CommunityMaterialIcons.bed_outline,
+                                  color: Color.fromRGBO(84, 140, 129, 0.7),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  child: Text(
+                                    widget.bedroom.toString() + ' ' + 'bedroom',
+                                    style: TextStyle(fontSize: 14.5),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                        child: Center(
+                          child: Container(
+                            width: ScrrenWidth * 0.88,
+                            child: Row(
+                              children: [
+                                Icon(
+                                  CommunityMaterialIcons.shower,
+                                  color: Color.fromRGBO(84, 140, 129, 0.7),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  child: Text(
+                                    widget.bathroom.toString() +
+                                        ' ' +
+                                        'bathroom',
+                                    style: TextStyle(fontSize: 14.5),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                        child: Center(
+                          child: Container(
+                            width: ScrrenWidth * 0.88,
+                            child: Row(
+                              children: [
+                                Icon(
+                                  CommunityMaterialIcons.fridge_variant_outline,
+                                  color: Color.fromRGBO(84, 140, 129, 0.7),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  child: Text(
+                                    widget.kitchen.toString() + ' ' + 'kitchen',
+                                    style: TextStyle(fontSize: 14.5),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                        child: Center(
+                          child: Container(
+                            width: ScrrenWidth * 0.88,
+                            child: Row(
+                              children: [
+                                Icon(
+                                  CommunityMaterialIcons.garage_variant,
+                                  color: Color.fromRGBO(84, 140, 129, 0.7),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  child: Text(
+                                    widget.garage.toString() + ' ' + 'Garages',
+                                    style: TextStyle(fontSize: 14.5),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                       Center(
                         child: Container(
                           width: ScrrenWidth * 0.88,
@@ -336,7 +508,7 @@ class _offer_detail_agencyState extends State<offer_detail_agency> {
                                 padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
                                 child: Text(
                                   'Description',
-                                  style: TextStyle(fontSize: 18),
+                                  style: TextStyle(fontSize: 14),
                                 ),
                               ),
                               BuildText(widget.description),
@@ -362,6 +534,72 @@ class _offer_detail_agencyState extends State<offer_detail_agency> {
                                     isreadmore = !isreadmore;
                                   });
                                 },
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                child: Center(
+                                  child: Container(
+                                    width: ScrrenWidth * 0.88,
+                                    height: 1,
+                                    color: Colors.black12,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                                child: Text(
+                                  'Property location',
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 4),
+                                child: Container(
+                                  width: ScrrenWidth * 0.88,
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.place,
+                                        size: ScrrenWidth * 0.045,
+                                        color:
+                                            Color.fromARGB(197, 84, 140, 129),
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          widget.willaya +
+                                              ' ' +
+                                              widget.baladiya,
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.black54),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      width: 0.1,
+                                      color: Color.fromRGBO(84, 140, 129, 1)),
+                                ),
+                                width: ScrrenWidth,
+                                height: ScreenHeight * 0.20,
+                                child: GoogleMap(
+                                    onMapCreated:
+                                        (GoogleMapController controller) {
+                                      mapController = controller;
+                                    },
+                                    zoomControlsEnabled: false,
+                                    rotateGesturesEnabled: false,
+                                    initialCameraPosition: CameraPosition(
+                                      target: LatLng(double.parse(widget.lat),
+                                          double.parse(widget.long)),
+                                      zoom: 16,
+                                    ),
+                                    markers: mymarker),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -433,7 +671,7 @@ class _offer_detail_agencyState extends State<offer_detail_agency> {
         future: getcomment(widget.id),
         builder: ((context, AsyncSnapshot snapshot) {
           final comments = snapshot.data;
-     
+
           if (snapshot.hasData) {
             return ListView.builder(
                 itemCount: comments!.length,
@@ -467,7 +705,6 @@ class _offer_detail_agencyState extends State<offer_detail_agency> {
                                   children: [
                                     Row(
                                       children: [
-                                        
                                         Text(comments[index]['lname'] +
                                             ' ' +
                                             comments[index]['fname']),
@@ -513,11 +750,9 @@ class _offer_detail_agencyState extends State<offer_detail_agency> {
           } else if (snapshot.hasError) {
             return Text('${snapshot.error}');
           }
-        
+
           return Center(child: const CircularProgressIndicator());
-        }
-        )
-        );
+        }));
   }
 
   addcomment(data) async {
@@ -536,7 +771,7 @@ class _offer_detail_agencyState extends State<offer_detail_agency> {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var token = await preferences.getString('token');
     var response = await offerApi().getoffercomment('getcomments/${id}', token);
-    
+
     return jsonDecode(response.body);
   }
 }

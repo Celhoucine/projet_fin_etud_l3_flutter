@@ -51,7 +51,11 @@ class _accueilclientState extends State<accueilclient> {
   };
   GoogleMapController? mapController;
   Set<Marker> offersmarker = {};
-  late BitmapDescriptor iconMarke;
+  late BitmapDescriptor iconMarkeA;
+  late BitmapDescriptor iconMarkeV;
+  late BitmapDescriptor iconMarkeS;
+  late BitmapDescriptor iconMarkeP;
+  late BitmapDescriptor iconMarkeSF;
   late Position cl;
   var lat;
   var long;
@@ -216,7 +220,7 @@ class _accueilclientState extends State<accueilclient> {
               },
             );
           } else if (snapshot.hasError) {
-            return Text('error on server please come back later',
+            return Text(snapshot.error.toString(),
                 style: TextStyle(fontSize: 24));
           }
           return Center(child: const CircularProgressIndicator());
@@ -246,18 +250,26 @@ class _accueilclientState extends State<accueilclient> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => detailoffer(
-                            id: offer.id,
-                            description: offer.description,
-                            prix: offer.prix,
-                            surface: offer.surface,
-                            categorie: offer.categorie,
-                            created_at: offer.created_at,
-                            num_image: offer.num_image,
-                            agenceName: offer.agenceName,
-                            email: offer.email,
-                            phone: offer.phone,
-                            willaya: offer.willaya,
-                            baladiya: offer.baladiya)));
+                              id: offer.id,
+                              description: offer.description,
+                              prix: offer.prix,
+                              surface: offer.surface,
+                              categorie: offer.categorie,
+                              created_at: offer.created_at,
+                              num_image: offer.num_image,
+                              agenceName: offer.agenceName,
+                              email: offer.email,
+                              phone: offer.phone,
+                              willaya: offer.willaya,
+                              baladiya: offer.baladiya,
+                              lat: offer.lat,
+                              long: offer.long,
+                              bathroom: offer.bathroom,
+                              bedroom: offer.bedroom,
+                              livingroom: offer.livingroom,
+                              garage: offer.garage,
+                              kitchen: offer.kitchen,
+                            )));
               },
               child: Container(
                   height: ScreenHeight * 0.42,
@@ -370,15 +382,59 @@ class _accueilclientState extends State<accueilclient> {
                                             height: ScreenHeight * 0.007,
                                           ),
                                           Container(
-                                            width: ScrrenWidth * 0.55,
+                                            width: ScrrenWidth * 0.4,
                                             child: Row(
                                               children: [
-                                                Icon(
-                                                  Icons.place_outlined,
-                                                  size: ScrrenWidth * 0.035,
-                                                  color: Color.fromRGBO(
-                                                      84, 140, 129, 0.5),
-                                                ),
+                                                offer.categorie == 'Villa'
+                                                    ? ImageIcon(
+                                                        AssetImage(
+                                                            'assets/villa.png'),
+                                                        size:
+                                                            ScrrenWidth * 0.035,
+                                                        color: Color.fromRGBO(
+                                                            15, 189, 25, 50),
+                                                      )
+                                                    : offer.categorie == 'Land'
+                                                        ? ImageIcon(
+                                                            AssetImage(
+                                                                'assets/land.png'),
+                                                            size: ScrrenWidth *
+                                                                0.035,
+                                                            color:
+                                                                Color.fromRGBO(
+                                                                    251,
+                                                                    126,
+                                                                    55,
+                                                                    50),
+                                                          )
+                                                        : offer.categorie ==
+                                                                'Single family'
+                                                            ? ImageIcon(
+                                                                AssetImage(
+                                                                    'assets/singleF.png'),
+                                                                size:
+                                                                    ScrrenWidth *
+                                                                        0.035,
+                                                                color: Color
+                                                                    .fromRGBO(
+                                                                        251,
+                                                                        126,
+                                                                        55,
+                                                                        50),
+                                                              )
+                                                            : ImageIcon(
+                                                                AssetImage(
+                                                                    "assets/Apartments.png"),
+                                                                size:
+                                                                    ScrrenWidth *
+                                                                        0.035,
+                                                                color: Color
+                                                                    .fromRGBO(
+                                                                        38,
+                                                                        90,
+                                                                        144,
+                                                                        50),
+                                                              ),
                                                 Expanded(
                                                   child: Text(
                                                     ' ' +
@@ -750,7 +806,13 @@ class _accueilclientState extends State<accueilclient> {
             for (var i = 0; i < offers!.length; i++) {
               OfferInfo offer = offers[i];
               offersmarker.add(Marker(
-                icon: iconMarke,
+                icon: offer.categorie == 'Villa'
+                    ? iconMarkeV
+                    : offer.categorie == 'Land'
+                        ? iconMarkeP
+                        : offer.categorie == 'Apartments'
+                            ? iconMarkeA
+                            : iconMarkeSF,
                 markerId: MarkerId(offer.id.toString()),
                 position:
                     LatLng(double.parse(offer.lat), double.parse(offer.long)),
@@ -769,7 +831,7 @@ class _accueilclientState extends State<accueilclient> {
             return Stack(
               children: [
                 GoogleMap(
-                  
+               
                   onMapCreated: (GoogleMapController controller) {
                     mapController = controller;
                   },
@@ -816,21 +878,29 @@ class _accueilclientState extends State<accueilclient> {
             context,
             MaterialPageRoute(
                 builder: (context) => detailoffer(
-                    id: offer.id,
-                    description: offer.description,
-                    prix: offer.prix,
-                    surface: offer.surface,
-                    categorie: offer.categorie,
-                    created_at: offer.created_at,
-                    num_image: offer.num_image,
-                    agenceName: offer.agenceName,
-                    email: offer.email,
-                    phone: offer.phone,
-                    willaya: offer.willaya,
-                    baladiya: offer.baladiya)));
+                      id: offer.id,
+                      description: offer.description,
+                      prix: offer.prix,
+                      surface: offer.surface,
+                      categorie: offer.categorie,
+                      created_at: offer.created_at,
+                      num_image: offer.num_image,
+                      agenceName: offer.agenceName,
+                      email: offer.email,
+                      phone: offer.phone,
+                      willaya: offer.willaya,
+                      baladiya: offer.baladiya,
+                      lat: offer.lat,
+                      long: offer.long,
+                      bathroom: offer.bathroom,
+                      bedroom: offer.bedroom,
+                      livingroom: offer.livingroom,
+                      garage: offer.garage,
+                      kitchen: offer.kitchen,
+                    )));
       },
       child: Container(
-        height: ScreenHeight * 0.35,
+        height: ScreenHeight * 0.36,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(15)),
@@ -891,7 +961,7 @@ class _accueilclientState extends State<accueilclient> {
                           height: ScreenHeight * 0.007,
                         ),
                         Container(
-                          width: ScrrenWidth * 0.55,
+                          width: ScrrenWidth * 0.4,
                           child: Row(
                             children: [
                               Icon(
@@ -911,7 +981,7 @@ class _accueilclientState extends State<accueilclient> {
                           ),
                         ),
                         SizedBox(
-                          height: ScreenHeight * 0.007,
+                          height: ScreenHeight * 0.001,
                         ),
                         Row(
                           children: [
@@ -964,25 +1034,31 @@ class _accueilclientState extends State<accueilclient> {
   }
 
   void setIconMarke() async {
-    iconMarke = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(), 'assets/location.png');
+    iconMarkeA = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(), 'assets/Apartments.png');
+    iconMarkeSF = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(), 'assets/singleF.png');
+    iconMarkeP = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(), 'assets/land.png');
+    iconMarkeS = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(), 'assets/garag.png');
+    iconMarkeV = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(), 'assets/villa.png');
   }
 
   Future<void> getcurrentPosition() async {
     cl = await Geolocator.getCurrentPosition().then((value) => value);
-      lat = cl.latitude;
-      long = cl.longitude;
-      
-    setState(()  {
-      
-offersmarker.add(Marker(
+    lat = cl.latitude;
+    long = cl.longitude;
+
+    setState(() {
+      offersmarker.add(Marker(
         markerId: MarkerId('0'),
         position: LatLng(lat, long),
       ));
-      
+
       mapController!.animateCamera(CameraUpdate.newCameraPosition(
           CameraPosition(target: LatLng(lat, long), zoom: 20)));
-      
     });
   }
 }

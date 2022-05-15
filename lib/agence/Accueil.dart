@@ -112,8 +112,17 @@ class _accueilState extends State<accueil> {
                         created_at: offer.created_at,
                         num_image: offer.num_image,
                         agenceName: offer.agenceName,
-                        longitude: offer.baladiya,
-                        latitude: offer.willaya,
+                        longitude: offer.long,
+                        latitude: offer.lat,
+                        willaya: offer.willaya,
+                        baladiya: offer.baladiya,
+                        lat: offer.lat,
+                        long: offer.long,
+                        bathroom: offer.bathroom,
+                        bedroom: offer.bedroom,
+                        livingroom: offer.livingroom,
+                        garage: offer.garage,
+                        kitchen: offer.kitchen,
                       )));
         },
         child: Container(
@@ -210,7 +219,7 @@ class _accueilState extends State<accueil> {
                             height: ScreenHeight * 0.007,
                           ),
                           Container(
-                            width: ScrrenWidth*0.55,
+                            width: ScrrenWidth * 0.4,
                             child: Row(
                               children: [
                                 Icon(
@@ -221,7 +230,7 @@ class _accueilState extends State<accueil> {
                                 Expanded(
                                   child: Text(
                                     ' ' + offer.willaya + ',' + offer.baladiya,
-                                      maxLines: 1,                         
+                                    maxLines: 1,
                                     softWrap: false,
                                     overflow: TextOverflow.ellipsis,
                                   ),
