@@ -38,7 +38,16 @@ class _loginState extends State<login> {
       prefs.setString('token', info['token']);
       prefs.setString('mode', info['mode']);
       if (info['mode'] == 'agence') {
-        Navigator.of(context).pushNamed('home_agence');
+        var verif = await auth().agenceverifcation('agenceverification', info['token']);
+        var data = jsonDecode(verif.body);
+        if (data[0]['verified'] == 'suspended') {
+          
+           Navigator.of(context).pushNamed('verification');
+          
+        } else {
+          Navigator.of(context).pushNamed('home_agence');
+         }
+        
       } else {
         Navigator.of(context).pushNamed('home_client');
       }

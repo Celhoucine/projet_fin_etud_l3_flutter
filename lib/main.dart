@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:projet_fin_etud_l3_flutter/agence/postadd.dart';
 import 'package:projet_fin_etud_l3_flutter/agence/profileagence.dart';
 import 'package:projet_fin_etud_l3_flutter/agence/success.dart';
 import 'package:projet_fin_etud_l3_flutter/agence/updateoffer.dart';
+import 'package:projet_fin_etud_l3_flutter/agenceverification.dart';
 import 'package:projet_fin_etud_l3_flutter/api/login-register.dart';
 import 'package:projet_fin_etud_l3_flutter/agence/home_agence.dart';
 import 'package:projet_fin_etud_l3_flutter/client/client_edit_profile_success.dart';
@@ -33,16 +35,24 @@ Future<void> main() async {
   preferences = await SharedPreferences.getInstance();
   var token = await preferences.getString('token');
   var mode = await preferences.getString('mode');
+
   if (token == null) {
     _view = login();
   } else {
     var response = await auth().loginwithtoken(token, 'user');
+
     if (response.statusCode == 200) {
       if (mode == 'client') {
         _view = home_client();
       }
       if (mode == 'agence') {
-        _view = home_agence();
+        var verif = await auth().agenceverifcation('agenceverification', token);
+        var data = jsonDecode(verif.body);
+        if (data[0]['verified'] == 'suspended') {
+          _view = verification();
+        } else {
+          _view = home_agence();
+        }
       }
     } else {
       _view = login();
@@ -98,8 +108,8 @@ class _MyAppState extends State<MyApp> with AutomaticKeepAliveClientMixin {
         'profileclientsuccess': (context) => editeclientsuccess(),
         'failed': (context) => failedpage(),
         'failedClient': (context) => failedpageClient(),
-        'updateoffer': (context) => UpdateOffer(),
-        'filtteroffer': (context) => FiltterOffer()
+        'filtteroffer': (context) => FiltterOffer(),
+        'verification':(context) => verification(),
       },
     );
   }

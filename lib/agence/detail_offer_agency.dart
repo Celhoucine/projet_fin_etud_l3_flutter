@@ -5,6 +5,7 @@ import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:projet_fin_etud_l3_flutter/agence/updateoffer.dart';
 import 'package:projet_fin_etud_l3_flutter/api/offer_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,8 +18,7 @@ class offer_detail_agency extends StatefulWidget {
   String created_at;
   int num_image;
   String agenceName;
-  String longitude;
-  String latitude;
+
   String willaya;
   String baladiya;
   String lat;
@@ -38,8 +38,6 @@ class offer_detail_agency extends StatefulWidget {
       required this.created_at,
       required this.num_image,
       required this.agenceName,
-      required this.latitude,
-      required this.longitude,
       required this.baladiya,
       required this.willaya,
       required this.lat,
@@ -171,7 +169,44 @@ class _offer_detail_agencyState extends State<offer_detail_agency> {
                                                 color: Colors.white,
                                               )),
                                           IconButton(
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: ((context) =>
+                                                            UpdateOffer(
+                                                              id: widget.id,
+                                                              description: widget
+                                                                  .description,
+                                                              prix: widget.prix,
+                                                              surface: widget
+                                                                  .surface,
+                                                              categorie: widget
+                                                                  .categorie,
+                                                              created_at: widget
+                                                                  .created_at,
+                                                              num_image: widget
+                                                                  .num_image,
+                                                              agenceName: widget
+                                                                  .agenceName,
+                                                              willaya: widget
+                                                                  .willaya,
+                                                              baladiya: widget
+                                                                  .baladiya,
+                                                              lat: widget.lat,
+                                                              long: widget.long,
+                                                              bathroom: widget
+                                                                  .bathroom,
+                                                              bedroom: widget
+                                                                  .bedroom,
+                                                              livingroom: widget
+                                                                  .livingroom,
+                                                              garage:
+                                                                  widget.garage,
+                                                              kitchen: widget
+                                                                  .kitchen,
+                                                            ))));
+                                              },
                                               icon: Icon(
                                                 Icons.edit,
                                                 color: Colors.white,

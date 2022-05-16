@@ -54,4 +54,12 @@ class auth {
       'Content-Type': 'application/json',
     };
   }
+  agenceverifcation(url,token) async {
+      String fullurl = baseUrl + url;
+    var response = await http.get(Uri.parse(fullurl), headers: {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    });
+    return response;
+  }
 }

@@ -53,7 +53,7 @@ class _AgencyState extends State<Agency> {
       final prefs = await SharedPreferences.getInstance();
       prefs.setString('token', info['token']);
       prefs.setString('mode', 'agence');
-      Navigator.of(context).pushNamed('home_agence');
+      Navigator.of(context).pushNamed('verification');
     } else {
       showSnackBar(context);
     }

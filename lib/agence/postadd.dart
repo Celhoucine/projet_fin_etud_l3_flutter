@@ -89,12 +89,6 @@ class _postaddState extends State<postadd> {
   Widget FormOfAddPost() {
     final ScreenWidth = MediaQuery.of(context).size.width;
     final ScreenHeight = MediaQuery.of(context).size.height;
-
-    TextEditingController Type = new TextEditingController();
-    TextEditingController Prix = new TextEditingController();
-    TextEditingController Description = new TextEditingController();
-    TextEditingController Surface = new TextEditingController();
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -152,33 +146,6 @@ class _postaddState extends State<postadd> {
                         value: category_id,
                       ),
                     ),
-                    // SizedBox(
-                    //   width: ScreenWidth * 0.05,
-                    // ),
-                    // Text('F : '),
-                    // DropdownButton<String>(
-                    //   elevation: 16,
-                    //   underline: Container(
-                    //     width: ScreenWidth * 0.28,
-                    //     height: 1,
-                    //     color: Colors.black26,
-                    //   ),
-                    //   onChanged: (String? newValue) {
-                    //     setState(() {
-                    //       dropdownValue = newValue!;
-                    //       print(newValue);
-                    //     });
-                    //   },
-                    //   hint: Text('Choose'),
-                    //   value: dropdownValue,
-                    //   items: <String>['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7']
-                    //       .map<DropdownMenuItem<String>>((String value) {
-                    //     return DropdownMenuItem<String>(
-                    //       value: value,
-                    //       child: Text(value),
-                    //     );
-                    //   }).toList(),
-                    // )
                     SizedBox(
                       width: ScreenWidth * 0.05,
                     ),
@@ -661,7 +628,6 @@ class _postaddState extends State<postadd> {
                 child: Stack(
                   children: [
                     GoogleMap(
-                      
                       markers: mymarker,
                       initialCameraPosition: CameraPosition(
                         target: LatLng(28.033886, 1.659626),
@@ -818,6 +784,7 @@ class _postaddState extends State<postadd> {
       hide = false;
       if (selectimages!.isNotEmpty) {
         images!.addAll(selectimages);
+        print(images);
       } else {}
     });
   }
@@ -882,7 +849,7 @@ class _postaddState extends State<postadd> {
     var token = await preferences.getString('token');
 
     var response = await offerApi().adddata(token, 'addoffer', data, images!);
-
+    
     if (response.statusCode == 200) {
       Navigator.of(context).pushNamed('success');
     } else {

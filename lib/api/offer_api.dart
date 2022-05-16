@@ -75,6 +75,7 @@ class offerApi {
     request.fields['bedroom'] = data['bedroom'].toString();
     request.fields['livingroom'] = data['livingroom'].toString();
     request.fields['kitchen'] = data['kitchen'].toString();
+    request.fields['withimage'] = data['withimage'].toString();
     var response = await request.send();
 
     return response;
@@ -150,15 +151,7 @@ class offerApi {
       'Accept': 'application/json',
     });
   }
-  //    Future<http.Response> getLocationData(String text) async {
-  //   http.Response response;
 
-  //     response = await http.get(
-  //       Uri.parse("http://192.168.126.32:8000/api/v1/config/place-api-autocomplete?search_text=$text"),
-  //         headers: {"Content-Type": "application/json"},);
-
-  //   return response;
-  // }
   searchdata(url, token) async {
     String fullurl = baseUrl + url;
     var response = await http.get(Uri.parse(fullurl), headers: {
