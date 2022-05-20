@@ -23,13 +23,8 @@ class offerApi {
     return response;
   }
 
-  Future<String> uploadImage(filepath) async {
-    var request = http.MultipartRequest(
-        'POST', Uri.parse('http://192.168.1.62:8000/api/upload'));
-    request.files.add(await http.MultipartFile.fromPath('imageFile', filepath));
-    var res = await request.send();
-    return 'ok';
-  }
+  
+   
 
   getprofile(token, url) async {
     String fullurl = baseUrl + url;
@@ -40,12 +35,49 @@ class offerApi {
     return response;
   }
 
-  updateprofile(token, url, data) async {
+  updateprofileagence(token, url, data, image) async {
     String fullurl = baseUrl + url;
-    var response = await http.post(Uri.parse(fullurl), body: data, headers: {
+    var request = http.MultipartRequest('POST', Uri.parse(fullurl));
+    if (image.isNotEmpty) {
+      request.files
+          .add(await http.MultipartFile.fromPath('imageFile', image[0].path));
+    }
+    request.fields['fname'] = data['fname'];
+    request.fields['lname'] = data['lname'];
+    request.fields['phone'] = data['phone'];
+    request.fields['email'] = data['email'];
+    request.fields['address'] = data['address'];
+    request.fields['agenceName'] = data['agenceName'];
+
+    request.headers.addAll({
       'Authorization': 'Bearer $token',
-      'Accept': 'application/json',
+      'Content-Type': 'multipart/form-data'
     });
+
+    var response = await request.send();
+    print(response);
+    return response;
+  }
+  updateprofileclient(token, url, data, image) async {
+    String fullurl = baseUrl + url;
+    var request = http.MultipartRequest('POST', Uri.parse(fullurl));
+    if (image.isNotEmpty) {
+      request.files
+          .add(await http.MultipartFile.fromPath('imageFile', image[0].path));
+    }
+    request.fields['fname'] = data['fname'];
+    request.fields['lname'] = data['lname'];
+    request.fields['phone'] = data['phone'];
+    request.fields['email'] = data['email'];
+    
+
+    request.headers.addAll({
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'multipart/form-data'
+    });
+
+    var response = await request.send();
+    print(response);
     return response;
   }
 

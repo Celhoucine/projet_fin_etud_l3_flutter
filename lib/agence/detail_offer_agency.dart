@@ -700,6 +700,7 @@ class _offer_detail_agencyState extends State<offer_detail_agency> {
   }
 
   Widget Listcomments() {
+    var path = '';
     final ScrrenWidth = MediaQuery.of(context).size.width;
     final ScreenHeight = MediaQuery.of(context).size.height;
     return FutureBuilder(
@@ -711,6 +712,13 @@ class _offer_detail_agencyState extends State<offer_detail_agency> {
             return ListView.builder(
                 itemCount: comments!.length,
                 itemBuilder: (context, index) {
+                  if (comments[index]['profile_image'] == 'NO_IMAGE') {
+                    path = 'http://192.168.1.62:8000/storage/images/OIP.png';
+                  } else {
+                    path = 'http://192.168.1.62:8000/storage/images/' +
+                        comments[index]['id'].toString() +
+                        '.png';
+                  }
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
@@ -728,7 +736,7 @@ class _offer_detail_agencyState extends State<offer_detail_agency> {
                                   CircleAvatar(
                                     radius: 20,
                                     backgroundImage:
-                                        AssetImage('assets/profile.jfif'),
+                                        NetworkImage(path),
                                   )
                                 ],
                               ),

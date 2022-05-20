@@ -1,8 +1,9 @@
 import 'dart:convert';
-
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get_utils/src/get_utils/get_utils.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:projet_fin_etud_l3_flutter/api/offer_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,6 +18,7 @@ class _editclientprofileState extends State<editclientprofile> {
   @override
   void initState() {
     getprofiledata();
+
     super.initState();
   }
 
@@ -35,17 +37,34 @@ class _editclientprofileState extends State<editclientprofile> {
     'lname': '',
     'fname': '',
     'email': '',
-    'phone': ''
+    'phone': '',
+    'profile_image': ''
   };
+  bool isnotempty = false;
   var info = [];
   var data = {'fname': '', 'lname': '', 'email': '', 'phone': ''};
+  File? imagecam;
+  var cameraimage = ImagePicker();
+  List<XFile>? images = [];
+  var path = '';
   Widget build(BuildContext context) {
+imageCache?.clear();
+imageCache?.clearLiveImages();
     setState(() {
+      
       _fnameController.text = userprofile['fname'];
       _lnameController.text = userprofile['lname'];
       _emailController.text = userprofile['email'];
       _phoneController.text = userprofile['phone'].toString();
+      if (userprofile['profile_image'] == 'NO_IMAGE') {
+        path = 'http://192.168.1.62:8000/storage/images/OIP.png';
+      } else {
+        path = 'http://192.168.1.62:8000/storage/images/' +
+            userprofile['id'].toString() +
+            '.png';
+      }
     });
+
     final ScrrenWidth = MediaQuery.of(context).size.width;
     final ScreenHeight = MediaQuery.of(context).size.height;
     return SafeArea(
@@ -87,7 +106,42 @@ class _editclientprofileState extends State<editclientprofile> {
         key: formdata,
         child: Column(children: [
           SizedBox(
-            height: ScreenHeight * 0.08,
+            height: ScreenHeight * 0.04,
+          ),
+          Stack(
+            overflow: Overflow.visible,
+            children: [
+              CircleAvatar(
+                backgroundColor: Color.fromRGBO(6, 64, 64, 1),
+                radius: ScrrenWidth * 0.16,
+                child: CircleAvatar(
+                  backgroundColor: Color.fromARGB(255, 0, 0, 0),
+                  radius: ScrrenWidth * 0.15,
+                  backgroundImage: isnotempty == false
+                      ? NetworkImage(path)
+                      : FileImage(File(
+                          images![0].path,
+                        )) as ImageProvider,
+                  // child:
+                  //     photo(userprofile['profile_image'], userprofile['id'])
+                ),
+              ),
+              Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(50)),
+                      child: IconButton(
+                          onPressed: () {
+                            pickeImageFromCamera();
+                          },
+                          icon: Icon(Icons.camera_alt_outlined))))
+            ],
+          ),
+          SizedBox(
+            height: ScreenHeight * 0.04,
           ),
           Container(
             width: ScrrenWidth * 0.8,
@@ -277,9 +331,7 @@ class _editclientprofileState extends State<editclientprofile> {
                         var formstate = formdata.currentState;
                         formstate!.save();
                         editeprofile();
-                      } else {
-                        
-                      }
+                      } else {}
                     },
                     child: Center(
                       child: Text(
@@ -461,23 +513,44 @@ class _editclientprofileState extends State<editclientprofile> {
                 'lname': e['lname'],
                 'fname': e['fname'],
                 'email': e['email'],
-                'phone': e['phone']
+                'phone': e['phone'],
+                'profile_image': e['profile_image']
               })
           .toList();
     });
-
- 
   }
 
   editeprofile() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var token = await preferences.getString('token');
-    var response = await offerApi()
-        .updateprofile(token, 'updateclient/${_emailController.text}', data);
+    var response = await offerApi().updateprofileclient(
+        token, 'updateclient/${_emailController.text}', data, images);
     if (response.statusCode == 200) {
+      setState(() {});
       Navigator.of(context).pushNamed('profileclientsuccess');
     } else {
       Navigator.of(context).pushNamed('failedClient');
+    }
+  }
+
+  Future pickeImageFromCamera() async {
+    if (images!.isNotEmpty) {
+      images!.removeAt(0);
+    }
+    final selectimages = await cameraimage.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 80,
+        maxHeight: 4000,
+        maxWidth: 3000);
+    if (selectimages != null) {
+      imagecam = File(selectimages.path);
+      setState(() {
+        images!.add(selectimages);
+        if (images!.isNotEmpty) {
+          isnotempty = true;
+          editform = true;
+        }
+      });
     }
   }
 }

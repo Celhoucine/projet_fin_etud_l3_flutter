@@ -495,7 +495,8 @@ class _detailofferState extends State<detailoffer> {
                                     child: Row(
                                       children: [
                                         Icon(
-                                          CommunityMaterialIcons.sofa_single_outline,
+                                          CommunityMaterialIcons
+                                              .sofa_single_outline,
                                           color:
                                               Color.fromRGBO(84, 140, 129, 0.7),
                                         ),
@@ -568,15 +569,16 @@ class _detailofferState extends State<detailoffer> {
                                   ),
                                 ),
                               ),
-                               Padding(
-                                 padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                                 child: Center(
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                                child: Center(
                                   child: Container(
                                     width: ScrrenWidth * 0.88,
                                     child: Row(
                                       children: [
                                         Icon(
-                                          CommunityMaterialIcons.fridge_variant_outline,
+                                          CommunityMaterialIcons
+                                              .fridge_variant_outline,
                                           color:
                                               Color.fromRGBO(84, 140, 129, 0.7),
                                         ),
@@ -593,10 +595,10 @@ class _detailofferState extends State<detailoffer> {
                                       ],
                                     ),
                                   ),
+                                ),
                               ),
-                               ),
                               Padding(
-                               padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                                padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                                 child: Center(
                                   child: Container(
                                     width: ScrrenWidth * 0.88,
@@ -622,7 +624,6 @@ class _detailofferState extends State<detailoffer> {
                                   ),
                                 ),
                               ),
-
                               Center(
                                 child: Container(
                                   width: ScrrenWidth * 0.88,
@@ -815,6 +816,7 @@ class _detailofferState extends State<detailoffer> {
   Widget Listcomments() {
     final ScrrenWidth = MediaQuery.of(context).size.width;
     final ScreenHeight = MediaQuery.of(context).size.height;
+    var path = '';
     return FutureBuilder(
         future: getcomment(widget.id),
         builder: ((context, AsyncSnapshot snapshot) {
@@ -824,6 +826,19 @@ class _detailofferState extends State<detailoffer> {
             return ListView.builder(
                 itemCount: comments!.length,
                 itemBuilder: (context, index) {
+                  print('///////////////');
+                  print(comments[index]['profile_image']);
+                  print(comments[index]['id']);
+                  print('////////////////////');
+                  
+                    if (comments[index]['profile_image'] == 'NO_IMAGE') {
+                      path = 'http://192.168.1.62:8000/storage/images/OIP.png';
+                    } else {
+                      path = 'http://192.168.1.62:8000/storage/images/' +
+                          comments[index]['id'].toString() +
+                          '.png';
+                    }
+                  
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
@@ -838,8 +853,7 @@ class _detailofferState extends State<detailoffer> {
                               children: [
                                 CircleAvatar(
                                   radius: 20,
-                                  backgroundImage:
-                                      AssetImage('assets/profile.jfif'),
+                                  backgroundImage: NetworkImage(path),
                                 )
                               ],
                             ),

@@ -34,7 +34,6 @@ PageController _pageClientController = PageController(initialPage: 0);
         children: [
           accueilclient(),
           favorite(),
-          chatclient(),
           profileclient(),
         ],
       ),
@@ -59,10 +58,7 @@ PageController _pageClientController = PageController(initialPage: 0);
               Icons.favorite,
               color: Colors.white,
             ),
-            Icon(
-              Icons.message,
-              color: Colors.white,
-            ),
+      
             Icon(
               Icons.person,
               color: Colors.white,

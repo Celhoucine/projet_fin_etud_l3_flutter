@@ -763,7 +763,7 @@ class _postaddState extends State<postadd> {
   Future pickeImageFromCamera() async {
     final selectimages = await cameraimage.pickImage(
         source: ImageSource.camera,
-        imageQuality: 80,
+        imageQuality: 50,
         maxHeight: 4000,
         maxWidth: 3000);
     if (selectimages != null) {
@@ -778,7 +778,7 @@ class _postaddState extends State<postadd> {
 
   Future pickeImageFromGallery() async {
     final List<XFile>? selectimages = await multimage.pickMultiImage(
-        imageQuality: 80, maxHeight: 4000, maxWidth: 3000);
+        imageQuality: 50, maxHeight: 4000, maxWidth: 3000);
     setState(() {
       hide1 = true;
       hide = false;
@@ -849,7 +849,7 @@ class _postaddState extends State<postadd> {
     var token = await preferences.getString('token');
 
     var response = await offerApi().adddata(token, 'addoffer', data, images!);
-    
+
     if (response.statusCode == 200) {
       Navigator.of(context).pushNamed('success');
     } else {

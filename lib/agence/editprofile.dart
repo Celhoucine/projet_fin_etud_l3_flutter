@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../api/offer_api.dart';
@@ -49,9 +51,17 @@ class editprofileState extends State<editprofile> {
     'address': '',
     'phone': ''
   };
+  File? imagecam;
+  var cameraimage = ImagePicker();
+  List<XFile>? images = [];
+  var path = '';
+  bool isnotempty = false;
 
   @override
   Widget build(BuildContext context) {
+    print(userprofile['profile_image']);
+    imageCache?.clear();
+    imageCache?.clearLiveImages();
     setState(() {
       _fnameController.text = userprofile['fname'];
       _lnameController.text = userprofile['lname'];
@@ -59,6 +69,13 @@ class editprofileState extends State<editprofile> {
       _phoneController.text = userprofile['phone'].toString();
       _AgenceNameController.text = userprofile['agenceName'];
       _AddressController.text = userprofile['address'];
+      if (userprofile['profile_image'] == 'NO_IMAGE') {
+        path = 'http://192.168.1.62:8000/storage/images/OIP.png';
+      } else {
+        path = 'http://192.168.1.62:8000/storage/images/' +
+            userprofile['id'].toString() +
+            '.png';
+      }
     });
 
     final ScrrenWidth = MediaQuery.of(context).size.width;
@@ -102,7 +119,42 @@ class editprofileState extends State<editprofile> {
         key: formdata,
         child: Column(children: [
           SizedBox(
-            height: ScreenHeight * 0.08,
+            height: ScreenHeight * 0.04,
+          ),
+          Stack(
+            overflow: Overflow.visible,
+            children: [
+              CircleAvatar(
+                backgroundColor: Color.fromRGBO(6, 64, 64, 1),
+                radius: ScrrenWidth * 0.16,
+                child: CircleAvatar(
+                  backgroundColor: Color.fromARGB(255, 0, 0, 0),
+                  radius: ScrrenWidth * 0.15,
+                  backgroundImage: isnotempty == false
+                      ? NetworkImage(path)
+                      : FileImage(File(
+                          images![0].path,
+                        )) as ImageProvider,
+                  // child:
+                  //     photo(userprofile['profile_image'], userprofile['id'])
+                ),
+              ),
+              Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(50)),
+                      child: IconButton(
+                          onPressed: () {
+                            pickeImageFromCamera();
+                          },
+                          icon: Icon(Icons.camera_alt_outlined))))
+            ],
+          ),
+          SizedBox(
+            height: ScreenHeight * 0.04,
           ),
           Container(
             width: ScrrenWidth * 0.8,
@@ -129,9 +181,9 @@ class editprofileState extends State<editprofile> {
                             data['fname'] = Value!;
                           });
                         },
-                            onFieldSubmitted: (val) {
-                    editform = true;
-                  },
+                        onFieldSubmitted: (val) {
+                          editform = true;
+                        },
                         decoration: InputDecoration(
                             border: InputBorder.none,
                             contentPadding:
@@ -161,9 +213,9 @@ class editprofileState extends State<editprofile> {
                             data['lname'] = Value!;
                           });
                         },
-                            onFieldSubmitted: (val) {
-                    editform = true;
-                  },
+                        onFieldSubmitted: (val) {
+                          editform = true;
+                        },
                         decoration: InputDecoration(
                             border: InputBorder.none,
                             contentPadding:
@@ -199,7 +251,7 @@ class editprofileState extends State<editprofile> {
                       data['email'] = Value!;
                     });
                   },
-                      onFieldSubmitted: (val) {
+                  onFieldSubmitted: (val) {
                     editform = true;
                   },
                   autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -235,7 +287,6 @@ class editprofileState extends State<editprofile> {
                 width: ScrrenWidth * 0.8,
                 height: ScreenHeight * 0.055,
                 child: TextFormField(
-
                   initialValue: _phoneController.text,
                   onSaved: (Value) {
                     setState(() {
@@ -257,7 +308,7 @@ class editprofileState extends State<editprofile> {
                       return 'this is wrong phone';
                     }
                   },
-                     onFieldSubmitted: (val) {
+                  onFieldSubmitted: (val) {
                     editform = true;
                   },
                 ),
@@ -287,7 +338,7 @@ class editprofileState extends State<editprofile> {
                       data['agenceName'] = Value!;
                     });
                   },
-                      onFieldSubmitted: (val) {
+                  onFieldSubmitted: (val) {
                     editform = true;
                   },
                   autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -322,7 +373,7 @@ class editprofileState extends State<editprofile> {
                       data['address'] = Value!;
                     });
                   },
-                      onFieldSubmitted: (val) {
+                  onFieldSubmitted: (val) {
                     editform = true;
                   },
                   autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -359,13 +410,11 @@ class editprofileState extends State<editprofile> {
                   width: ScrrenWidth * 0.35,
                   child: NeumorphicButton(
                     onPressed: () {
-                      if (editform==true) {
+                      if (editform == true) {
                         var formstate = formdata.currentState;
                         formstate!.save();
                         editeprofile();
-                      } else {
-                        
-                      }
+                      } else {}
                     },
                     child: Center(
                       child: Text(
@@ -605,22 +654,43 @@ class editprofileState extends State<editprofile> {
                 'email': e['email'],
                 'agenceName': e['agenceName'],
                 'address': e['address'],
-                'phone': e['phone']
+                'phone': e['phone'],
+                'profile_image': e['profile_image']
               })
           .toList();
     });
-   
   }
 
   editeprofile() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var token = await preferences.getString('token');
-    var response = await offerApi()
-        .updateprofile(token, 'updateagence/${_emailController.text}', data);
+    var response = await offerApi().updateprofileagence(
+        token, 'updateagence/${_emailController.text}', data, images);
     if (response.statusCode == 200) {
       Navigator.of(context).pushNamed('success');
-    }else{
+    } else {
       Navigator.of(context).pushNamed('failed');
+    }
+  }
+
+  Future pickeImageFromCamera() async {
+    if (images!.isNotEmpty) {
+      images!.removeAt(0);
+    }
+    final selectimages = await cameraimage.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 80,
+        maxHeight: 4000,
+        maxWidth: 3000);
+    if (selectimages != null) {
+      imagecam = File(selectimages.path);
+      setState(() {
+        images!.add(selectimages);
+        if (images!.isNotEmpty) {
+          isnotempty = true;
+          editform = true;
+        }
+      });
     }
   }
 }

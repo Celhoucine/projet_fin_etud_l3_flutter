@@ -34,16 +34,7 @@ class _searchresultsState extends State<searchresults> {
   var not_favG = 0;
   var not_favB = 0;
   bool offerList = true;
-  bool offerCart = false;
   var sort = 'getoffer';
-  var categories = [];
-  String category_id = "1";
-  var data = {
-    'description': '',
-    'surface': '',
-    'prix': '',
-    'categorie': '1',
-  };
   final ListviewController = ScrollController();
 
   final DateFormat formatter = DateFormat('dd/MM/yyyy HH:mm');
@@ -403,11 +394,21 @@ class _searchresultsState extends State<searchresults> {
   Future<List<OfferInfo>> searchData(data) async {
     final prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token');
-    var url =
-        'search?surface_min=${data['surface_min']}&surface_max=${data['surface_max']}&prix_max=${data['prix_max']}&prix_min=${data['prix_min']}&categore=${data['categore']}';
-    var response = await offerApi().searchdata(url, token);
-    Iterable list = await json.decode(response.body);
-    return list.map<OfferInfo>(OfferInfo.toObject).toList();
+    print(data);
+    var url = '';
+    if (data['all_categore'] == 'true') {
+      var url =
+          'search?surface_min=${data['surface_min']}&surface_max=${data['surface_max']}&prix_max=${data['prix_max']}&prix_min=${data['prix_min']}';
+      var response = await offerApi().searchdata(url, token);
+      Iterable list = await json.decode(response.body);
+      return list.map<OfferInfo>(OfferInfo.toObject).toList();
+    } else {
+      var url =
+          'search?surface_min=${data['surface_min']}&surface_max=${data['surface_max']}&prix_max=${data['prix_max']}&prix_min=${data['prix_min']}&categore=${data['categore']}';
+      var response = await offerApi().searchdata(url, token);
+      Iterable list = await json.decode(response.body);
+      return list.map<OfferInfo>(OfferInfo.toObject).toList();
+    }
   }
 
   addfav(var id) async {

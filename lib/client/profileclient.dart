@@ -15,6 +15,7 @@ class _profileclientState extends State<profileclient> {
   @override
   void initState() {
     getprofiledata();
+  
     super.initState();
   }
 
@@ -23,13 +24,16 @@ class _profileclientState extends State<profileclient> {
     'lname': '',
     'fname': '',
     'email': '',
-    'phone': ''
+    'phone': '',
+    'profile_image': ''
   };
   var info = [];
+  var path = 'http://192.168.1.62:8000/storage/images/OIP.png';
   @override
   Widget build(BuildContext context) {
     final ScrrenWidth = MediaQuery.of(context).size.width;
     final ScreenHeight = MediaQuery.of(context).size.height;
+
     return SafeArea(
       child: Scaffold(
           backgroundColor: Color.fromRGBO(84, 140, 129, 1),
@@ -55,23 +59,23 @@ class _profileclientState extends State<profileclient> {
                           SizedBox(
                             height: ScreenHeight * 0.08,
                           ),
-                           // Add here the name of user
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Column(
-                        children: [
-                          Text(
-                              userprofile['fname'] + ' ' + userprofile['lname']),
-                               Padding(
-                                 padding: const EdgeInsets.fromLTRB(0, 3, 0,0),
-                                 child: Text('ID : ' + userprofile['id'].toString()),
-                               ),
-                        ],
-                      ),
-                    ),
-                   
-                   
-                     SizedBox(
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: Column(
+                              children: [
+                                Text(userprofile['fname'] +
+                                    ' ' +
+                                    userprofile['lname']),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 3, 0, 0),
+                                  child: Text(
+                                      'ID : ' + userprofile['id'].toString()),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
                             height: ScreenHeight * 0.035,
                           ),
                           Padding(
@@ -191,10 +195,9 @@ class _profileclientState extends State<profileclient> {
                       radius: ScrrenWidth * 0.16,
                       child: CircleAvatar(
                         radius: ScrrenWidth * 0.15,
-                        backgroundImage: AssetImage('assets/OIP.jfif'),
+                        backgroundImage: NetworkImage(path),
                       ),
                     ),
-                   
                   ],
                 ),
               ),
@@ -203,10 +206,10 @@ class _profileclientState extends State<profileclient> {
     );
   }
 
-   getprofiledata() async {
+  getprofiledata() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var token = await preferences.getString('token');
-    var response = await offerApi().getprofile(token,'clientinfo');
+    var response = await offerApi().getprofile(token, 'clientinfo');
     setState(() {
       info = jsonDecode(response.body);
       info = info
@@ -215,20 +218,28 @@ class _profileclientState extends State<profileclient> {
                 'lname': e['lname'],
                 'fname': e['fname'],
                 'email': e['email'],
-                'phone': e['phone']
+                'phone': e['phone'],
+                'profile_image': e['profile_image'],
               })
           .toList();
+           if (userprofile['profile_image'] == 'NO_IMAGE') {
+        path = 'http://192.168.1.62:8000/storage/images/OIP.png';
+      } else {
+        path = 'http://192.168.1.62:8000/storage/images/' +
+            userprofile['id'].toString() +
+            '.png';
+      }
     });
-
-    
   }
+
+
 
   logout() async {
     final prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token');
-    
+
     var response = await auth().logout(token, 'logout');
-   
+
     if (response.statusCode == 200) {
       Navigator.of(context).pushNamed('login');
     }

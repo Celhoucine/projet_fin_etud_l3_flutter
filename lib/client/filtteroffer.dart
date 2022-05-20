@@ -1,8 +1,9 @@
 import 'dart:convert';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:projet_fin_etud_l3_flutter/api/login-register.dart';
+import 'package:get/get.dart';
 import 'package:projet_fin_etud_l3_flutter/api/offer_api.dart';
+import 'package:projet_fin_etud_l3_flutter/client/search_resulta_map.dart';
 import 'package:projet_fin_etud_l3_flutter/client/search_results.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -26,18 +27,84 @@ class _FiltterOfferState extends State<FiltterOffer> {
     'prix_min': '',
     'prix_max': '',
     'categore': '1',
+    'all_categore': 'false',
+    'wilaya': 'All'
   };
+  final Wilaya = [
+    'All',
+    'Adrar',
+    'Aïn Defla',
+    'Aïn Témouchent',
+    'Algiers',
+    'Annaba',
+    'Batna',
+    'Béchar',
+    'Béjaïa',
+    'Béni Abbès',
+    'Biskra',
+    'Blida',
+    'Bordj Baji Mokhtar',
+    'Bordj Bou Arréridj',
+    'Bouïra',
+    'Boumerdès',
+    'Chlef',
+    'Constantine',
+    'Djanet',
+    'Djelfa',
+    'El Bayadh',
+    'El M\'Ghair',
+    'El Menia',
+    'El Oued',
+    'El Tarf',
+    'Ghardaïa',
+    'Guelma',
+    'Guelma',
+    'In Guezzam',
+    'In Salah',
+    'Jijel',
+    'Khenchela',
+    'Laghouat',
+    'M\'Sila',
+    'Mascara',
+    'Médéa',
+    'Mila',
+    'Mostaganem',
+    'Naâma',
+    'Oran',
+    'Ouargla',
+    'Ouled Djellal',
+    'Oum El Bouaghi',
+    'Relizane',
+    'Saïda',
+    'Sétif',
+    'Sidi Bel Abbès',
+    'Skikda',
+    'Souk Ahras',
+    'Tamanrasset',
+    'Tébessa',
+    'Tiaret',
+    'Timimoun',
+    'Tindouf',
+    'Tipaza',
+    'Tissemsilt',
+    'Tizi Ouzou',
+    'Tlemcen',
+    'Touggourt'
+  ];
+
+  String? selectwilaya = 'All';
   TextEditingController _surface_minController = new TextEditingController();
   TextEditingController _surface_maxController = new TextEditingController();
   TextEditingController _prix_minController = new TextEditingController();
   TextEditingController _prix_maxController = new TextEditingController();
   TextEditingController _categoreController = new TextEditingController();
-
+  bool _val = false;
   var categories = [];
   String category_id = "1";
   Widget build(BuildContext context) {
     final ScreenWidth = MediaQuery.of(context).size.width;
     final ScreenHeight = MediaQuery.of(context).size.height;
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -56,7 +123,24 @@ class _FiltterOfferState extends State<FiltterOffer> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  height: ScreenHeight * 0.15,
+                  height: ScreenHeight * 0.05,
+                ),
+                Row(
+                  children: [
+                    Checkbox(
+                        value: _val,
+                        onChanged: (value) {
+                          setState(() {
+                            _val = !_val;
+                            if (data['all_categore'] == 'true') {
+                              data['all_categore'] = 'false';
+                            } else {
+                              data['all_categore'] = 'true';
+                            }
+                          });
+                        }),
+                    Text('Select all the type')
+                  ],
                 ),
                 Row(
                   children: [
@@ -76,6 +160,8 @@ class _FiltterOfferState extends State<FiltterOffer> {
                         }).toList(),
                         onChanged: (value) {
                           setState(() {
+                            data['all_categore'] = 'false';
+                            _val = false;
                             category_id = value.toString();
                             data['categore'] = category_id;
                           });
@@ -84,6 +170,37 @@ class _FiltterOfferState extends State<FiltterOffer> {
                       ),
                     ),
                   ],
+                ),
+                SizedBox(
+                  height: ScreenHeight * 0.01,
+                ),
+                Container(
+                  child: Row(
+                    children: [
+                      Text('Select a wilaya : '),
+                      SizedBox(
+                        width: ScreenWidth * 0.05,
+                      ),
+                      DropdownButton<String>(
+                          menuMaxHeight: ScreenHeight * 0.4,
+                          hint: Text('Select'),
+                          value: selectwilaya,
+                          items: Wilaya.map((item) {
+                            return DropdownMenuItem<String>(
+                              value: item,
+                              child: Text(item),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              print(value);
+                              selectwilaya = value;
+                              data['wilaya'] = selectwilaya!;
+                              print(selectwilaya);
+                            });
+                          })
+                    ],
+                  ),
                 ),
                 SizedBox(
                   height: ScreenHeight * 0.05,
@@ -182,12 +299,51 @@ class _FiltterOfferState extends State<FiltterOffer> {
                   ],
                 ),
                 SizedBox(
-                  height: ScreenHeight * 0.1,
+                  height: ScreenHeight * 0.05,
+                ),
+                SizedBox(
+                  height: ScreenHeight * 0.05,
                 ),
                 Center(
                   child: InkWell(
                     onTap: () {
-                      print(data);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => search_results_map(
+                                    data: data,
+                                  )));
+                    },
+                    child: Container(
+                        height: ScreenHeight * 0.045,
+                        width: ScreenWidth * 0.3,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(25)),
+                            color: Color.fromRGBO(84, 140, 129, 1)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.search,
+                              color: Colors.white60,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                              child: Text('Map'),
+                            ),
+                          ],
+                        )),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  child: Center(
+                    child: Text("OR"),
+                  ),
+                ),
+                Center(
+                  child: InkWell(
+                    onTap: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -210,7 +366,7 @@ class _FiltterOfferState extends State<FiltterOffer> {
                             ),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                              child: Text('Search'),
+                              child: Text('List'),
                             ),
                           ],
                         )),
@@ -231,6 +387,7 @@ class _FiltterOfferState extends State<FiltterOffer> {
     if (response.statusCode == 200) {
       setState(() {
         categories = json.decode(response.body);
+        print(categories);
       });
     }
   }

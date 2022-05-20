@@ -32,6 +32,7 @@ class _profileagenceState extends State<profileagence> {
     'address': '',
     'phone': ''
   };
+  var path = 'http://192.168.1.62:8000/storage/images/OIP.png';
   var agenceinfo = [];
 
   @override
@@ -199,7 +200,7 @@ class _profileagenceState extends State<profileagence> {
                       radius: ScrrenWidth * 0.16,
                       child: CircleAvatar(
                         radius: ScrrenWidth * 0.15,
-                        backgroundImage: AssetImage('assets/OIP.jfif'),
+                        backgroundImage: NetworkImage(path),
                       ),
                     ),
                   ],
@@ -224,19 +225,26 @@ class _profileagenceState extends State<profileagence> {
                 'email': e['email'],
                 'agenceName': e['agenceName'],
                 'address': e['address'],
-                'phone': e['phone']
+                'phone': e['phone'],
+                'profile_image': e['profile_image']
               })
           .toList();
+      if (userprofile['profile_image'] == 'NO_IMAGE') {
+        path = 'http://192.168.1.62:8000/storage/images/OIP.png';
+      } else {
+        path = 'http://192.168.1.62:8000/storage/images/' +
+            userprofile['id'].toString() +
+            '.png';
+      }
     });
-    
   }
 
   logout() async {
     final prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token');
-    
+
     var response = await auth().logout(token, 'logout');
-    
+
     if (response.statusCode == 200) {
       Navigator.of(context).pushNamed('login');
     }

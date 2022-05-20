@@ -100,7 +100,6 @@ class _accueilState extends State<accueil> {
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
         onTap: () {
-          
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -113,7 +112,6 @@ class _accueilState extends State<accueil> {
                         created_at: offer.created_at,
                         num_image: offer.num_image,
                         agenceName: offer.agenceName,
-                       
                         willaya: offer.willaya,
                         baladiya: offer.baladiya,
                         lat: offer.lat,

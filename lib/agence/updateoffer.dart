@@ -141,6 +141,8 @@ class _UpdateOfferState extends State<UpdateOffer> {
   };
   PageController pageController = PageController(initialPage: 0);
   Widget build(BuildContext context) {
+    imageCache?.clear();
+    imageCache?.clearLiveImages();
     final ScreenWidth = MediaQuery.of(context).size.width;
     final ScreenHeight = MediaQuery.of(context).size.height;
 
@@ -451,6 +453,9 @@ class _UpdateOfferState extends State<UpdateOffer> {
                   activeColor: Colors.green,
                   onChanged: (value) {
                     if (_value) {
+                      setState(() {
+                        _value = !_value;
+                      });
                     } else {
                       showDialog(
                           context: context,
@@ -461,7 +466,7 @@ class _UpdateOfferState extends State<UpdateOffer> {
                                   Text('Alert the old images will be removed'),
                               actions: <Widget>[
                                 TextButton(
-                                    onPressed: () {}, child: Text('Cancel')),
+                                    onPressed: () {Navigator.of(context).pop();}, child: Text('Cancel')),
                                 TextButton(
                                     onPressed: () {
                                       setState(() {

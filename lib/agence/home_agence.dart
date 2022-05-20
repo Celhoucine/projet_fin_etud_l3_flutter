@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:projet_fin_etud_l3_flutter/agence/Accueil.dart';
-import 'package:projet_fin_etud_l3_flutter/agence/chat.dart';
-import 'package:projet_fin_etud_l3_flutter/agence/offerinfo.dart';
 import 'package:projet_fin_etud_l3_flutter/agence/postadd.dart';
 import 'package:projet_fin_etud_l3_flutter/agence/profileagence.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 
 class home_agence extends StatefulWidget {
   const home_agence({Key? key}) : super(key: key);
@@ -38,7 +36,6 @@ class _homeState extends State<home_agence>  {
         children: [
           accueil(),
           postadd(),
-          chat(),
           profileagence(),
         ],
       ),
@@ -59,10 +56,6 @@ class _homeState extends State<home_agence>  {
             ),
             Icon(
               Icons.add_circle_outline_sharp,
-              color: Colors.white,
-            ),
-            Icon(
-              Icons.message,
               color: Colors.white,
             ),
             Icon(
