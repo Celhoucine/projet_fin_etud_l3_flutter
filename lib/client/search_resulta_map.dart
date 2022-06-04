@@ -32,6 +32,9 @@ class _search_results_mapState extends State<search_results_map> {
     super.initState();
   }
 
+  ////utilise @ip de serveur
+  var IP = '192.168.1.62';
+
   @override
   GoogleMapController? mapController;
   Set<Marker> offersmarker = {};
@@ -61,10 +64,10 @@ class _search_results_mapState extends State<search_results_map> {
             body: Container(
                 width: ScrrenWidth,
                 height: ScreenHeight * 0.98,
-                child: maps())));
+                child: maps(IP))));
   }
 
-  Widget maps() {
+  Widget maps(String IP) {
     final ScreenWidth = MediaQuery.of(context).size.width;
     final ScreenHeight = MediaQuery.of(context).size.height;
     return FutureBuilder<List<OfferInfo>>(
@@ -93,7 +96,7 @@ class _search_results_mapState extends State<search_results_map> {
                               target: LatLng(double.parse(offer.lat),
                                   double.parse(offer.long)),
                               zoom: 10)));
-                      return BuildSheetMap(offer);
+                      return BuildSheetMap(offer, IP);
                     }),
               ));
             }
@@ -169,7 +172,9 @@ class _search_results_mapState extends State<search_results_map> {
     var response = await offerApi().addvue('addvue/${id}', token);
   }
 
-  Widget BuildSheetMap(OfferInfo offer) {
+  Widget BuildSheetMap(OfferInfo offer, String IP1) {
+    var  IP = IP1;
+   
     final ScrrenWidth = MediaQuery.of(context).size.width;
     final ScreenHeight = MediaQuery.of(context).size.height;
     return GestureDetector(
@@ -214,12 +219,13 @@ class _search_results_mapState extends State<search_results_map> {
               decoration: BoxDecoration(
                   image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: NetworkImage(
-                          'http://192.168.1.62:8000/storage/images/' +
-                              offer.id.toString() +
-                              '_' +
-                              0.toString() +
-                              '.png'))),
+                      image: NetworkImage('http://' +
+                          IP +
+                          ':8000/storage/images/' +
+                          offer.id.toString() +
+                          '_' +
+                          0.toString() +
+                          '.png'))),
             ),
             Expanded(
                 child: Padding(

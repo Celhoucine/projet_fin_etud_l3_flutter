@@ -1,7 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:projet_fin_etud_l3_flutter/client/accueilclient.dart';
-import 'package:projet_fin_etud_l3_flutter/client/chatclient.dart';
 import 'package:projet_fin_etud_l3_flutter/client/favorite.dart';
 import 'package:projet_fin_etud_l3_flutter/client/profileclient.dart';
 import 'package:shared_preferences/shared_preferences.dart';

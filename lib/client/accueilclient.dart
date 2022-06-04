@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:geocoding/geocoding.dart';
@@ -28,9 +29,8 @@ class _accueilclientState extends State<accueilclient> {
     setIconMarke();
     super.initState();
   }
-
-  @override
-  @override
+  ////utilise @ip de serveur
+var IP = '192.168.1.62';
   ScrollController listcontroller = ScrollController();
   var is_favR = 236;
   var is_favG = 18;
@@ -74,9 +74,8 @@ class _accueilclientState extends State<accueilclient> {
         appBar: AppBar(
             automaticallyImplyLeading: false,
             backgroundColor: Colors.white,
-            toolbarHeight: ScreenHeight * 0.13,
+            toolbarHeight: ScreenHeight * 0.11,
             flexibleSpace: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -138,51 +137,51 @@ class _accueilclientState extends State<accueilclient> {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Row(
-                    children: [
-                      InkWell(
-                          onTap: () {
-                            setState(() {
-                              offerList = true;
-                              offerCart = false;
-                            });
-                          },
-                          child: Text(
-                            'List',
+                Row(
+                  children: [
+                    SizedBox(
+                      width: ScrrenWidth * 0.05,
+                    ),
+                    InkWell(
+                        onTap: () {
+                          setState(() {
+                            offerList = true;
+                            offerCart = false;
+                          });
+                        },
+                        child: Text(
+                          'List',
+                          style: TextStyle(
+                              color: offerList
+                                  ? Color.fromRGBO(84, 140, 129, 1)
+                                  : Colors.black45,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
+                        )),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                      child: Container(
+                        height: ScreenHeight * 0.035,
+                        width: 2,
+                        color: Colors.grey[300],
+                      ),
+                    ),
+                    InkWell(
+                        onTap: () {
+                          setState(() {
+                            offerList = false;
+                            offerCart = true;
+                          });
+                        },
+                        child: Text('Map',
                             style: TextStyle(
-                                color: offerList
+                                color: offerCart
                                     ? Color.fromRGBO(84, 140, 129, 1)
                                     : Colors.black45,
                                 fontSize: 20,
-                                fontWeight: FontWeight.bold),
-                          )),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                        child: Container(
-                          height: ScreenHeight * 0.035,
-                          width: 2,
-                          color: Colors.grey[300],
-                        ),
-                      ),
-                      InkWell(
-                          onTap: () {
-                            setState(() {
-                              offerList = false;
-                              offerCart = true;
-                            });
-                          },
-                          child: Text('Map',
-                              style: TextStyle(
-                                  color: offerCart
-                                      ? Color.fromRGBO(84, 140, 129, 1)
-                                      : Colors.black45,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold)))
-                    ],
-                  ),
-                )
+                                fontWeight: FontWeight.bold)))
+                  ],
+                ),
               ],
             )),
         body: ListView(
@@ -190,7 +189,7 @@ class _accueilclientState extends State<accueilclient> {
           children: [
             Center(
                 child: offerList
-                    ? Container(width: ScrrenWidth * 0.95, child: OffersList())
+                    ? Container(width: ScrrenWidth * 0.93, child: OffersList())
                     : Container(
                         width: ScrrenWidth,
                         height: ScreenHeight * 0.76,
@@ -231,6 +230,7 @@ class _accueilclientState extends State<accueilclient> {
     final ScrrenWidth = MediaQuery.of(context).size.width;
     final ScreenHeight = MediaQuery.of(context).size.height;
     var is_fav;
+
     return FutureBuilder(
       future: exsistfavorite(offer.id),
       builder: (context, snapshot) {
@@ -242,7 +242,7 @@ class _accueilclientState extends State<accueilclient> {
         }
         if (snapshot.hasData) {
           return Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
             child: GestureDetector(
               onTap: () {
                 addvue(offer.id);
@@ -273,12 +273,12 @@ class _accueilclientState extends State<accueilclient> {
               },
               child: Container(
                   height: ScreenHeight * 0.42,
-                  width: ScrrenWidth * 0.8,
                   child: LayoutBuilder(builder: ((context, constraints) {
                     return Stack(
                       children: [
                         Container(
                           height: ScreenHeight * 0.42,
+                          width: constraints.maxWidth,
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius:
@@ -295,13 +295,15 @@ class _accueilclientState extends State<accueilclient> {
                             children: [
                               Container(
                                 height: ScreenHeight * 0.26,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(10),
-                                      topRight: Radius.circular(10)),
-                                ),
+                                width: ScrrenWidth * 0.93,
+                                // decoration: BoxDecoration(
+                                //   borderRadius: BorderRadius.only(
+                                //       topLeft: Radius.circular(10),
+                                //       topRight: Radius.circular(10)),
+                                // ),
                                 child: LayoutBuilder(
                                     builder: (context, constraints) {
+                                  print(constraints.maxWidth);
                                   return CarouselSlider.builder(
                                       options: CarouselOptions(
                                           autoPlay: true,
@@ -311,14 +313,13 @@ class _accueilclientState extends State<accueilclient> {
                                       itemCount: offer.num_image,
                                       itemBuilder: (context, index, realindex) {
                                         final urlimage =
-                                            'http://192.168.1.62:8000/storage/images/' +
+                                            'http://'+IP+':8000/storage/images/' +
                                                 offer.id.toString() +
                                                 '_' +
                                                 index.toString() +
                                                 '.png';
 
                                         return Container(
-                                          width: constraints.maxWidth,
                                           decoration: BoxDecoration(
                                               borderRadius: BorderRadius.only(
                                                   topLeft: Radius.circular(10),
@@ -831,7 +832,6 @@ class _accueilclientState extends State<accueilclient> {
             return Stack(
               children: [
                 GoogleMap(
-               
                   onMapCreated: (GoogleMapController controller) {
                     mapController = controller;
                   },
@@ -914,7 +914,7 @@ class _accueilclientState extends State<accueilclient> {
                   image: DecorationImage(
                       fit: BoxFit.cover,
                       image: NetworkImage(
-                          'http://192.168.1.62:8000/storage/images/' +
+                          'http://'+IP+':8000/storage/images/' +
                               offer.id.toString() +
                               '_' +
                               0.toString() +

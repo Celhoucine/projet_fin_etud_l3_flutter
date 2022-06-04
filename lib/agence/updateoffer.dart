@@ -388,7 +388,7 @@ class _UpdateOfferState extends State<UpdateOffer> {
               SizedBox(
                 width: ScreenWidth * 0.080,
               ),
-              Image.asset('assets/garage.png'),
+              Image.asset('assets/garag.png'),
               Container(width: ScreenWidth * 0.3, child: Text(' Garage : ')),
               IconButton(
                   onPressed: () {

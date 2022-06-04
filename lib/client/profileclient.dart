@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:projet_fin_etud_l3_flutter/api/login-register.dart';
 import 'package:projet_fin_etud_l3_flutter/api/offer_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,9 +17,12 @@ class _profileclientState extends State<profileclient> {
   @override
   void initState() {
     getprofiledata();
-  
+    path = 'http://' + IP + ':8000/storage/images/OIP.png';
     super.initState();
   }
+
+  ////utilise @ip de serveur
+  var IP = '192.168.1.62';
 
   Map<String, dynamic> userprofile = {
     'id': '',
@@ -28,7 +33,7 @@ class _profileclientState extends State<profileclient> {
     'profile_image': ''
   };
   var info = [];
-  var path = 'http://192.168.1.62:8000/storage/images/OIP.png';
+  var path;
   @override
   Widget build(BuildContext context) {
     final ScrrenWidth = MediaQuery.of(context).size.width;
@@ -222,17 +227,18 @@ class _profileclientState extends State<profileclient> {
                 'profile_image': e['profile_image'],
               })
           .toList();
-           if (userprofile['profile_image'] == 'NO_IMAGE') {
-        path = 'http://192.168.1.62:8000/storage/images/OIP.png';
+      if (userprofile['profile_image'] == 'NO_IMAGE') {
+        path = 'http://' + IP + ':8000/storage/images/OIP.png';
       } else {
-        path = 'http://192.168.1.62:8000/storage/images/' +
+        path = 'http://' +
+            IP +
+            ':8000/storage/images/' +
             userprofile['id'].toString() +
             '.png';
       }
+      print(path);
     });
   }
-
-
 
   logout() async {
     final prefs = await SharedPreferences.getInstance();

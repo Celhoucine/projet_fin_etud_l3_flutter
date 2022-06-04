@@ -61,6 +61,8 @@ class _detailofferState extends State<detailoffer> {
     getcomment(widget.id);
     super.initState();
   }
+  ////utilise @ip de serveur
+var IP = '192.168.1.62';
 
   Set<Marker> mymarker = {};
   late GoogleMapController mapController;
@@ -205,7 +207,7 @@ class _detailofferState extends State<detailoffer> {
                                               itemBuilder:
                                                   (context, index, realindex) {
                                                 final urlimage =
-                                                    'http://192.168.1.62:8000/storage/images/' +
+                                                    'http://'+IP+':8000/storage/images/' +
                                                         widget.id.toString() +
                                                         '_' +
                                                         index.toString() +
@@ -826,19 +828,14 @@ class _detailofferState extends State<detailoffer> {
             return ListView.builder(
                 itemCount: comments!.length,
                 itemBuilder: (context, index) {
-                  print('///////////////');
-                  print(comments[index]['profile_image']);
-                  print(comments[index]['id']);
-                  print('////////////////////');
-                  
-                    if (comments[index]['profile_image'] == 'NO_IMAGE') {
-                      path = 'http://192.168.1.62:8000/storage/images/OIP.png';
-                    } else {
-                      path = 'http://192.168.1.62:8000/storage/images/' +
-                          comments[index]['id'].toString() +
-                          '.png';
-                    }
-                  
+                  if (comments[index]['profile_image'] == 'NO_IMAGE') {
+                    path = 'http://'+IP+':8000/storage/images/OIP.png';
+                  } else {
+                    path = 'http://'+IP+':8000/storage/images/' +
+                        comments[index]['id'].toString() +
+                        '.png';
+                  }
+
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(

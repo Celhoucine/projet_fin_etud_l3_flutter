@@ -21,6 +21,8 @@ class _editclientprofileState extends State<editclientprofile> {
 
     super.initState();
   }
+  ////utilise @ip de serveur
+var IP = '192.168.1.62';
 
   @override
   TextEditingController _emailController = new TextEditingController();
@@ -57,9 +59,9 @@ imageCache?.clearLiveImages();
       _emailController.text = userprofile['email'];
       _phoneController.text = userprofile['phone'].toString();
       if (userprofile['profile_image'] == 'NO_IMAGE') {
-        path = 'http://192.168.1.62:8000/storage/images/OIP.png';
+        path = 'http://'+IP+':8000/storage/images/OIP.png';
       } else {
-        path = 'http://192.168.1.62:8000/storage/images/' +
+        path = 'http://'+IP+':8000/storage/images/' +
             userprofile['id'].toString() +
             '.png';
       }

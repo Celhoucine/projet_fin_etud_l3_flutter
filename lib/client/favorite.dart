@@ -15,6 +15,8 @@ class favorite extends StatefulWidget {
 }
 
 class _favoriteState extends State<favorite> {
+  ////utilise @ip de serveur
+var IP = '192.168.1.62';
   @override
   var is_favR = 236;
   var is_favG = 18;
@@ -156,7 +158,7 @@ class _favoriteState extends State<favorite> {
                                       itemCount: offer.num_image,
                                       itemBuilder: (context, index, realindex) {
                                         final urlimage =
-                                            'http://192.168.1.62:8000/storage/images/' +
+                                            'http://'+IP+':8000/storage/images/' +
                                                 offer.id.toString() +
                                                 '_' +
                                                 index.toString() +

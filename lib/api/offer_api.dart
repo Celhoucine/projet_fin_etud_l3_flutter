@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:projet_fin_etud_l3_flutter/agence/changepassword.dart';
 
 class offerApi {
+  ////// change 192.168.1.62 -> votre IP
   String baseUrl = 'http://192.168.1.62:8000/api/';
   getofferdata(url, token) async {
     String fullurl = baseUrl + url;
@@ -22,9 +23,6 @@ class offerApi {
     });
     return response;
   }
-
-  
-   
 
   getprofile(token, url) async {
     String fullurl = baseUrl + url;
@@ -58,6 +56,7 @@ class offerApi {
     print(response);
     return response;
   }
+
   updateprofileclient(token, url, data, image) async {
     String fullurl = baseUrl + url;
     var request = http.MultipartRequest('POST', Uri.parse(fullurl));
@@ -69,7 +68,6 @@ class offerApi {
     request.fields['lname'] = data['lname'];
     request.fields['phone'] = data['phone'];
     request.fields['email'] = data['email'];
-    
 
     request.headers.addAll({
       'Authorization': 'Bearer $token',

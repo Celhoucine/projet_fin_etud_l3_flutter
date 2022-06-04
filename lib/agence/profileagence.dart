@@ -19,9 +19,12 @@ class _profileagenceState extends State<profileagence> {
   @override
   void initState() {
     getprofiledata();
-
+      path = 'http://' + IP + ':8000/storage/images/OIP.png';
     super.initState();
   }
+
+  //// utilise @IP de serveur
+  var IP = '192.168.1.62';
 
   Map<String, dynamic> userprofile = {
     'id': '',
@@ -32,11 +35,12 @@ class _profileagenceState extends State<profileagence> {
     'address': '',
     'phone': ''
   };
-  var path = 'http://192.168.1.62:8000/storage/images/OIP.png';
+  var path;
   var agenceinfo = [];
 
   @override
   Widget build(BuildContext context) {
+  
     final ScrrenWidth = MediaQuery.of(context).size.width;
     final ScreenHeight = MediaQuery.of(context).size.height;
     return SafeArea(
@@ -230,9 +234,11 @@ class _profileagenceState extends State<profileagence> {
               })
           .toList();
       if (userprofile['profile_image'] == 'NO_IMAGE') {
-        path = 'http://192.168.1.62:8000/storage/images/OIP.png';
+        path = 'http://' + IP + ':8000/storage/images/OIP.png';
       } else {
-        path = 'http://192.168.1.62:8000/storage/images/' +
+        path = 'http://' +
+            IP +
+            ':8000/storage/images/' +
             userprofile['id'].toString() +
             '.png';
       }

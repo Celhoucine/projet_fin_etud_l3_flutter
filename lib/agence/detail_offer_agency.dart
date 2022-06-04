@@ -58,6 +58,8 @@ class _offer_detail_agencyState extends State<offer_detail_agency> {
     getcomment(widget.id);
     super.initState();
   }
+  //// utilise @IP de serveur
+  var IP = '192.168.1.62';
 
   @override
   Set<Marker> mymarker = {};
@@ -107,7 +109,7 @@ class _offer_detail_agencyState extends State<offer_detail_agency> {
                                           itemBuilder:
                                               (context, index, realindex) {
                                             final urlimage =
-                                                'http://192.168.1.62:8000/storage/images/' +
+                                                'http://'+IP+':8000/storage/images/' +
                                                     widget.id.toString() +
                                                     '_' +
                                                     index.toString() +
@@ -713,9 +715,9 @@ class _offer_detail_agencyState extends State<offer_detail_agency> {
                 itemCount: comments!.length,
                 itemBuilder: (context, index) {
                   if (comments[index]['profile_image'] == 'NO_IMAGE') {
-                    path = 'http://192.168.1.62:8000/storage/images/OIP.png';
+                    path = 'http://'+IP+':8000/storage/images/OIP.png';
                   } else {
-                    path = 'http://192.168.1.62:8000/storage/images/' +
+                    path = 'http://'+IP+':8000/storage/images/' +
                         comments[index]['id'].toString() +
                         '.png';
                   }

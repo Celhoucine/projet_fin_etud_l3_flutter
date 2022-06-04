@@ -17,9 +17,7 @@ class _registerState extends State<register> {
   bool modeAgency = false;
   bool obscureText = true;
   bool obscureText1 = true;
-  
- 
-  
+
   Widget build(BuildContext context) {
     final Screenwidth = MediaQuery.of(context).size.width;
     final Screenheight = MediaQuery.of(context).size.height;
@@ -53,7 +51,8 @@ class _registerState extends State<register> {
                     height: Screenheight * 0.01,
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5,horizontal: 10),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -65,13 +64,11 @@ class _registerState extends State<register> {
                             });
                           },
                           child: Container(
-                            height: Screenheight*0.05,
-                            width:Screenwidth*0.4,
-                            child: Center(child: Text('Client'))),
+                              height: Screenheight * 0.05,
+                              width: Screenwidth * 0.4,
+                              child: Center(child: Text('Client'))),
                         ),
-                        
                         InkWell(
-                          
                           onTap: () {
                             setState(() {
                               modeAgency = true;
@@ -79,10 +76,9 @@ class _registerState extends State<register> {
                             });
                           },
                           child: Container(
-                            
-                            height: Screenheight*0.05,
-                            width:Screenwidth*0.4,
-                            child: Center(child: Text('Agency'))),
+                              height: Screenheight * 0.05,
+                              width: Screenwidth * 0.4,
+                              child: Center(child: Text('Agency'))),
                         ),
                       ],
                     ),

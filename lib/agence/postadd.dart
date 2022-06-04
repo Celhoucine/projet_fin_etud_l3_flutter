@@ -30,7 +30,6 @@ class _postaddState extends State<postadd> {
   }
 
   @override
-  // String? dropdownValue;
   Set<Marker> mymarker = {
     Marker(
       markerId: MarkerId('1'),
@@ -38,6 +37,9 @@ class _postaddState extends State<postadd> {
       position: LatLng(28.033886, 1.659626),
     )
   };
+  var intialsurface = '';
+  var intialprice = '';
+  var intialdescription = '';
   GoogleMapController? mapController;
   late Position cl;
   var lat;
@@ -153,9 +155,11 @@ class _postaddState extends State<postadd> {
                     Container(
                       width: ScreenWidth * 0.28,
                       child: TextFormField(
+                        initialValue: intialsurface,
                         onChanged: (value) {
                           setState(() {
                             data['surface'] = value;
+                            intialsurface = value;
                           });
                         },
                         keyboardType: TextInputType.number,
@@ -179,9 +183,11 @@ class _postaddState extends State<postadd> {
                     Container(
                       width: ScreenWidth * 0.28,
                       child: TextFormField(
+                        initialValue: intialprice,
                         onChanged: (value) {
                           setState(() {
                             data['prix'] = value;
+                            intialprice = value;
                           });
                         },
                         keyboardType: TextInputType.number,
@@ -384,9 +390,11 @@ class _postaddState extends State<postadd> {
               Container(
                 width: ScreenWidth * 0.85,
                 child: TextFormField(
+                  initialValue: intialdescription,
                   onChanged: (value) {
                     setState(() {
                       data['description'] = value;
+                      intialdescription = value;
                     });
                   },
                   maxLength: 300,
@@ -618,7 +626,8 @@ class _postaddState extends State<postadd> {
                 ], begin: Alignment.topLeft, end: Alignment.bottomRight)),
           ),
         ),
-        body: Column(
+        body: ListView(
+          physics: NeverScrollableScrollPhysics(),
           children: [
             Padding(
               padding: const EdgeInsets.all(20.0),
@@ -722,7 +731,6 @@ class _postaddState extends State<postadd> {
                           pageController.previousPage(
                               duration: Duration(milliseconds: 1000),
                               curve: Curves.ease);
-                          setState(() {});
                         },
                         child: RichText(
                             text: TextSpan(children: [
@@ -763,7 +771,7 @@ class _postaddState extends State<postadd> {
   Future pickeImageFromCamera() async {
     final selectimages = await cameraimage.pickImage(
         source: ImageSource.camera,
-        imageQuality: 50,
+        imageQuality: 80,
         maxHeight: 4000,
         maxWidth: 3000);
     if (selectimages != null) {
@@ -778,7 +786,7 @@ class _postaddState extends State<postadd> {
 
   Future pickeImageFromGallery() async {
     final List<XFile>? selectimages = await multimage.pickMultiImage(
-        imageQuality: 50, maxHeight: 4000, maxWidth: 3000);
+        imageQuality: 80, maxHeight: 4000, maxWidth: 3000);
     setState(() {
       hide1 = true;
       hide = false;

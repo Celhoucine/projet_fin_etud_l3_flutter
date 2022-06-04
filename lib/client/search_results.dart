@@ -24,7 +24,8 @@ class searchresults extends StatefulWidget {
 }
 
 class _searchresultsState extends State<searchresults> {
-  @override
+  ////utilise @ip de serveur
+  var IP = '192.168.1.62';
   @override
   ScrollController listcontroller = ScrollController();
   var is_favR = 236;
@@ -192,7 +193,7 @@ class _searchresultsState extends State<searchresults> {
                                       itemCount: offer.num_image,
                                       itemBuilder: (context, index, realindex) {
                                         final urlimage =
-                                            'http://192.168.1.62:8000/storage/images/' +
+                                            'http://'+IP+':8000/storage/images/' +
                                                 offer.id.toString() +
                                                 '_' +
                                                 index.toString() +

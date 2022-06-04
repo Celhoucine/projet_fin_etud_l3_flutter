@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:projet_fin_etud_l3_flutter/login.dart';
 
 class auth {
+  ////// change 192.168.1.62 -> votre IP
   String baseUrl = 'http://192.168.1.62:8000/api/';
   register(data, url) async {
     String fullurl = baseUrl + url;

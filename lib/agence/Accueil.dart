@@ -18,15 +18,13 @@ class accueil extends StatefulWidget {
 }
 
 class _accueilState extends State<accueil> {
-  Future<List<OfferInfo>> getOffer() async {
-    final prefs = await SharedPreferences.getInstance();
-    var token = prefs.getString('token');
-    var response = await offerApi().getofferdata('getagenceoffer', token);
-    Iterable list = await json.decode(response.body);
-    return list.map<OfferInfo>(OfferInfo.toObject).toList();
-  }
+////utilise @ip de serveur
+var IP = '192.168.1.62';
+
+  
 
   final DateFormat formatter = DateFormat('dd/MM/yyyy HH:mm');
+  
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +152,7 @@ class _accueilState extends State<accueil> {
                       itemCount: offer.num_image,
                       itemBuilder: (context, index, realindex) {
                         final urlimage =
-                            'http://192.168.1.62:8000/storage/images/' +
+                            'http://'+IP+':8000/storage/images/' +
                                 offer.id.toString() +
                                 '_' +
                                 index.toString() +
@@ -312,7 +310,13 @@ class _accueilState extends State<accueil> {
       },
     );
   }
-
+  Future<List<OfferInfo>> getOffer() async {
+    final prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString('token');
+    var response = await offerApi().getofferdata('getagenceoffer', token);
+    Iterable list = await json.decode(response.body);
+    return list.map<OfferInfo>(OfferInfo.toObject).toList();
+  }
   places(lat, long) async {
     var location = {};
     List<Placemark> placemarks =

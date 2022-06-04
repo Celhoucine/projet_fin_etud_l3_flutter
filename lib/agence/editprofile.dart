@@ -20,6 +20,10 @@ class editprofileState extends State<editprofile> {
     getprofiledata();
     super.initState();
   }
+  
+  //// utilise @IP de serveur
+  var IP = '192.168.1.62';
+
 
   TextEditingController _emailController = new TextEditingController();
   TextEditingController _fnameController = new TextEditingController();
@@ -70,9 +74,9 @@ class editprofileState extends State<editprofile> {
       _AgenceNameController.text = userprofile['agenceName'];
       _AddressController.text = userprofile['address'];
       if (userprofile['profile_image'] == 'NO_IMAGE') {
-        path = 'http://192.168.1.62:8000/storage/images/OIP.png';
+        path = 'http://'+IP+':8000/storage/images/OIP.png';
       } else {
-        path = 'http://192.168.1.62:8000/storage/images/' +
+        path = 'http://'+IP+':8000/storage/images/' +
             userprofile['id'].toString() +
             '.png';
       }
