@@ -131,7 +131,7 @@ var IP = '192.168.1.62';
                                 Padding(
                                   padding:
                                       const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                                  child: Text('Call'),
+                                  child: Text('Call',style:TextStyle(color: Colors.white)),
                                 ),
                               ],
                             )),
@@ -163,7 +163,7 @@ var IP = '192.168.1.62';
                                 Padding(
                                   padding:
                                       const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                                  child: Text('Message'),
+                                  child: Text('Message',style:TextStyle(color: Colors.white)),
                                 ),
                               ],
                             )),

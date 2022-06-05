@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -17,6 +18,7 @@ class search_results_map extends StatefulWidget {
     'prix_min': '',
     'prix_max': '',
     'categore': '1',
+    'distance': ''
   };
 
   search_results_map({Key? key, required this.data}) : super(key: key);
@@ -29,6 +31,7 @@ class _search_results_mapState extends State<search_results_map> {
   @override
   void initState() {
     setIconMarke();
+   getPosition();
     super.initState();
   }
 
@@ -44,8 +47,8 @@ class _search_results_mapState extends State<search_results_map> {
   late BitmapDescriptor iconMarkeP;
   late BitmapDescriptor iconMarkeSF;
   late Position cl;
-  var lat;
-  var long;
+   var lat=0.0;
+   var long=0.0;
 
   final ListviewController = ScrollController();
 
@@ -75,30 +78,29 @@ class _search_results_mapState extends State<search_results_map> {
         builder: ((context, snapshot) {
           if (snapshot.hasData) {
             final offers = snapshot.data;
-            for (var i = 0; i < offers!.length; i++) {
-              OfferInfo offer = offers[i];
-              offersmarker.add(Marker(
-                icon: offer.categorie == 'Villa'
-                    ? iconMarkeV
-                    : offer.categorie == 'Land'
-                        ? iconMarkeP
-                        : offer.categorie == 'Apartments'
-                            ? iconMarkeA
-                            : iconMarkeSF,
-                markerId: MarkerId(offer.id.toString()),
-                position:
-                    LatLng(double.parse(offer.lat), double.parse(offer.long)),
-                onTap: () => showModalBottomSheet(
-                    context: context,
-                    builder: (context) {
-                      mapController!.animateCamera(
-                          CameraUpdate.newCameraPosition(CameraPosition(
-                              target: LatLng(double.parse(offer.lat),
-                                  double.parse(offer.long)),
-                              zoom: 10)));
-                      return BuildSheetMap(offer, IP);
-                    }),
-              ));
+            if (widget.data['distance'] == '0') {
+              for (var i = 0; i < offers!.length; i++) {
+                addoffertomap(offers[i]);
+              }
+            } else {
+              for (var i = 0; i < offers!.length; i++) {
+                
+                OfferInfo offer = offers[i];
+                var latO = double.parse(offer.lat);
+                var longO = double.parse(offer.long);
+
+                var p = 0.017453292519943295;
+                var a = 0.5 -
+                    cos((latO - lat) * p) / 2 +
+                    cos(lat * p) *
+                        cos(latO * p) *
+                        (1 - cos((longO - long) * p)) /
+                        2;
+                double dis = 12742 * asin(sqrt(a));
+                if (dis <= double.parse(widget.data['distance'].toString())) {
+                  addoffertomap(offers[i]);
+                }
+              }
             }
             return Stack(
               children: [
@@ -139,6 +141,31 @@ class _search_results_mapState extends State<search_results_map> {
         }));
   }
 
+  addoffertomap(offers) {
+    OfferInfo offer = offers;
+    offersmarker.add(Marker(
+      icon: offer.categorie == 'Villa'
+          ? iconMarkeV
+          : offer.categorie == 'Land'
+              ? iconMarkeP
+              : offer.categorie == 'Apartments'
+                  ? iconMarkeA
+                  : iconMarkeSF,
+      markerId: MarkerId(offer.id.toString()),
+      position: LatLng(double.parse(offer.lat), double.parse(offer.long)),
+      onTap: () => showModalBottomSheet(
+          context: context,
+          builder: (context) {
+            mapController!.animateCamera(CameraUpdate.newCameraPosition(
+                CameraPosition(
+                    target: LatLng(
+                        double.parse(offer.lat), double.parse(offer.long)),
+                    zoom: 10)));
+            return BuildSheetMap(offer, IP);
+          }),
+    ));
+  }
+
   Future<List<OfferInfo>> searchData(data) async {
     final prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token');
@@ -173,8 +200,8 @@ class _search_results_mapState extends State<search_results_map> {
   }
 
   Widget BuildSheetMap(OfferInfo offer, String IP1) {
-    var  IP = IP1;
-   
+    var IP = IP1;
+
     final ScrrenWidth = MediaQuery.of(context).size.width;
     final ScreenHeight = MediaQuery.of(context).size.height;
     return GestureDetector(
@@ -399,6 +426,14 @@ class _search_results_mapState extends State<search_results_map> {
         return Container();
       },
     );
+  }
+
+  getPosition() async {
+    cl = await Geolocator.getCurrentPosition().then((value) => value);
+    setState(() {
+      lat = cl.latitude;
+      long = cl.longitude;
+    });
   }
 
   Future getvues(id) async {

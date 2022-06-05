@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,7 +29,8 @@ class _FiltterOfferState extends State<FiltterOffer> {
     'prix_max': '',
     'categore': '1',
     'all_categore': 'false',
-    'wilaya': 'All'
+    'wilaya': 'All',
+    'distance': '0'
   };
   final Wilaya = [
     'All',
@@ -101,6 +103,7 @@ class _FiltterOfferState extends State<FiltterOffer> {
   bool _val = false;
   var categories = [];
   String category_id = "1";
+  double distance = 0;
   Widget build(BuildContext context) {
     final ScreenWidth = MediaQuery.of(context).size.width;
     final ScreenHeight = MediaQuery.of(context).size.height;
@@ -139,7 +142,7 @@ class _FiltterOfferState extends State<FiltterOffer> {
                             }
                           });
                         }),
-                    Text('Select all the type')
+                    Text('Select all category')
                   ],
                 ),
                 Row(
@@ -301,6 +304,30 @@ class _FiltterOfferState extends State<FiltterOffer> {
                 SizedBox(
                   height: ScreenHeight * 0.05,
                 ),
+                Text('select distance:'),
+                Column(
+                  children: [
+                    Slider(
+                      value: distance,
+                      activeColor: Color.fromRGBO(6, 64, 64, 1),
+                      inactiveColor: Color.fromRGBO(84, 140, 129, 100),
+                      onChanged: (value) => setState(() {
+                        this.distance = value;
+                        data['distance'] = distance.toInt().toString();
+                      }),
+                      min: 0,
+                      max: 200,
+                      divisions: 200,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(distance.toInt().toString() + ' KM'),
+                        Text('200 KM')
+                      ],
+                    )
+                  ],
+                ),
                 SizedBox(
                   height: ScreenHeight * 0.05,
                 ),
@@ -329,7 +356,7 @@ class _FiltterOfferState extends State<FiltterOffer> {
                             ),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                              child: Text('Map'),
+                              child: Text('Map',style:TextStyle(color: Colors.white)),
                             ),
                           ],
                         )),
@@ -366,7 +393,7 @@ class _FiltterOfferState extends State<FiltterOffer> {
                             ),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                              child: Text('List'),
+                              child: Text('List',style:TextStyle(color: Colors.white)),
                             ),
                           ],
                         )),
