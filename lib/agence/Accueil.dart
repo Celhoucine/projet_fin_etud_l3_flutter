@@ -319,10 +319,8 @@ class _accueilState extends State<accueil> {
     var location = {};
     List<Placemark> placemarks =
         await placemarkFromCoordinates(lat, long, localeIdentifier: 'en');
-    print(placemarks[0]);
     location['Locality'] = placemarks[0].locality;
     location['wilaya'] = placemarks[0].administrativeArea;
-    print(location['Locality']);
     return location;
   }
 }

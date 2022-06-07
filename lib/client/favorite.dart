@@ -449,7 +449,7 @@ class _favoriteState extends State<favorite> {
       future: getvues(id),
       builder: (context, snapshot) {
         var vues = snapshot.data;
-        print(vues);
+    
 
         if (snapshot.hasData) {
           return Row(

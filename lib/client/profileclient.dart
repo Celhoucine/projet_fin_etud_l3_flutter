@@ -236,7 +236,7 @@ class _profileclientState extends State<profileclient> {
             userprofile['id'].toString() +
             '.png';
       }
-      print(path);
+     
     });
   }
 

@@ -33,7 +33,7 @@ class _loginState extends State<login> {
     final response = await auth().login(data, 'login');
     var info = jsonDecode(response.body);
     if (response.statusCode == 200) {
-      print('user authenticated.');
+    
       final prefs = await SharedPreferences.getInstance();
       prefs.setString('token', info['token']);
       prefs.setString('mode', info['mode']);
@@ -53,7 +53,7 @@ class _loginState extends State<login> {
       }
     } else {
       showSnackBar(context);
-      print('authentication failed');
+     
     }
   }
 

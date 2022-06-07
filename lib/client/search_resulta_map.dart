@@ -185,7 +185,7 @@ class _search_results_mapState extends State<search_results_map> {
   Future<List<OfferInfo>> searchData(data) async {
     final prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token');
-    print(data);
+    
     var url = '';
     if (data['all_categore'] == 'true') {
       if (data['wilaya'] == 'All') {
@@ -417,7 +417,7 @@ class _search_results_mapState extends State<search_results_map> {
       future: getvues(id),
       builder: (context, snapshot) {
         var vues = snapshot.data;
-        print(vues);
+      
 
         if (snapshot.hasData) {
           return Row(

@@ -53,7 +53,6 @@ class offerApi {
     });
 
     var response = await request.send();
-    print(response);
     return response;
   }
 
@@ -75,7 +74,6 @@ class offerApi {
     });
 
     var response = await request.send();
-    print(response);
     return response;
   }
 

@@ -25,7 +25,6 @@ class _postaddState extends State<postadd> {
   @override
   void initState() {
     _loadCategories();
-
     super.initState();
   }
 
@@ -792,7 +791,6 @@ class _postaddState extends State<postadd> {
       hide = false;
       if (selectimages!.isNotEmpty) {
         images!.addAll(selectimages);
-        print(images);
       } else {}
     });
   }

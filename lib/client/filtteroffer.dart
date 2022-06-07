@@ -198,10 +198,10 @@ class _FiltterOfferState extends State<FiltterOffer> {
                               }).toList(),
                               onChanged: (value) {
                                 setState(() {
-                                  print(value);
+                                  
                                   selectwilaya = value;
                                   data['wilaya'] = selectwilaya!;
-                                  print(selectwilaya);
+                               
                                 });
                               })
                         ],
@@ -426,7 +426,7 @@ class _FiltterOfferState extends State<FiltterOffer> {
     if (response.statusCode == 200) {
       setState(() {
         categories = json.decode(response.body);
-        print(categories);
+        
       });
     }
   }

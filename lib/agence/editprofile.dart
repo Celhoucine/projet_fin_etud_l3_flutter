@@ -63,7 +63,6 @@ class editprofileState extends State<editprofile> {
 
   @override
   Widget build(BuildContext context) {
-    print(userprofile['profile_image']);
     imageCache?.clear();
     imageCache?.clearLiveImages();
     setState(() {

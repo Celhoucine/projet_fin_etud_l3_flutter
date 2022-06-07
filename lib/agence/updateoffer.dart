@@ -466,7 +466,10 @@ class _UpdateOfferState extends State<UpdateOffer> {
                                   Text('Alert the old images will be removed'),
                               actions: <Widget>[
                                 TextButton(
-                                    onPressed: () {Navigator.of(context).pop();}, child: Text('Cancel')),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text('Cancel')),
                                 TextButton(
                                     onPressed: () {
                                       setState(() {
@@ -570,8 +573,6 @@ class _UpdateOfferState extends State<UpdateOffer> {
                                       newinfo['longitude'].toString())))
                         };
                       });
-                      print('////////////////');
-                      print(newinfo);
                     },
                     child: Text(
                       'Next',
@@ -735,7 +736,6 @@ class _UpdateOfferState extends State<UpdateOffer> {
                         ]))),
                     NeumorphicButton(
                       onPressed: () {
-                        print(newinfo);
                         update();
                       },
                       child: Text(

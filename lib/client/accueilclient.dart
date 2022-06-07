@@ -303,7 +303,7 @@ var IP = '192.168.1.62';
                                 // ),
                                 child: LayoutBuilder(
                                     builder: (context, constraints) {
-                                  print(constraints.maxWidth);
+                                
                                   return CarouselSlider.builder(
                                       options: CarouselOptions(
                                           autoPlay: true,
@@ -769,7 +769,7 @@ var IP = '192.168.1.62';
       future: getvues(id),
       builder: (context, snapshot) {
         var vues = snapshot.data;
-        print(vues);
+      
 
         if (snapshot.hasData) {
           return Row(
