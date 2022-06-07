@@ -167,7 +167,7 @@ class _offer_detail_agencyState extends State<offer_detail_agency> {
                                                     });
                                               },
                                               icon: Icon(
-                                                Icons.delete,
+                                                Icons.delete_outlined,
                                                 color: Colors.white,
                                               )),
                                           IconButton(
@@ -210,7 +210,7 @@ class _offer_detail_agencyState extends State<offer_detail_agency> {
                                                             ))));
                                               },
                                               icon: Icon(
-                                                Icons.edit,
+                                                Icons.edit_outlined,
                                                 color: Colors.white,
                                               ))
                                         ],
