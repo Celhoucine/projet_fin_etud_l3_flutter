@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
@@ -24,7 +23,6 @@ import 'package:projet_fin_etud_l3_flutter/client/profileclient.dart';
 import 'package:projet_fin_etud_l3_flutter/login.dart';
 import 'package:projet_fin_etud_l3_flutter/register_home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'agence/changepassword.dart';
 
 late SharedPreferences preferences;

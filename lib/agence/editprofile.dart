@@ -249,6 +249,7 @@ class editprofileState extends State<editprofile> {
                 width: ScrrenWidth * 0.8,
                 height: ScreenHeight * 0.055,
                 child: TextFormField(
+                  enabled: false,
                   initialValue: _emailController.text,
                   onSaved: (Value) {
                     setState(() {

@@ -53,12 +53,15 @@ dependencies:
   flutter_typeahead: ^3.2.5
   geocoding: ^2.0.4
   community_material_icon: ^5.9.55
-
+    
   
+  
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -70,6 +73,7 @@ dev_dependencies:
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
+  
 # The following section is specific to Flutter.
 flutter:
 

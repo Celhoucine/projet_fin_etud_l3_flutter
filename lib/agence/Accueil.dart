@@ -19,13 +19,8 @@ class accueil extends StatefulWidget {
 
 class _accueilState extends State<accueil> {
 ////utilise @ip de serveur
-var IP = '192.168.1.62';
-
-  
-
+  var IP = '192.168.1.62';
   final DateFormat formatter = DateFormat('dd/MM/yyyy HH:mm');
-  
-
   @override
   Widget build(BuildContext context) {
     final ScrrenWidth = MediaQuery.of(context).size.width;
@@ -151,12 +146,13 @@ var IP = '192.168.1.62';
                           viewportFraction: 1),
                       itemCount: offer.num_image,
                       itemBuilder: (context, index, realindex) {
-                        final urlimage =
-                            'http://'+IP+':8000/storage/images/' +
-                                offer.id.toString() +
-                                '_' +
-                                index.toString() +
-                                '.png';
+                        final urlimage = 'http://' +
+                            IP +
+                            ':8000/storage/images/' +
+                            offer.id.toString() +
+                            '_' +
+                            index.toString() +
+                            '.png';
 
                         return Container(
                           width: constraints.maxWidth,
@@ -310,6 +306,7 @@ var IP = '192.168.1.62';
       },
     );
   }
+
   Future<List<OfferInfo>> getOffer() async {
     final prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token');
@@ -317,6 +314,7 @@ var IP = '192.168.1.62';
     Iterable list = await json.decode(response.body);
     return list.map<OfferInfo>(OfferInfo.toObject).toList();
   }
+
   places(lat, long) async {
     var location = {};
     List<Placemark> placemarks =

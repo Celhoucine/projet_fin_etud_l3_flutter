@@ -31,7 +31,8 @@ class _search_results_mapState extends State<search_results_map> {
   @override
   void initState() {
     setIconMarke();
-   getPosition();
+    getPosition();
+
     super.initState();
   }
 
@@ -47,8 +48,8 @@ class _search_results_mapState extends State<search_results_map> {
   late BitmapDescriptor iconMarkeP;
   late BitmapDescriptor iconMarkeSF;
   late Position cl;
-   var lat=0.0;
-   var long=0.0;
+  var lat = 0.0;
+  var long = 0.0;
 
   final ListviewController = ScrollController();
 
@@ -71,6 +72,18 @@ class _search_results_mapState extends State<search_results_map> {
   }
 
   Widget maps(String IP) {
+    
+
+    Set<Circle> circle = Set.from([
+      Circle(
+        fillColor: Color.fromRGBO(180, 212, 243, 0.40),
+        strokeWidth: 1,
+        strokeColor: Colors.blue,
+        circleId: CircleId("2"),
+        center: LatLng(lat, long),
+        radius: double.parse(widget.data['distance'].toString()) * 1000,
+      )
+    ]);
     final ScreenWidth = MediaQuery.of(context).size.width;
     final ScreenHeight = MediaQuery.of(context).size.height;
     return FutureBuilder<List<OfferInfo>>(
@@ -84,7 +97,6 @@ class _search_results_mapState extends State<search_results_map> {
               }
             } else {
               for (var i = 0; i < offers!.length; i++) {
-                
                 OfferInfo offer = offers[i];
                 var latO = double.parse(offer.lat);
                 var longO = double.parse(offer.long);
@@ -100,11 +112,15 @@ class _search_results_mapState extends State<search_results_map> {
                 if (dis <= double.parse(widget.data['distance'].toString())) {
                   addoffertomap(offers[i]);
                 }
+                 mapController?.animateCamera(CameraUpdate.newCameraPosition(
+          CameraPosition(target: LatLng(lat, long), zoom: getZoomLevel(double.parse(widget.data['distance'].toString())))));
               }
+              
             }
             return Stack(
               children: [
                 GoogleMap(
+                  circles: circle,
                   onMapCreated: (GoogleMapController controller) {
                     mapController = controller;
                   },
@@ -434,6 +450,16 @@ class _search_results_mapState extends State<search_results_map> {
       lat = cl.latitude;
       long = cl.longitude;
     });
+  }
+  double getZoomLevel(double radius) {
+    double zoomLevel = 11;
+    if (radius > 0) {
+      double radiusElevated = radius + radius / 2;
+     
+      zoomLevel = 15 - log(radiusElevated) / log(2);
+    }
+    zoomLevel = double.parse(zoomLevel.toStringAsFixed(2));
+    return zoomLevel;
   }
 
   Future getvues(id) async {

@@ -66,7 +66,7 @@ class _offer_detail_agencyState extends State<offer_detail_agency> {
   late GoogleMapController mapController;
   TextEditingController _addcomment = new TextEditingController();
   final DateFormat formatter = DateFormat('dd/MM/yyyy HH:mm');
-  var numberformatter = NumberFormat("#.###");
+  // var numberformatter = NumberFormat("#.###");
   bool isreadmore = false;
   Widget build(BuildContext context) {
     mymarker.add(Marker(

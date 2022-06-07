@@ -15,7 +15,7 @@ class _changepasswordState extends State<changepassword> {
 
   @override
   TextEditingController _CurrentPasswordController =
-      new TextEditingController();
+ new TextEditingController();
   TextEditingController _NewPasswordController = new TextEditingController();
   TextEditingController _ConfNewPasswordController =
       new TextEditingController();

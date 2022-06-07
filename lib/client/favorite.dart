@@ -16,7 +16,7 @@ class favorite extends StatefulWidget {
 
 class _favoriteState extends State<favorite> {
   ////utilise @ip de serveur
-var IP = '192.168.1.62';
+  var IP = '192.168.1.62';
   @override
   var is_favR = 236;
   var is_favG = 18;
@@ -72,9 +72,7 @@ var IP = '192.168.1.62';
         }));
   }
 
-  Widget Offer(
-    OfferInfo offer,
-  ) {
+  Widget Offer(OfferInfo offer) {
     final ScrrenWidth = MediaQuery.of(context).size.width;
     final ScreenHeight = MediaQuery.of(context).size.height;
     var is_fav;
@@ -157,12 +155,13 @@ var IP = '192.168.1.62';
                                           viewportFraction: 1),
                                       itemCount: offer.num_image,
                                       itemBuilder: (context, index, realindex) {
-                                        final urlimage =
-                                            'http://'+IP+':8000/storage/images/' +
-                                                offer.id.toString() +
-                                                '_' +
-                                                index.toString() +
-                                                '.png';
+                                        final urlimage = 'http://' +
+                                            IP +
+                                            ':8000/storage/images/' +
+                                            offer.id.toString() +
+                                            '_' +
+                                            index.toString() +
+                                            '.png';
 
                                         return Container(
                                           width: constraints.maxWidth,

@@ -21,8 +21,9 @@ class _editclientprofileState extends State<editclientprofile> {
 
     super.initState();
   }
+
   ////utilise @ip de serveur
-var IP = '192.168.1.62';
+  var IP = '192.168.1.62';
 
   @override
   TextEditingController _emailController = new TextEditingController();
@@ -50,18 +51,19 @@ var IP = '192.168.1.62';
   List<XFile>? images = [];
   var path = '';
   Widget build(BuildContext context) {
-imageCache?.clear();
-imageCache?.clearLiveImages();
+    imageCache?.clear();
+    imageCache?.clearLiveImages();
     setState(() {
-      
       _fnameController.text = userprofile['fname'];
       _lnameController.text = userprofile['lname'];
       _emailController.text = userprofile['email'];
       _phoneController.text = userprofile['phone'].toString();
       if (userprofile['profile_image'] == 'NO_IMAGE') {
-        path = 'http://'+IP+':8000/storage/images/OIP.png';
+        path = 'http://' + IP + ':8000/storage/images/OIP.png';
       } else {
-        path = 'http://'+IP+':8000/storage/images/' +
+        path = 'http://' +
+            IP +
+            ':8000/storage/images/' +
             userprofile['id'].toString() +
             '.png';
       }
@@ -234,6 +236,7 @@ imageCache?.clearLiveImages();
                 width: ScrrenWidth * 0.8,
                 height: ScreenHeight * 0.055,
                 child: TextFormField(
+                  enabled: false,
                   initialValue: _emailController.text,
                   onSaved: (Value) {
                     setState(() {

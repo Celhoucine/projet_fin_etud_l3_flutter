@@ -119,289 +119,301 @@ class _FiltterOfferState extends State<FiltterOffer> {
             style: TextStyle(color: Colors.black),
           ),
         ),
-        body: Center(
-          child: Container(
-            width: ScreenWidth * 0.88,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: ScreenHeight * 0.05,
-                ),
-                Row(
+        body: ListView(
+          children: [
+            Center(
+              child: Container(
+                width: ScreenWidth * 0.88,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Checkbox(
-                        value: _val,
-                        onChanged: (value) {
-                          setState(() {
-                            _val = !_val;
-                            if (data['all_categore'] == 'true') {
-                              data['all_categore'] = 'false';
-                            } else {
-                              data['all_categore'] = 'true';
-                            }
-                          });
-                        }),
-                    Text('Select all category')
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text('Select category  : '),
                     SizedBox(
-                      width: ScreenWidth * 0.05,
-                    ),
-                    Container(
-                      width: ScreenWidth * 0.3,
-                      child: DropdownButton(
-                        hint: Text('Select'),
-                        items: categories.map((item) {
-                          return new DropdownMenuItem(
-                            child: Text(item['name']),
-                            value: item['id'].toString(),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            data['all_categore'] = 'false';
-                            _val = false;
-                            category_id = value.toString();
-                            data['categore'] = category_id;
-                          });
-                        },
-                        value: category_id,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: ScreenHeight * 0.01,
-                ),
-                Container(
-                  child: Row(
-                    children: [
-                      Text('Select a wilaya : '),
-                      SizedBox(
-                        width: ScreenWidth * 0.05,
-                      ),
-                      DropdownButton<String>(
-                          menuMaxHeight: ScreenHeight * 0.4,
-                          hint: Text('Select'),
-                          value: selectwilaya,
-                          items: Wilaya.map((item) {
-                            return DropdownMenuItem<String>(
-                              value: item,
-                              child: Text(item),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              print(value);
-                              selectwilaya = value;
-                              data['wilaya'] = selectwilaya!;
-                              print(selectwilaya);
-                            });
-                          })
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: ScreenHeight * 0.05,
-                ),
-                Text('Price range :'),
-                SizedBox(
-                  height: ScreenHeight * 0.01,
-                ),
-                Row(
-                  children: [
-                    Text('Min : '),
-                    Container(
-                      width: ScreenWidth * 0.23,
-                      child: TextFormField(
-                        controller: _prix_minController,
-                        onChanged: (value) {
-                          setState(() {
-                            data['prix_min'] = _prix_minController.text;
-                          });
-                        },
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          isDense: true,
-                          suffix: Text('DA'),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: ScreenWidth * 0.15,
-                    ),
-                    Text('Max : '),
-                    Container(
-                      width: ScreenWidth * 0.23,
-                      child: TextFormField(
-                        controller: _prix_maxController,
-                        onChanged: (value) {
-                          setState(() {
-                            data['prix_max'] = _prix_maxController.text;
-                          });
-                        },
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          isDense: true,
-                          suffix: Text('DA'),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: ScreenHeight * 0.05,
-                ),
-                Text('Surface :'),
-                SizedBox(
-                  height: ScreenHeight * 0.01,
-                ),
-                Row(
-                  children: [
-                    Text('Min : '),
-                    Container(
-                      width: ScreenWidth * 0.23,
-                      child: TextFormField(
-                        controller: _surface_minController,
-                        onChanged: (value) {
-                          setState(() {
-                            data['surface_min'] = _surface_minController.text;
-                          });
-                        },
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          isDense: true,
-                          suffix: Text('m²'),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: ScreenWidth * 0.15,
-                    ),
-                    Text('Max : '),
-                    Container(
-                      width: ScreenWidth * 0.23,
-                      child: TextFormField(
-                        controller: _surface_maxController,
-                        onChanged: (value) {
-                          setState(() {
-                            data['surface_max'] = _surface_maxController.text;
-                          });
-                        },
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          isDense: true,
-                          suffix: Text('m²'),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: ScreenHeight * 0.05,
-                ),
-                Text('select distance:'),
-                Column(
-                  children: [
-                    Slider(
-                      value: distance,
-                      activeColor: Color.fromRGBO(6, 64, 64, 1),
-                      inactiveColor: Color.fromRGBO(84, 140, 129, 100),
-                      onChanged: (value) => setState(() {
-                        this.distance = value;
-                        data['distance'] = distance.toInt().toString();
-                      }),
-                      min: 0,
-                      max: 200,
-                      divisions: 200,
+                      height: ScreenHeight * 0.05,
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(distance.toInt().toString() + ' KM'),
-                        Text('200 KM')
+                        Checkbox(
+                            value: _val,
+                            onChanged: (value) {
+                              setState(() {
+                                _val = !_val;
+                                if (data['all_categore'] == 'true') {
+                                  data['all_categore'] = 'false';
+                                } else {
+                                  data['all_categore'] = 'true';
+                                }
+                              });
+                            }),
+                        Text('Select all category')
                       ],
-                    )
+                    ),
+                    Row(
+                      children: [
+                        Text('Select category  : '),
+                        SizedBox(
+                          width: ScreenWidth * 0.05,
+                        ),
+                        Container(
+                          width: ScreenWidth * 0.3,
+                          child: DropdownButton(
+                            hint: Text('Select'),
+                            items: categories.map((item) {
+                              return new DropdownMenuItem(
+                                child: Text(item['name']),
+                                value: item['id'].toString(),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                data['all_categore'] = 'false';
+                                _val = false;
+                                category_id = value.toString();
+                                data['categore'] = category_id;
+                              });
+                            },
+                            value: category_id,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: ScreenHeight * 0.01,
+                    ),
+                    Container(
+                      child: Row(
+                        children: [
+                          Text('Select a wilaya : '),
+                          SizedBox(
+                            width: ScreenWidth * 0.05,
+                          ),
+                          DropdownButton<String>(
+                              menuMaxHeight: ScreenHeight * 0.4,
+                              hint: Text('Select'),
+                              value: selectwilaya,
+                              items: Wilaya.map((item) {
+                                return DropdownMenuItem<String>(
+                                  value: item,
+                                  child: Text(item),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  print(value);
+                                  selectwilaya = value;
+                                  data['wilaya'] = selectwilaya!;
+                                  print(selectwilaya);
+                                });
+                              })
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: ScreenHeight * 0.05,
+                    ),
+                    Text('Price range :'),
+                    SizedBox(
+                      height: ScreenHeight * 0.01,
+                    ),
+                    Row(
+                      children: [
+                        Text('Min : '),
+                        Container(
+                          width: ScreenWidth * 0.23,
+                          child: TextFormField(
+                            controller: _prix_minController,
+                            onChanged: (value) {
+                              setState(() {
+                                data['prix_min'] = _prix_minController.text;
+                              });
+                            },
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              isDense: true,
+                              suffix: Text('DA'),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: ScreenWidth * 0.15,
+                        ),
+                        Text('Max : '),
+                        Container(
+                          width: ScreenWidth * 0.23,
+                          child: TextFormField(
+                            controller: _prix_maxController,
+                            onChanged: (value) {
+                              setState(() {
+                                data['prix_max'] = _prix_maxController.text;
+                              });
+                            },
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              isDense: true,
+                              suffix: Text('DA'),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: ScreenHeight * 0.05,
+                    ),
+                    Text('Surface :'),
+                    SizedBox(
+                      height: ScreenHeight * 0.01,
+                    ),
+                    Row(
+                      children: [
+                        Text('Min : '),
+                        Container(
+                          width: ScreenWidth * 0.23,
+                          child: TextFormField(
+                            controller: _surface_minController,
+                            onChanged: (value) {
+                              setState(() {
+                                data['surface_min'] =
+                                    _surface_minController.text;
+                              });
+                            },
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              isDense: true,
+                              suffix: Text('m²'),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: ScreenWidth * 0.15,
+                        ),
+                        Text('Max : '),
+                        Container(
+                          width: ScreenWidth * 0.23,
+                          child: TextFormField(
+                            controller: _surface_maxController,
+                            onChanged: (value) {
+                              setState(() {
+                                data['surface_max'] =
+                                    _surface_maxController.text;
+                              });
+                            },
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              isDense: true,
+                              suffix: Text('m²'),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: ScreenHeight * 0.05,
+                    ),
+                    Text('select distance:'),
+                    Column(
+                      children: [
+                        Slider(
+                          value: distance,
+                          activeColor: Color.fromRGBO(6, 64, 64, 1),
+                          inactiveColor: Color.fromRGBO(84, 140, 129, 100),
+                          onChanged: (value) => setState(() {
+                            this.distance = value;
+                            data['distance'] = distance.toInt().toString();
+                          }),
+                          min: 0,
+                          max: 200,
+                          divisions: 200,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(distance.toInt().toString() + ' KM'),
+                            Text('200 KM')
+                          ],
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: ScreenHeight * 0.05,
+                    ),
+                    Center(
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => search_results_map(
+                                        data: data,
+                                      )));
+                        },
+                        child: Container(
+                            height: ScreenHeight * 0.045,
+                            width: ScreenWidth * 0.3,
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(25)),
+                                color: Color.fromRGBO(84, 140, 129, 1)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.search,
+                                  color: Colors.white60,
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                  child: Text('Map',
+                                      style: TextStyle(color: Colors.white)),
+                                ),
+                              ],
+                            )),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 5),
+                      child: Center(
+                        child: Text("OR"),
+                      ),
+                    ),
+                    Center(
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => searchresults(
+                                        data: data,
+                                      )));
+                        },
+                        child: Container(
+                            height: ScreenHeight * 0.045,
+                            width: ScreenWidth * 0.3,
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(25)),
+                                color: Color.fromRGBO(84, 140, 129, 1)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.search,
+                                  color: Colors.white60,
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                  child: Text('List',
+                                      style: TextStyle(color: Colors.white)),
+                                ),
+                              ],
+                            )),
+                      ),
+                    ),
                   ],
                 ),
-                SizedBox(
-                  height: ScreenHeight * 0.05,
-                ),
-                Center(
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => search_results_map(
-                                    data: data,
-                                  )));
-                    },
-                    child: Container(
-                        height: ScreenHeight * 0.045,
-                        width: ScreenWidth * 0.3,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(25)),
-                            color: Color.fromRGBO(84, 140, 129, 1)),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.search,
-                              color: Colors.white60,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                              child: Text('Map',style:TextStyle(color: Colors.white)),
-                            ),
-                          ],
-                        )),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5),
-                  child: Center(
-                    child: Text("OR"),
-                  ),
-                ),
-                Center(
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => searchresults(
-                                    data: data,
-                                  )));
-                    },
-                    child: Container(
-                        height: ScreenHeight * 0.045,
-                        width: ScreenWidth * 0.3,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(25)),
-                            color: Color.fromRGBO(84, 140, 129, 1)),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.search,
-                              color: Colors.white60,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                              child: Text('List',style:TextStyle(color: Colors.white)),
-                            ),
-                          ],
-                        )),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );

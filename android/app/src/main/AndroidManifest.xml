@@ -35,7 +35,7 @@
     
    <application
    
-        android:label="projet_fin_etud_l3_flutter"
+        android:label="AVENDAR"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true">
